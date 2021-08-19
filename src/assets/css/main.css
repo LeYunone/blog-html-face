@@ -39,6 +39,7 @@ a {
     padding: 10px;
     overflow-y: scroll;
     box-sizing: border-box;
+    background-image:url("../img/background.jpg");
 }
 
 .content-collapse {

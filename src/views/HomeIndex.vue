@@ -3,7 +3,7 @@
         <el-col :span="24" class="s-item tcommonBox" v-for="(item,index) in articleList" :key="'article'+index">
             <el-row :gutter="20">
                 <el-col :span="16">
-                    <el-card shadow="hover" style="height:403px;">
+                    <el-card shadow="hover" class="indexContent" style="height:403px;">
                         <template #header>
                             <div class="article_title" >标题</div>
                             <div class="clearfix">
@@ -19,29 +19,31 @@
 </template>
 
 <script>
-import Schart from "vue-schart";
-import { reactive } from "vue";
+import { ref, reactive } from "vue";
+import { ElMessage, ElMessageBox } from "element-plus";
+import axios from "axios";
 export default {
     name: "home",
-    components: { Schart },
     setup() {
+        let pageData=reactive({
+            index: 1,
+            size:10
+        });
+        const articleList = ref([]);
         const getList = () =>{
             axios({
-                url:"/leyuna/blogs",
+                url:"/leyuna/blog/blogs",
                 method:"get",
                 params:{
                     index:pageData.index,
                     size:pageData.size
                 }
-            }).then(()=>{
-                s
+            }).then((res)=>{
+                articleList.value=res.data.page.records;
             })
         }
         getList();
-        let pageData=reactive({
-            index: 1,
-            size:10
-        });
+
         return {
             articleList,
             pageData
@@ -54,5 +56,11 @@ export default {
     .sharelistBox{
         transition: all 0.5s ease-out;
         font-size: 15px;
+    }
+    .indexContent{
+        opacity: 0.97;
+    }
+    .article_title{
+        text-align: center;
     }
 </style>

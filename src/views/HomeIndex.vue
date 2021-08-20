@@ -4,12 +4,15 @@
             <el-row :gutter="20">
                 <el-col :span="16">
                     <el-card shadow="hover" class="indexContent" style="height:403px;">
-                        <template #header>
-                            <div class="article_title" >标题</div>
-                            <div class="clearfix">
-                                <span></span>
-                            </div>
-                        </template>
+                        <a href="#"><div class="article_title" >{{item.title}}</div></a>
+                        <div class="clearfix">
+                            <span></span>
+                        </div>
+                        <el-divider content-position="center"><i class="el-icon-date"></i>{{item.createTime}}</el-divider>
+                        <div>
+                            <v-md-preview-html height="50px" :html="item.blogContent" preview-class="vuepress-markdown-body"></v-md-preview-html>
+                        </div>
+                        <el-divider content-position="left">少年包青天</el-divider>
                     </el-card>
                 </el-col>
             </el-row>
@@ -23,6 +26,10 @@ import { ref, reactive } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import axios from "axios";
 export default {
+    data(){
+      return{
+      }
+    },
     name: "home",
     setup() {
         let pageData=reactive({
@@ -62,5 +69,11 @@ export default {
     }
     .article_title{
         text-align: center;
+        color:blue;
+        margin: 0;
+        padding: 10px;
+        font-size: 1.5rem;
+        font-weight: 900;
+        font-family: 'Hiragino Sans GB';
     }
 </style>

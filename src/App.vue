@@ -10,4 +10,5 @@ export default {};
 @import "./assets/css/main.css";
 @import "./assets/css/color-dark.css";
 @import "./assets/css/app.css";
+@import "./assets/css/newVue.css";
 </style>

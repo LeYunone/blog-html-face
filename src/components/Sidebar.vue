@@ -42,20 +42,20 @@ export default {
             {
                 icon: "el-icon-lx-home",
                 index: "/dashboard",
-                title: "系统首页",
+                title: "主站首页",
             },
             {
-                icon: "el-icon-lx-cascades",
+                icon: "el-icon-s-flag",
                 index: "2",
-                title: "内容管理",
+                title: "归档的选择",
                 subs: [
                     {
                         index: "/tag",
-                        title: "标签管理",
+                        title: "标签",
                     },
                     {
                         index: "/type",
-                        title: "分类管理",
+                        title: "分类",
                     },
                 ],
             },

@@ -4,7 +4,7 @@
             <el-row :gutter="20">
                 <el-col :span="16">
                     <el-card shadow="hover" class="indexContent" style="height:403px;">
-                        <a href="#"><div class="article_title" >{{item.title}}</div></a>
+                        <a @click="toBlog(item.id)" class="a_title"><div class="article_title" >{{item.title}}</div></a>
                         <div class="clearfix">
                             <span></span>
                         </div>
@@ -12,7 +12,7 @@
                         <div>
                             <v-md-preview-html height="50px" :html="item.blogContent" preview-class="vuepress-markdown-body"></v-md-preview-html>
                         </div>
-                        <el-divider content-position="left">少年包青天</el-divider>
+                        <el-divider content-position="left">乐云一</el-divider>
                     </el-card>
                 </el-col>
             </el-row>
@@ -29,6 +29,12 @@ export default {
     data(){
       return{
       }
+    },
+    methods:{
+        toBlog(id){
+            const { href }=this.$router.resolve({path:'/blog',query:{blogId:id}});
+            window.open(href, '_blank');
+        }
     },
     name: "home",
     setup() {
@@ -69,11 +75,15 @@ export default {
     }
     .article_title{
         text-align: center;
-        color:blue;
+        color:#409EFF;
         margin: 0;
         padding: 10px;
         font-size: 1.5rem;
         font-weight: 900;
         font-family: 'Hiragino Sans GB';
+    }
+    .article_title:hover{
+        color:#E6A23C;
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     }
 </style>

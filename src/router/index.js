@@ -55,16 +55,15 @@ const routes = [
                 },
                 component: () => import("../views/BlogIndex.vue")
             },
-            {
-                path:"/blog",
-                name:"blog",
-                meta:{
-                    title:'当前博客'
-                },
-                component: () => import("../views/Blog.vue")
-            },
         ]
-    }
+    } ,{
+        path:"/blog",
+        name:"blog",
+        meta:{
+            title:'当前博客'
+        },
+        component: () => import("../views/Blog.vue")
+    },
 ];
 
 const router = createRouter({

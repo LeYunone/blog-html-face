@@ -1,5 +1,6 @@
 <template>
     <div>
+        <div class="el-aside"></div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
                 <el-breadcrumb-item>
@@ -8,7 +9,7 @@
                 <el-breadcrumb-item>{{title}}</el-breadcrumb-item>
             </el-breadcrumb>
         </div>
-        <div class="container2">
+        <div class="el-main">
             <div class="plugins-tips">
                 {{remarks}}
             </div>
@@ -59,5 +60,12 @@ export default {
 <style scoped>
     .blogCss{
         color:red;
+    }
+    .el-main{
+        padding: 30px;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin: 10px;
     }
 </style>

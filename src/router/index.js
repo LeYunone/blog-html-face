@@ -17,15 +17,15 @@ import Home from "../views/Home.vue";
 const routes = [
     {
         path: '/',
-        redirect: '/dashboard'
+        redirect: '/home'
     }, {
         path: "/",
         name: "Home",
         component: Home,
         children: [
             {
-                path: "/dashboard",
-                name: "dashboard",
+                path: "/home",
+                name: "home",
                 meta: {
                     title: '主站首页'
                 },
@@ -33,7 +33,7 @@ const routes = [
             },
             {
                 path:"/type",
-                name:"typeBar",
+                name:"type",
                 meta:{
                     title:'分类归档'
                 },
@@ -41,7 +41,7 @@ const routes = [
             },
             {
                 path:"/tag",
-                name:"tagBar",
+                name:"tag",
                 meta:{
                     title:'标签归档'
                 },

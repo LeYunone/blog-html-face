@@ -72,7 +72,8 @@ export default {
         },
         handleNodeClick(data) {
             if(data.children==null){
-                this.$router.push({path:'/blogindex',query:{typeId:data.id,typeName:data.typeName}});
+                console.log(data)
+                this.$router.push({path:'/blogindex',query:{typeId:data.id,typeName:data.label}});
             }
         }
     },

@@ -14,7 +14,6 @@
                 </router-view>
                 <!-- <el-backtop target=".content"></el-backtop> -->
             </div>
-            <v-right></v-right>
         </div>
     </div>
 </template>
@@ -24,13 +23,11 @@ import { useStore } from "vuex";
 import vHeader from "../components/Header.vue";
 import vSidebar from "../components/Sidebar.vue";
 import vTags from "../components/Tags.vue";
-import vRight from "../components/RightBar.vue";
 export default {
     components: {
         vHeader,
         vSidebar,
         vTags,
-        vRight,
     },
     setup() {
         const store = useStore();

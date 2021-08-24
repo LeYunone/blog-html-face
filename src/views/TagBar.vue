@@ -14,11 +14,11 @@
             </div>
             <div class="source">
                 <div>
-                    <el-tag @click="toBlogindex(item.tagName)" v-for="(item,index) in tags">{{item.tagName}}</el-tag>
+                    <el-tag class="mytag" @click="toBlogindex(item.tagName)" v-for="(item,index) in tags">{{item.tagName}}</el-tag>
                 </div>
             </div>
             <div class="plugins-tips">
-                当前有{{tagCount}}条分类数据
+                当前有{{tagCount}}条标签数据
             </div>
         </div>
     </div>
@@ -76,5 +76,8 @@
     .source{
         margin-top: 20px;
         padding: 24px;
+    }
+    .mytag{
+        margin-left: 10px;
     }
 </style>

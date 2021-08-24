@@ -1,9 +1,9 @@
 <template>
     <div class="maxBox">
         <div class="crumbs">
-            <el-page-header v-if="tagName" @back="goBack" content="{{tagName}}">
+            <el-page-header @click='prev' v-if="tagName!=undefined" @back="goBack" :content="tagName">
             </el-page-header>
-            <el-page-header  @back="goBack" :content="typeName">
+            <el-page-header @click='prev' v-else @back="goBack" :content="typeName">
             </el-page-header>
         </div>
         <div class="container2">
@@ -34,19 +34,23 @@ export default {
             index:1,
             size:20,
             blogCount:"",
-            tagName:false,
-            typeName:false,
+            tagName:"",
+            typeName:"",
         };
     },
     mounted:function(){
         this.thisTypeBlog();//需要触发的函数
     },
+
     methods: {
+        prev(){
+            this.$router.go(-1)
+        },
         thisTypeBlog(){
             const typeId = this.$route.query.typeId;
             const tagName=this.$route.query.tagName;
             const typeName=this.$route.query.typeName;
-            this.tagName=typeName;
+            this.tagName=tagName;
             this.typeName=typeName;
             axios({
                 url:"/leyuna/blog/blogToType",

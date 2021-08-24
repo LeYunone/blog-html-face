@@ -41,7 +41,7 @@ export default {
         const items = [
             {
                 icon: "el-icon-lx-home",
-                index: "/dashboard",
+                index: "/home",
                 title: "主站首页",
             },
             {
@@ -58,11 +58,6 @@ export default {
                         title: "分类",
                     },
                 ],
-            },
-            {
-                icon: "el-icon-lx-copy",
-                index: "/tabs",
-                title: "tab选项卡",
             },
         ];
 

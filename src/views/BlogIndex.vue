@@ -1,9 +1,9 @@
 <template>
     <div class="maxBox">
         <div class="crumbs">
-            <el-page-header @click='prev' v-if="tagName!=undefined" @back="goBack" :content="tagName">
+            <el-page-header v-if="tagName!=undefined" @back="prev" :content="tagName">
             </el-page-header>
-            <el-page-header @click='prev' v-else @back="goBack" :content="typeName">
+            <el-page-header v-else @back="prev" :content="typeName">
             </el-page-header>
         </div>
         <div class="container2">

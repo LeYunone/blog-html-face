@@ -10,7 +10,8 @@
                         </div>
                         <el-divider content-position="center"><i class="el-icon-date"></i>{{item.createTime}}</el-divider>
                         <div>
-                            <v-md-preview-html height="50px" :html="item.blogContent" preview-class="vuepress-markdown-body"></v-md-preview-html>
+                            <v-md-editor v-model="item.blogContent" mode="preview"></v-md-editor>
+<!--                            <v-md-preview-html height="50px" :html="item.blogContent" preview-class="vuepress-markdown-body"></v-md-preview-html>-->
                         </div>
                         <el-divider content-position="left">乐云一</el-divider>
                     </el-card>

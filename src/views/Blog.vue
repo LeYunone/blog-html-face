@@ -1,13 +1,12 @@
 <template>
     <div>
-        <div class="el-aside">
-            <div
-                    v-for="anchor in titles"
-                    :style="{ padding: `10px 0 10px ${anchor.indent * 20}px` }"
-                    @click="handleAnchorClick(anchor)"
-            >
-                <a style="cursor: pointer">{{ anchor.title }}</a>
-            </div>
+        <div @click="nav">点我</div>
+        <div
+                v-for="anchor in titles"
+                :style="{ padding: `10px 0 10px ${anchor.indent * 20}px` }"
+                @click="handleAnchorClick(anchor)"
+        >
+            <a style="cursor: pointer">{{ anchor.title }}</a>
         </div>
         <div class="crumbs">
             <el-breadcrumb separator="/">
@@ -22,7 +21,8 @@
                 {{remarks}}
             </div>
             <div class="blogCss">
-                <v-md-preview-html :include-level="[3, 4]" :html="blogContent" preview-class="vuepress-markdown-body"></v-md-preview-html>
+                <v-md-editor v-model="blogContent" mode="preview"></v-md-editor>
+<!--    新版本用md原文本   <v-md-preview-html :html="blogContent" preview-class="vuepress-markdown-body"></v-md-preview-html>-->
             </div>
             <div class="plugins-tips">
                 {{remarks}}
@@ -39,32 +39,32 @@ export default {
     data() {
         return {
             title:"",
-            blogContent:"",
             remarks:"",
             titles: [],
+            blogContent:"",
         };
-    },
-    mounted(){
-        const anchors = this.$refs.preview.$el.querySelectorAll('h1,h2,h3,h4,h5,h6');
-        const titles = Array.from(anchors).filter((title) => !!title.innerText.trim());
-
-        if (!titles.length) {
-            this.titles = [];
-            return;
-        }
-
-        const hTags = Array.from(new Set(titles.map((title) => title.tagName))).sort();
-
-        this.titles = titles.map((el) => ({
-            title: el.innerText,
-            lineIndex: el.getAttribute('data-v-md-line'),
-            indent: hTags.indexOf(el.tagName),
-        }));
     },
     mounted:function(){
         this.thisBlog();//需要触发的函数
     },
     methods: {
+        nav(){
+            const anchors = document.querySelectorAll('h1,h2,h3,h4,h5,h6');
+            const titles = Array.from(anchors).filter((title) => !!title.innerText.trim());
+
+            if (!titles.length) {
+                this.titles = [];
+                return;
+            }
+
+            const hTags = Array.from(new Set(titles.map((title) => title.tagName))).sort();
+
+            this.titles = titles.map((el) => ({
+                title: el.innerText,
+                lineIndex: el.getAttribute('data-v-md-line'),
+                indent: hTags.indexOf(el.tagName),
+            }));
+        },
         thisBlog(){
             const blogId = this.$route.query.blogId;
             axios({
@@ -76,23 +76,34 @@ export default {
                 this.remarks=res.data.objData.remarks;
             })
         },
-        handleAnchorClick(anchor) {
-            const { preview } = this.$refs;
-            const { lineIndex } = anchor;
-
-            const heading = preview.$el.querySelector(`[data-v-md-line="${lineIndex}"]`);
-
-            if (heading) {
-                preview.scrollToTarget({
-                    target: heading,
-                    scrollContainer: window,
-                    top: 60,
-                });
-            }
-        },
-    }
-    ,
+    },
     setup(){
+        const handleAnchorClick=(anchor)=>{
+            const navItem=document.querySelector('.v-md-editor-preview');
+            const { lineIndex } = anchor;
+            const heading = navItem.querySelector(
+                `[data-v-md-line="${lineIndex}"]`);
+            const top=heading.offsetTop
+            let timer=setInterval(()=>{
+
+                if(document.documentElement.scrollTop<top)
+                {
+                    document.documentElement.scrollTop += 60;
+                    if(document.documentElement.scrollTop>=top-60)
+                        clearInterval(timer)
+                }
+                else
+                {
+                    document.documentElement.scrollTop -= 60
+                    if(document.documentElement.scrollTop<=top-60)
+                        clearInterval(timer)
+                }
+                // console.log(document.documentElement.scrollTop);
+            },20)
+        };
+        return {
+            handleAnchorClick,
+        }
     },
 };
 </script>

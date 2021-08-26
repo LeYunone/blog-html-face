@@ -1,32 +1,36 @@
 <template>
     <div>
-        <div @click="nav">点我</div>
-        <div
-                v-for="anchor in titles"
-                :style="{ padding: `10px 0 10px ${anchor.indent * 20}px` }"
-                @click="handleAnchorClick(anchor)"
-        >
-            <a style="cursor: pointer">{{ anchor.title }}</a>
-        </div>
-        <div class="crumbs">
-            <el-breadcrumb separator="/">
-                <el-breadcrumb-item>
-                    <i class="el-icon-lx-calendar"></i> 博客
-                </el-breadcrumb-item>
-                <el-breadcrumb-item>{{title}}</el-breadcrumb-item>
-            </el-breadcrumb>
-        </div>
-        <div class="el-main">
-            <div class="plugins-tips">
-                {{remarks}}
-            </div>
-            <div class="blogCss">
-                <v-md-editor v-model="blogContent" mode="preview"></v-md-editor>
-<!--    新版本用md原文本   <v-md-preview-html :html="blogContent" preview-class="vuepress-markdown-body"></v-md-preview-html>-->
-            </div>
-            <div class="plugins-tips">
-                {{remarks}}
-            </div>
+       <div class="blog-nav">
+           <div @click="nav">点我</div>
+           <div
+                   v-for="anchor in titles"
+                   :style="{ padding: `10px 0 10px ${anchor.indent * 20}px` }"
+                   @click="handleAnchorClick(anchor)"
+           >
+               <a style="cursor: pointer">{{ anchor.title }}</a>
+           </div>
+       </div>
+        <div class="main">
+           <div>
+               <div class="blog-content">
+                   <header class="blog-header">
+                       <h1 class="blog-title">{{blogTitle}}</h1>
+                       <div class="blog-info">
+                           <span class="el-icon-timer">{{createTime}}</span><span>-</span>  <span class="el-icon-edit">{{updateTime}}</span>
+                       </div>
+                   </header>
+                   <div class="plugins-tips">
+                       {{remarks}}
+                   </div>
+                   <div class="blogCss">
+                       <v-md-editor v-model="blogContent" mode="preview"></v-md-editor>
+                       <!--    新版本用md原文本   <v-md-preview-html :html="blogContent" preview-class="vuepress-markdown-body"></v-md-preview-html>-->
+                   </div>
+                   <div class="plugins-tips">
+                       {{remarks}}
+                   </div>
+               </div>
+           </div>
         </div>
     </div>
 </template>
@@ -38,10 +42,14 @@ import axios from "axios";
 export default {
     data() {
         return {
-            title:"",
+            blogTitle:"",
             remarks:"",
             titles: [],
             blogContent:"",
+            createTime:"",
+            updateTime:"",
+            type:"",
+            tag:"",
         };
     },
     mounted:function(){
@@ -71,9 +79,12 @@ export default {
                 url:"/leyuna/blog/blog/"+blogId,
                 method:"GET",
             }).then((res) =>{
-                this.title=res.data.objData.title;
-                this.blogContent=res.data.objData.blogContent;
-                this.remarks=res.data.objData.remarks;
+                let blog=res.data.objData;
+                this.blogTitle=blog.title;
+                this.blogContent=blog.blogContent;
+                this.remarks=blog.remarks;
+                this.createTime=blog.createTime;
+                this.updateTime=blog.updateTime;
             })
         },
     },
@@ -112,11 +123,66 @@ export default {
     .blogCss{
         color:red;
     }
-    .el-main{
-        padding: 30px;
+    body{
+        background-color: #fff;
+    }
+    .main{
         background: #fff;
         border: 1px solid #ddd;
         border-radius: 5px;
-        margin: 10px;
+        padding-left: 50px;
+        margin-right: 10px;
+        width: 79.6%;
+        float:right;
+    }
+    .blog-nav{
+        position: fixed;
+        overflow-y: auto;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 20rem;
+        background-color: #fff;
+        background-image: url(https://cdn.jsdelivr.net/gh/YunYouJun/cdn@master/img/bg/alpha-stars-timing-1.webp);
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: bottom 1rem center;
+        text-align: center;
+        z-index: 10;
+        transition-property: all;
+        transition-duration: .3s;
+        transition-delay: 0s;
+        box-shadow: 0 0 2px;
+    }
+    .blog-content{
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        transition-property: all;
+        transition-duration: .3s;
+        transition-delay: 0s;
+        color: #333;
+        background-color: #fff;
+        margin: 0;
+        padding-top: 2.5rem;
+    }
+    .blog-title{
+        margin: 0;
+        padding: 10px;
+        font-size: 1.5rem;
+        font-weight: 900;
+        font-family: 'Songti SC','Noto Serif SC',STZhongsong,STKaiti,KaiTi,Roboto,serif;
+        line-height: 2;
+    }
+    .blog-header{
+        position: relative;
+        text-align: center;
+    }
+    .blog-info{
+        font-size: 14px;
+    }
+    .blog-info span{
+        padding-left: 23px;
     }
 </style>

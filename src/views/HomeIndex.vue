@@ -1,5 +1,5 @@
 <template>
-    <el-row class="sharelistBox">
+    <el-row v-infinite-scroll="load" class="sharelistBox">
         <el-col :span="24" class="s-item tcommonBox" v-for="(item,index) in articleList" :key="'article'+index">
             <el-row :gutter="20">
                 <el-col :span="16">
@@ -19,11 +19,6 @@
             </el-row>
         </el-col>
     </el-row>
-    <div class="right-bar">
-        <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" background-color="#324157"
-                 text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened router>
-        </el-menu>
-    </div>
 </template>
 
 <script>
@@ -47,6 +42,10 @@ export default {
             index: 1,
             size:10
         });
+        const load = ()=>{
+            pageData.size+=3;
+            getList();
+        }
         const articleList = ref([]);
         const getList = () =>{
             axios({
@@ -64,7 +63,8 @@ export default {
 
         return {
             articleList,
-            pageData
+            pageData,
+            load
         };
     },
 };
@@ -74,6 +74,7 @@ export default {
     .sharelistBox{
         transition: all 0.5s ease-out;
         font-size: 15px;
+        padding-left: 90px;
     }
     .indexContent{
         opacity: 0.97;
@@ -91,18 +92,16 @@ export default {
         color:#E6A23C;
         box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
     }
-    .right-bar{
-        width: 300px;
-        height: 100%;
-        border-color: red;
-        border-width:1px;
-        border-style: dashed;
-        position: absolute;
+    .box-card{
+        width: 500px;
+        height: 350px;
         background-color: white;
         display: block;
         right: 28px;
         top: 40px;
         bottom: 40px;
-        overflow-y: scroll;
+        position: relative;
+        overflow: hidden;
+        float:right;
     }
 </style>

@@ -5,8 +5,8 @@
             <i v-if="!collapse" class="el-icon-s-fold"></i>
             <i v-else class="el-icon-s-unfold"></i>
         </div>
-        <div class="logo">乐云一<span class="el-icon-s-home"></span>基地</div>
         <div class="header-right">
+            <a class="el-icon-search"></a>
         </div>
     </div>
 </template>
@@ -42,7 +42,7 @@ export default {
     width: 100%;
     height: 70px;
     font-size: 22px;
-    color: #fff;
+    color: rgba(0,120,231,.5);
 }
 .collapse-btn {
     float: left;
@@ -50,19 +50,27 @@ export default {
     cursor: pointer;
     line-height: 70px;
 }
-.header .logo {
-    float: left;
-    width: 250px;
+.header-right{
+    float: right;
+    padding: 0 50px;
+    cursor: pointer;
     line-height: 70px;
 }
-.header-right {
-    float: right;
-    padding-right: 50px;
-}
-.user-avator img {
-    display: block;
-    width: 40px;
-    height: 40px;
+.header-right a{
+    display: inline-flex;
+    border: none;
+    width: 3rem;
+    height: 3rem;
+    align-items: center;
+    justify-content: center;
     border-radius: 50%;
+}
+.web-title{
+    text-align: center;
+    line-height: 70px;
+}
+.header-right a:hover{
+    background-color: #E5F1FD;
+    color:#1d90e6;
 }
 </style>

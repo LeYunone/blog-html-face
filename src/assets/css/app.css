@@ -151,9 +151,9 @@ input[type="search"] {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  width: 100%;
   overflow-x: hidden;
   -webkit-overflow-x: hidden;
+  background-color: #fff;
   color: #444;
 }
 h1,

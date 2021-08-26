@@ -48,6 +48,13 @@ export default createStore({
         },
         // 侧边栏折叠
         handleCollapse(state, data) {
+            const img=document.getElementById("headImg");
+            const style=img.getAttribute("style");
+            if(style.match("block")){
+                img.setAttribute("style","display:none")
+            }else{
+                img.setAttribute("style","display:block")
+            }
             state.collapse = data;
         }
     },

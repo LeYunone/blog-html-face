@@ -5,6 +5,8 @@ import store from './store'
 import installElementPlus from './plugins/element'
 import './assets/css/icon.css'
 import axios from 'axios';
+import './assets/css/iconfont.css'
+import './assets/css/iconfont';
 
 import VueMarkdownEditor from '@kangc/v-md-editor';
 import '@kangc/v-md-editor/lib/style/base-editor.css';

@@ -55,6 +55,21 @@ const routes = [
                 },
                 component: () => import("../views/BlogIndex.vue")
             },
+            {
+                path:"/webhistory",
+                name:"webhistory",
+                meta:{
+                    title:'网站短史'
+                },
+                component: () => import("../views/WebHistory.vue")
+            }, {
+                path:"/allblogindex",
+                name:"allblogindex",
+                meta:{
+                    title:'所有博客'
+                },
+                component: () => import("../views/AllBlogIndex.vue")
+            }
         ]
     } ,{
         path:"/blog",

@@ -1,8 +1,47 @@
 <template>
     <div class="sidebar">
-        <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" background-color="#324157"
-            text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened router>
-            <div class="bar-head"><el-avatar :size="160" :src="circleUrl"></el-avatar></div>
+        <div class="bar-head" style="display: block" id="headImg">
+            <el-avatar :size="160" :src="circleUrl"></el-avatar>
+            <div class="bar-top">
+                <el-link class="myName">乐云一</el-link>
+                <el-divider>一个有趣的人</el-divider>
+                <div class="myLink">
+                    <a class="aLink">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#el-icon-QQ"></use>
+                        </svg>
+                    </a>
+                    <a class="aLink">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#el-icon-weixin"></use>
+                        </svg>
+                    </a>
+                    <a class="aLink">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#el-icon-github"></use>
+                        </svg>
+                    </a>
+                    <a class="aLink">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#el-icon-shejiaotubiao-06"></use>
+                        </svg>
+                    </a>
+                    <a class="aLink">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#el-icon-29"></use>
+                        </svg>
+                    </a>
+                    <a class="aLink">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#el-icon-bilibili-line"></use>
+                        </svg>
+                    </a>
+                    <el-divider></el-divider>
+                </div>
+            </div>
+        </div>
+        <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" background-color="#fff"
+            text-color="#333" active-text-color="#DD2828" unique-opened router>
             <template v-for="item in items">
                 <template v-if="item.subs">
                     <el-submenu :index="item.index" :key="item.index">
@@ -31,7 +70,6 @@
         </el-menu>
     </div>
 </template>
-
 <script>
 import { computed, watch } from "vue";
 import { useStore } from "vuex";
@@ -58,7 +96,16 @@ export default {
                         title: "分类",
                     },
                 ],
-            },
+            },{
+                icon: "el-icon-ship",
+                index: "/allblogindex",
+                title: "选个锤子老子全要"
+            }
+            ,{
+                icon: "el-icon-trophy",
+                index: "/webhistory",
+                title: "网站短史"
+            }
         ];
 
         const route = useRoute();
@@ -88,7 +135,7 @@ export default {
     left: 0;
     top: 70px;
     bottom: 0;
-    overflow-y: scroll;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
 }
 .sidebar::-webkit-scrollbar {
     width: 0;
@@ -100,10 +147,50 @@ export default {
     height: 100%;
 }
 .bar-head{
-    margin-top: 20px;
     text-align: center;
     border-radius: 4px 4px 0 0 ;
     text-align: center;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    background-color: #fff;
     position: relative;
+}
+.el-avatar img{
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+}
+.myName{
+    font-family: 'Songti SC','Noto Serif SC',STZhongsong,STKaiti,KaiTi,Roboto,serif;
+    line-height: 4;
+    color:#409EFF;
+    font-size:15px;
+}
+.myName:hover{
+    color:#DB2828;
+}
+.icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+}
+.aLink{
+    display: inline-flex;
+    border: none;
+    width: 3rem;
+    height: 3rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    line-height: 1;
+    transition-property: all;
+    transition-duration: .3s;
+    transition-delay: 0s;
+}
+.aLink:hover{
+    background-color: #E5F1FD;
+}
+.bar-top{
+    width: 251px;
 }
 </style>

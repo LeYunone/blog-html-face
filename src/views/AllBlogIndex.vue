@@ -34,8 +34,6 @@ export default {
             index:1,
             size:20,
             blogCount:"",
-            tagName:"",
-            typeName:"",
         };
     },
     mounted:function(){
@@ -52,18 +50,12 @@ export default {
         },
         thisTypeBlog(){
             const typeId = this.$route.query.typeId;
-            const tagName=this.$route.query.tagName;
-            const typeName=this.$route.query.typeName;
-            this.tagName=tagName;
-            this.typeName=typeName;
             axios({
                 url:"/leyuna/blog/blogIndex",
                 method:"GET",
                 params:{
                     "index":this.index,
                     "size":this.size,
-                    "typeId":typeId,
-                    "tagName":tagName,
                 }
             }).then((res) =>{
                 this.articleList=res.data.page.records;

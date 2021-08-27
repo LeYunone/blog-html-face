@@ -1,15 +1,57 @@
 <template>
     <div>
        <div class="blog-nav">
-           <div @click="nav">点我</div>
-           <div
-                   v-for="anchor in titles"
-                   :style="{ padding: `10px 0 10px ${anchor.indent * 20}px` }"
-                   @click="handleAnchorClick(anchor)"
-           >
-               <a style="cursor: pointer">{{ anchor.title }}</a>
+           <div>
+               <div id="role-card" class="bar-head" style="display: block">
+                   <el-avatar :size="160" :src="circleUrl"></el-avatar>
+                   <div class="bar-top">
+                       <el-link class="myName">乐云一</el-link>
+                       <el-divider>一个有趣的人</el-divider>
+                       <div class="myLink">
+                           <a class="aLink">
+                               <svg class="icon" aria-hidden="true">
+                                   <use xlink:href="#el-icon-QQ"></use>
+                               </svg>
+                           </a>
+                           <a class="aLink">
+                               <svg class="icon" aria-hidden="true">
+                                   <use xlink:href="#el-icon-weixin"></use>
+                               </svg>
+                           </a>
+                           <a class="aLink">
+                               <svg class="icon" aria-hidden="true">
+                                   <use xlink:href="#el-icon-github"></use>
+                               </svg>
+                           </a>
+                           <a class="aLink">
+                               <svg class="icon" aria-hidden="true">
+                                   <use xlink:href="#el-icon-shejiaotubiao-06"></use>
+                               </svg>
+                           </a>
+                           <a class="aLink">
+                               <svg class="icon" aria-hidden="true">
+                                   <use xlink:href="#el-icon-29"></use>
+                               </svg>
+                           </a>
+                           <a class="aLink">
+                               <svg class="icon" aria-hidden="true">
+                                   <use xlink:href="#el-icon-bilibili-line"></use>
+                               </svg>
+                           </a>
+                           <el-divider></el-divider>
+                       </div>
+                   </div>
+               </div>
+              <div id="nav-card" style="display: none">
+                  <div   v-for="anchor in titles"
+                         :style="{ padding: `10px 0 10px ${anchor.indent * 20}px` }"
+                         @click="handleAnchorClick(anchor)">
+                      <a style="cursor: pointer">{{ anchor.title }}</a>
+                  </div>
+              </div>
            </div>
        </div>
+
         <div class="main">
            <div>
                <div class="blog-content">
@@ -33,8 +75,15 @@
            </div>
         </div>
     </div>
+    <div  class="switch-bar">
+        <el-tabs  tab-position="right" style="height: 150px;">
+            <el-tab-pane  label="目录导航"></el-tab-pane>
+            <el-tab-pane :tab-click=nav()  label="角色卡"></el-tab-pane>
+<!--            <el-tab-pane label="..."></el-tab-pane>-->
+<!--            <el-tab-pane label="待开发"></el-tab-pane>-->
+        </el-tabs>
+    </div>
 </template>
-
 <script>
 import { ref, reactive } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
@@ -42,6 +91,7 @@ import axios from "axios";
 export default {
     data() {
         return {
+            circleUrl:"src/assets/img/head.jpg",
             blogTitle:"",
             remarks:"",
             titles: [],
@@ -50,28 +100,45 @@ export default {
             updateTime:"",
             type:"",
             tag:"",
+            ifNav:true,
         };
     },
     mounted:function(){
         this.thisBlog();//需要触发的函数
     },
     methods: {
+        role(){
+            document.getElementById("nav-card").setAttribute("style","display:none");
+            document.getElementById("role-card").setAttribute("style","display:block");
+        },
         nav(){
-            const anchors = document.querySelectorAll('h1,h2,h3,h4,h5,h6');
-            const titles = Array.from(anchors).filter((title) => !!title.innerText.trim());
+            console.log("1" )
+            if(this.ifNav){
+                const anchors = document.querySelectorAll('h1,h2,h3,h4,h5,h6');
+                const titles = Array.from(anchors).filter((title) => !!title.innerText.trim());
 
-            if (!titles.length) {
-                this.titles = [];
-                return;
+                if (!titles.length) {
+                    this.titles = [];
+                    return;
+                }
+
+                const hTags = Array.from(new Set(titles.map((title) => title.tagName))).sort();
+
+                this.titles = titles.map((el) => ({
+                    title: el.innerText,
+                    lineIndex: el.getAttribute('data-v-md-line'),
+                    indent: hTags.indexOf(el.tagName),
+                }));
+                this.ifNav=false;
             }
-
-            const hTags = Array.from(new Set(titles.map((title) => title.tagName))).sort();
-
-            this.titles = titles.map((el) => ({
-                title: el.innerText,
-                lineIndex: el.getAttribute('data-v-md-line'),
-                indent: hTags.indexOf(el.tagName),
-            }));
+            let navDisplay=document.getElementById("nav-card").getAttribute("style");
+            if(navDisplay.match('none')){
+                document.getElementById("nav-card").setAttribute("style","display:block");
+                document.getElementById("role-card").setAttribute("style","display:none");
+            }else{
+                document.getElementById("nav-card").setAttribute("style","display:none");
+                document.getElementById("role-card").setAttribute("style","display:block");
+            }
         },
         thisBlog(){
             const blogId = this.$route.query.blogId;
@@ -120,6 +187,14 @@ export default {
 </script>
 
 <style scoped>
+    .bar-top{
+        width: 100%;
+    }
+    .switch-bar{
+        position: absolute;
+        right:0px;
+        top:150px;
+    }
     .blogCss{
         color:red;
     }
@@ -131,9 +206,10 @@ export default {
         border: 1px solid #ddd;
         border-radius: 5px;
         padding-left: 50px;
-        margin-right: 10px;
-        width: 79.6%;
+        margin-right: 130px;
+        width: 73%;
         float:right;
+        overflow: visible;
     }
     .blog-nav{
         position: fixed;
@@ -166,6 +242,9 @@ export default {
         background-color: #fff;
         margin: 0;
         padding-top: 2.5rem;
+        margin: 0 1rem 1rem 1rem;
+        background-color: #fff;
+        padding: 1rem .5rem;
     }
     .blog-title{
         margin: 0;

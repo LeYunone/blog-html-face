@@ -9,12 +9,16 @@
                             <span></span>
                         </div>
                         <el-divider content-position="center"><i class="el-icon-date"></i>{{item.createTime}}</el-divider>
-                        <div>
-                            <v-md-editor v-model="item.blogContent" mode="preview"></v-md-editor>
+                        <div  class="blog-content">
+                            <div class="blog-content-into" v-html="item.remarks"></div>
 <!--                            <v-md-preview-html height="50px" :html="item.blogContent" preview-class="vuepress-markdown-body"></v-md-preview-html>-->
                         </div>
                         <el-divider content-position="left">乐云一</el-divider>
+                        <div @click="open">展开</div>
                     </el-card>
+                    <div class="blog-real-content" v-if="show"  style="height: 100%;">
+                        <v-md-editor v-model="item.blogContent" mode="preview"></v-md-editor>
+                    </div>
                 </el-col>
             </el-row>
         </el-col>
@@ -28,9 +32,13 @@ import axios from "axios";
 export default {
     data(){
       return{
+          show:false,
       }
     },
     methods:{
+        open(){
+            this.show=true;
+        },
         toBlog(id){
             const { href }=this.$router.resolve({path:'/blog',query:{blogId:id}});
             window.open(href, '_blank');
@@ -71,6 +79,16 @@ export default {
 </script>
 
 <style scoped>
+    .blog-content{
+        padding: 8px 16px;
+        background-color: #ecf8ff;
+        border-radius: 4px;
+        border-left: 5px solid #348fc3;
+        margin: 20px 0;
+    }
+    .blog-content-into{
+        padding: 7px;
+    }
     .sharelistBox{
         transition: all 0.5s ease-out;
         font-size: 15px;

@@ -10,12 +10,19 @@
         </div>
         <div class="container2">
             <div class="plugins-tips">
-                <h1 class="tip_title"><i class="el-icon-collection-tag">标签</i></h1>
+                <P class="tip_title">
+                    <i class="el-icon-collection-tag">标签</i>
+                    <span class="rt"> 红的用的多 ； 黄的也用的多 ； 绿的一般般 ； 蓝的有些少 ； 灰色几乎没用</span>
+                </P>
             </div>
             <div class="source">
-                <div>
-                    <el-tag class="mytag" @click="toBlogindex(item.tagName)" v-for="(item,index) in tags">{{item.tagName}}</el-tag>
-                </div>
+                <span v-for="(item,index) in tags">
+                    <el-tag class="mytag" type="danger"  v-if="item.useCount>50" @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
+                    <el-tag class="mytag" type="warning" v-else-if="item.useCount>30" @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
+                    <el-tag class="mytag" type="success" v-else-if="item.useCount>20" @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
+                    <el-tag class="mytag" v-else-if="item.useCount>10" @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
+                    <el-tag class="mytag" type="info" v-else @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
+                </span>
             </div>
             <div class="plugins-tips">
                 当前有{{tagCount}}条标签数据
@@ -60,6 +67,10 @@
 </script>
 
 <style scoped>
+    .rt{
+        margin-left: 250px;
+        color: #ef6b6b;
+    }
     .content-title {
         font-weight: 400;
         line-height: 50px;
@@ -75,9 +86,9 @@
     }
     .source{
         margin-top: 20px;
-        padding: 24px;
     }
     .mytag{
+        text-align: center;
         margin-left: 10px;
     }
 </style>

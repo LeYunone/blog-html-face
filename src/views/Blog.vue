@@ -70,15 +70,13 @@
                         <span class="el-icon-timer">{{createTime}}</span><span>-</span> <span class="el-icon-edit">{{updateTime}}</span>
                     </div>
                 </header>
-                <div class="plugins-tips">
-                    {{remarks}}
+                <div v-html="remarks" class="plugins-tips">
                 </div>
                 <div class="blogCss">
                     <!--                   <v-md-editor v-model="blogContent" mode="preview"></v-md-editor>-->
                     <v-md-preview-html :html="html" preview-class="vuepress-markdown-body"></v-md-preview-html>
                 </div>
-                <div class="plugins-tips">
-                    {{remarks}}
+                <div v-html="remarks" class="plugins-tips">
                 </div>
                 <div class="comment">
                     <div style="text-align: center;font-size: 50px">待开发</div>

@@ -6,17 +6,17 @@
                 <el-link class="myName">乐云一</el-link>
                 <el-divider>一个有趣的人</el-divider>
                 <div class="myLink">
-                    <a class="aLink">
+                    <a @click="openQQ=true" class="aLink">
                         <svg class="icon" aria-hidden="true">
                             <use xlink:href="#el-icon-QQ"></use>
                         </svg>
                     </a>
-                    <a class="aLink">
+                    <a @click="openWX=true" class="aLink">
                         <svg class="icon" aria-hidden="true">
                             <use xlink:href="#el-icon-weixin"></use>
                         </svg>
                     </a>
-                    <a class="aLink">
+                    <a class="aLink" target="_blank" href="http://github.com/LeYunone">
                         <svg class="icon" aria-hidden="true">
                             <use xlink:href="#el-icon-github"></use>
                         </svg>
@@ -26,13 +26,13 @@
                             <use xlink:href="#el-icon-shejiaotubiao-06"></use>
                         </svg>
                     </a>
-                    <a class="aLink">
+                    <a class="aLink"  target="_blank"  href="https://www.zhihu.com/people/leyuna">
                         <svg class="icon" aria-hidden="true">
                             <use xlink:href="#el-icon-29"></use>
                         </svg>
                     </a>
                     <a class="aLink">
-                        <svg class="icon" aria-hidden="true">
+                        <svg class="icon" target="_blank" aria-hidden="true" href="https://b23.tv/tlovsv">
                             <use xlink:href="#el-icon-bilibili-line"></use>
                         </svg>
                     </a>
@@ -69,12 +69,37 @@
             </template>
         </el-menu>
     </div>
+    <el-dialog title="QQ" v-model="openQQ">
+       <div style="text-align: center">
+           <el-image
+                   style="width: 338px; height: 593px;text-align: center"
+                   :src="qqUrl"
+                   fit="cover"></el-image>
+       </div>
+    </el-dialog>
+    <el-dialog title="微信" v-model="openWX">
+        <div style="text-align: center">
+            <el-image
+                style="width: 456px; height: 487px"
+                :src="wxUrl"
+                fit="cover"></el-image>
+        </div>
+    </el-dialog>
 </template>
 <script>
 import { computed, watch } from "vue";
 import { useStore } from "vuex";
 import { useRoute } from "vue-router";
 export default {
+    data(){
+        return {
+            qqUrl:"src/assets/img/qq.png",
+            wxUrl:"src/assets/img/wx.png",
+            circleUrl:"src/assets/img/head.jpg",
+            openQQ:false,
+            openWX:false,
+        }
+    },
     setup() {
         const items = [
             {
@@ -106,6 +131,9 @@ export default {
                 index: "/webhistory",
                 title: "网站短史"
             }
+            ,{
+                title: "...待开发"
+            }
         ];
 
         const route = useRoute();
@@ -120,11 +148,6 @@ export default {
             collapse,
         };
     },
-    data(){
-        return {
-            circleUrl:"src/assets/img/head.jpg"
-        }
-    }
 };
 </script>
 

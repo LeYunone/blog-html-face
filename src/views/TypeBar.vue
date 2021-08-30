@@ -1,37 +1,32 @@
 <template>
-    <div>
-        <div class="crumbs">
-            <el-breadcrumb separator="/">
-                <el-breadcrumb-item>
-                    <i class="el-icon-lx-calendar"></i> 归档
-                </el-breadcrumb-item>
-                <el-breadcrumb-item>分类</el-breadcrumb-item>
-            </el-breadcrumb>
+    <div class="crumbs">
+        <el-breadcrumb separator="/">
+            <el-breadcrumb-item>
+                <i class="el-icon-lx-calendar"></i> 归档
+            </el-breadcrumb-item>
+            <el-breadcrumb-item>分类</el-breadcrumb-item>
+        </el-breadcrumb>
+    </div>
+    <div class="container2">
+        <div class="plugins-tips">
+            <h1 class="tip_title"><i class="el-icon-folder-opened">分类</i></h1>
         </div>
-        <div class="container2">
-            <div class="plugins-tips">
-                <h1 class="tip_title"><i class="el-icon-folder">分类</i></h1>
-            </div>
-           <div class="source">
-               <div>
-                   <el-input
-                           placeholder="输入关键字进行过滤"
-                           v-model="filterText">
-                   </el-input>
+       <div class="source">
+           <el-input
+                   placeholder="输入关键字进行过滤"
+                   v-model="filterText">
+           </el-input>
 
-                   <el-tree
-                           class="el-tree filter-tree"
-                           :data="data"
-                           :props="defaultProps"
-                           :filter-node-method="filterNode"
-                           @node-click="handleNodeClick"
-                           ref="tree">
-                   </el-tree>
-               </div>
-           </div>
-            <div class="plugins-tips">
-                当前有{{typeCount}}条分类数据
-            </div>
+           <el-tree
+                   :data="data"
+                   :props="defaultProps"
+                   :filter-node-method="filterNode"
+                   @node-click="handleNodeClick"
+                   ref="tree">
+           </el-tree>
+       </div>
+        <div class="plugins-tips">
+            当前有{{typeCount}}条分类数据
         </div>
     </div>
 </template>

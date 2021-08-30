@@ -46,7 +46,7 @@ export default {
     methods: {
         load(){
             this.size+=3;
-            thisHistory();
+            this.thisHistory();
         },
         prev(){
             this.$router.go(-1)

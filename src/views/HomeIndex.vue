@@ -29,6 +29,30 @@
                 </el-col>
             </el-row>
         </el-col>
+        <el-card class="box-right-card">
+            <div class="right-top">
+                <br/>
+                <br/>
+                如果你迷恋岁月舍不得向前<br/>
+                我就默默记录这诗篇<br/>
+                如果你厌倦引力想要去飞行<br/>
+                我就让 全世界的风吹向你<br/>
+            </div>
+            <div>
+                <el-divider></el-divider>
+            </div>
+            <div class="right-bott">
+                <el-button @click="drawer = true" type="primary" style="margin-left: 16px;">
+                    待开发
+                </el-button>
+                <el-drawer
+                        title="我是标题"
+                        v-model="drawer"
+                        :with-header="false">
+                    <span>开发中...</span>
+                </el-drawer>
+            </div>
+        </el-card>
     </el-row>
     <div class="onTop">
         <el-backtop target=".content" :bottom="100" :right="500">
@@ -48,7 +72,6 @@
         </el-backtop>
     </div>
 </template>
-
 <script>
     import {ref, reactive} from "vue";
     import {ElMessage, ElMessageBox} from "element-plus";
@@ -57,6 +80,7 @@
     export default {
         data() {
             return {
+                drawer: false,
             }
         },
         methods: {
@@ -108,6 +132,25 @@
 </script>
 
 <style scoped>
+    .right-bott{
+        height: 300px;
+    }
+    .right-top{
+        padding: .6rem 1rem;
+        border-left: 4px solid #4eaaff;;
+        background-color:rgba(0,120,231,.05);
+        height: 300px;
+        font-family: 'PingFang SC','Microsoft YaHei',Roboto,Arial,sans-serif;
+    }
+    .box-right-card{
+        position: absolute;
+        top:10px;
+        right: 100px;
+        height: 670px;
+        width: 300px;
+        float:right;
+        opacity: 0.97;
+    }
     .clearfix {
         clear:both;
     }

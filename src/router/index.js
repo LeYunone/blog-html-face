@@ -78,6 +78,13 @@ const routes = [
             title:'当前博客'
         },
         component: () => import("../views/Blog.vue")
+    },{
+        path:"/error",
+        name:"error",
+        meta:{
+            title:'错误'
+        },
+        component: () => import("../views/Error.vue")
     },
 ];
 

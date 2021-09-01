@@ -1,19 +1,6 @@
 import {createRouter, createWebHashHistory} from "vue-router";
 import Home from "../views/Home.vue";
 
-// module.exports = {
-//     dev:{
-//         assetsSubDirectory: 'static',
-//         assetsPublicPath: '/',
-//         proxyTable: {
-//             '/leyuna':{
-//                 target: 'http://127.0.0.1:9000',
-//                 changOrigin: true,
-//                 secure: false
-//             }
-//         }
-//     }
-// }
 const routes = [
     {
         path: '/',

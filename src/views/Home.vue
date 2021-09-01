@@ -4,7 +4,7 @@
         <v-sidebar />
         <div class="content-box" :class="{ 'content-collapse': collapse }">
             <v-tags></v-tags>
-            <div class="content" background="../assets/img/background.jpg">
+            <div class="content">
                 <router-view v-slot="{ Component }">
                     <transition name="move" mode="out-in">
                         <keep-alive :include="tagsList">

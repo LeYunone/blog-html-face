@@ -9,7 +9,12 @@ export default defineConfig({
             '@': path.resolve(__dirname, './src')
         },
     },
-    baseUrl: './',
+    assetsSubDirectory: 'static',
+    assetsPublicPath: './',
+    baseUrl: '/',
+    publicPath: '../../',
+    assetsDir: 'static',
+    parallel: false,
     plugins: [vue()],
     publicDir:'public',
     server: {

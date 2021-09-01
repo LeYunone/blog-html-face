@@ -93,9 +93,9 @@ import { useRoute } from "vue-router";
 export default {
     data(){
         return {
-            qqUrl:"src/assets/img/qq.png",
-            wxUrl:"src/assets/img/wx.png",
-            circleUrl:"src/assets/img/head.jpg",
+            qqUrl:"../src/assets/img/qq.png",
+            wxUrl:"../src/assets/img/wx.png",
+            circleUrl:"../assets/img/head.jpg",
             openQQ:false,
             openWX:false,
         }

@@ -4,7 +4,6 @@ import router from './router'
 import store from './store'
 import installElementPlus from './plugins/element'
 import './assets/css/icon.css'
-import axios from 'axios';
 import './assets/css/iconfont.css'
 import './assets/css/iconfont';
 
@@ -16,7 +15,6 @@ import Prism from 'prismjs';
 
 import VMdPreviewHtml from '@kangc/v-md-editor/lib/preview-html';
 import '@kangc/v-md-editor/lib/style/preview-html.css';
-
 VueMarkdownEditor.use(vuepressTheme, {
     Prism,
 });

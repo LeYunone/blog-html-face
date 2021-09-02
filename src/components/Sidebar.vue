@@ -90,12 +90,15 @@
 import { computed, watch } from "vue";
 import { useStore } from "vuex";
 import { useRoute } from "vue-router";
+import headUrl from '../assets/img/head.jpg';
+import qqUrl from '../assets/img/qq.png';
+import wxUrl from '../assets/img/wx.png';
 export default {
     data(){
         return {
-            qqUrl:"src/assets/img/qq.png",
-            wxUrl:"src/assets/img/wx.png",
-            circleUrl:"src/assets/img/head.jpg",
+            qqUrl:qqUrl,
+            wxUrl:wxUrl,
+            circleUrl:headUrl,
             openQQ:false,
             openWX:false,
         }

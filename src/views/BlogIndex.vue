@@ -45,7 +45,7 @@ export default {
     methods: {
         load(){
             this.size+=3;
-            thisTypeBlog();
+            this.thisTypeBlog();
         },
         prev(){
             this.$router.go(-1)

@@ -17,7 +17,7 @@
                    v-model="filterText">
            </el-input>
 
-           <el-tree
+           <el-tree class="type-tree"
                    :data="data"
                    :props="defaultProps"
                    :filter-node-method="filterNode"
@@ -85,6 +85,11 @@ export default {
 </script>
 
 <style scoped>
+    .type-tree{
+        padding: 7px;
+        margin-top: 10px;
+    }
+
     .content-title {
         font-weight: 400;
         line-height: 50px;
@@ -92,13 +97,11 @@ export default {
         font-size: 22px;
         color: #1f2f3d;
     }
+
     .tip_title{
         margin-right:20px;
         font-size: 1.5rem;
         font-weight: 900;
         font-family: 'Songti SC','Noto Serif SC',STZhongsong,STKaiti,KaiTi,Roboto,serif;
-    }
-    .filter-tree{
-        margin-top: 20px;
     }
 </style>

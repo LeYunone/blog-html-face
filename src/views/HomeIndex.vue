@@ -16,7 +16,7 @@
                             <div class="blog-content-into" v-html="item.remarks"></div>
                             <!--      <v-md-preview-html height="50px" :html="item.blogContent" preview-class="vuepress-markdown-body"></v-md-preview-html>-->
                         </div>
-                        <el-divider content-position="left">乐云一</el-divider>
+                        <el-divider content-position="left">乐云一 <el-link :href="'#/blogindex?tagName='+str" class="home-tag" v-for="(str,index) in item.tag.split(',')">{{str}}</el-link></el-divider>
                     </el-card>
                     <div class="openBtn" @click="open('blog'+item.id)">
                         <svg class="icon" aria-hidden="true">
@@ -84,6 +84,9 @@
             }
         },
         methods: {
+            toBlogindex(tagName){
+                this.$router.push({path:'',query:{tagName:tagName}});
+            },
             open(id) {
                 let doc = document.getElementById(id);
                 if(doc.getAttribute("style").match("none")){
@@ -135,6 +138,11 @@
     .right-bott{
         height: 300px;
     }
+    .home-tag{
+        padding: 7px;
+        color: #f6a939;
+        border-radius: 4px;
+    }
     .right-top{
         padding: .6rem 1rem;
         border-left: 4px solid #4eaaff;;
@@ -149,7 +157,7 @@
         height: 670px;
         width: 300px;
         float:right;
-        opacity: 0.97;
+        opacity: 0.9;
     }
     .clearfix {
         clear:both;
@@ -192,7 +200,7 @@
     }
 
     .indexContent {
-        opacity: 0.97;
+        opacity: 0.96;
     }
 
     .article_title {

@@ -18,12 +18,12 @@
                     <el-link class="myName">乐云一</el-link>
                     <el-divider>一个有趣的人</el-divider>
                     <div class="myLink">
-                        <a class="aLink">
+                        <a @click="openQQ=true" class="aLink">
                             <svg class="icon" aria-hidden="true">
                                 <use xlink:href="#el-icon-QQ"></use>
                             </svg>
                         </a>
-                        <a class="aLink">
+                        <a @click="openWX=true" class="aLink">
                             <svg class="icon" aria-hidden="true">
                                 <use xlink:href="#el-icon-weixin"></use>
                             </svg>
@@ -76,25 +76,51 @@
                     <!--                   <v-md-editor v-model="blogContent" mode="preview"></v-md-editor>-->
                     <v-md-preview-html :html="html" preview-class="vuepress-markdown-body"></v-md-preview-html>
                 </div>
-                <div v-html="remarks" class="plugins-tips">
+                <div  class="bottom-tip">
+                    <p>版权声明：本站原创文章，于{{createTime}}，乐云一发表</p>
+                    <p style="margin-top: 4px;">转载请注明:leyuna.xyz</p>
                 </div>
                 <div class="comment">
                     <div style="text-align: center;font-size: 50px">待开发</div>
                 </div>
             </div>
     </div>
+    <el-dialog title="QQ" v-model="openQQ">
+        <div style="text-align: center">
+            <el-image
+                    style="width: 338px; height: 593px;text-align: center"
+                    :src="qqUrl"
+                    fit="cover"></el-image>
+        </div>
+    </el-dialog>
+    <el-dialog title="微信" v-model="openWX">
+        <div style="text-align: center">
+            <el-image
+                    style="width: 456px; height: 487px"
+                    :src="wxUrl"
+                    fit="cover"></el-image>
+        </div>
+    </el-dialog>
+
 </template>
 <script>
     import {ref, reactive} from "vue";
     import {ElMessage, ElMessageBox} from "element-plus";
     import VueMarkdownEditor, {xss} from '@kangc/v-md-editor';
     import axios from "axios";
+    import headUrl from '../assets/img/head.jpg';
+    import qqUrl from '../assets/img/qq.png';
+    import wxUrl from '../assets/img/wx.png';
 
     export default {
         data() {
             return {
                 activeName: "roleName",
-                circleUrl: "src/assets/img/head.jpg",
+                circleUrl: headUrl,
+                qqUrl:qqUrl,
+                wxUrl:wxUrl,
+                openQQ:false,
+                openWX:false,
                 blogTitle: "",
                 remarks: "",
                 titles: [],
@@ -188,6 +214,13 @@
 </script>
 
 <style scoped>
+    .bottom-tip{
+        background: #f3f3f3;
+        border: #e9e9e9 1px solid;
+        margin-bottom: 20px;
+        color: #a0a0a0;
+        padding: 25px 20px;
+    }
     #nav-card {
         text-align: left;
         padding: 20px;
@@ -241,7 +274,7 @@
         left: 0;
         width: 20rem;
         background-color: #fff;
-        background-image: url(https://cdn.jsdelivr.net/gh/YunYouJun/cdn@master/img/bg/alpha-stars-timing-1.webp);
+        background-image: url("../assets/img/blog-bar.jpg");
         background-size: contain;
         background-repeat: no-repeat;
         background-position: bottom 1rem center;

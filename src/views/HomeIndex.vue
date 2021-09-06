@@ -16,7 +16,12 @@
                             <div class="blog-content-into" v-html="item.remarks"></div>
                             <!--      <v-md-preview-html height="50px" :html="item.blogContent" preview-class="vuepress-markdown-body"></v-md-preview-html>-->
                         </div>
-                        <el-divider content-position="left">乐云一 <el-link :href="'#/blogindex?tagName='+str" class="home-tag" v-for="(str,index) in item.tag.split(',')">{{str}}</el-link></el-divider>
+                        <div v-if="item.tag!=null">
+                            <el-divider content-position="left">乐云一 <el-link :href="'#/blogindex?tagName='+str" class="home-tag" v-for="(str,index) in item.tag.split(',')">{{str}}</el-link></el-divider>
+                        </div>
+                        <div v-else>
+                            <el-divider content-position="left">乐云一 </el-divider>
+                        </div>
                     </el-card>
                     <div class="openBtn" @click="open('blog'+item.id)">
                         <svg class="icon" aria-hidden="true">

@@ -10,23 +10,28 @@
         </div>
     </div>
     <el-drawer
+            :size="searchSize"
             v-model="search"
             direction="ttb"
             >
         <div class="search-from">
-            <el-input :input=input(title)  v-model="title" autocomplete="off" autocorrect="off" spellcheck="false" type="search" placeholder="搜索..." />
+            <el-input @input="searchKey(title)" @keyup.enter.native="searchKey(title)"  v-model="title"  type="search" placeholder="搜索..." />
         </div>
         <div class="search-content">
-
+            <ol class="search-ol">
+                <li class="search-li" v-for="(item,index) in dataList">
+                    <a target="_blank" :href="'#/blog?blogId='+item.id" class="search-a"> <span v-html=item.title></span></a>
+                </li>
+            </ol>
         </div>
 
         <div class="block">
             <el-pagination
-                    :hide-on-single-page="value"
                     layout="prev, pager, next"
                     :current-page="query.pageIndex"
                     :page-size="query.pageSize"
                     :total="pageTotal"
+                    @current-change="handlePageChange"
                     >
             </el-pagination>
         </div>
@@ -45,28 +50,46 @@ export default {
             title:"",
             query:{
                 pageIndex: 1,
-                pageSize: 10,
+                pageSize: 6,
             },
+            dataList:[],
             pageTotal:"0",
-            value:false,
+            searchSize:"500px",
         };
     },
     methods: {
         handleClose(done) {
         },
-        input(title){
-            if(title.length==0){
-                this.ifPage=false
-            }
-            axios({
-                url:"/leyuna/blog/search",
-                params:{
-                    kry:title,
-                    index:this.query.pageIndex,
-                    size:this.query.pageSize
-                },
-            })
+        searchKey(title){
+            this.query.pageIndex=1;
+            this.query.pageSize=6;
+            this.pageTotal=0;
+            this.input(title);
         },
+        input(title){
+            if(title.length!=0){
+                axios({
+                    url:"/leyuna/blog/search",
+                    params:{
+                        key:title,
+                        index:this.query.pageIndex,
+                        size:this.query.pageSize
+                    },
+                }).then((res) => {
+                    if(res.data.code=='200'){
+                        this.dataList=res.data.objData.listData;
+                        this.pageTotal=res.data.objData.totole;
+                    }else{
+                        ElMessage.error(res.data.srcData);
+                    }
+                })
+            }
+        },
+        // 分页导航
+        handlePageChange(val){
+            this.query.pageIndex = val;
+            this.input(this.title);
+        }
     } ,
     setup() {
         const store = useStore();
@@ -89,12 +112,43 @@ export default {
 };
 </script>
 <style scoped>
+    .search-a :hover{
+        color:#DB2828;
+        border-left: 1px dashed #cc0000;
+        border-right: 1px dashed #cc0000;
+    }
+    .search-a{
+        display: block;
+        width: 100%;
+        padding: .5rem;
+        border-bottom: 1px dashed #ccc;
+        font-family: 'Songti SC','Noto Serif SC',STZhongsong,STKaiti,KaiTi,Roboto,serif;
+        font-weight: 700;
+        font-size: 1.2rem;
+        max-width: 800px;
+        transition-property: all;
+        transition-duration: .3s;
+        transition-delay: 0s;
+        color: #0078e7;
+        text-decoration: none;
+        transition: color .1s;
+        text-align: center;
+    }
+    .search-ol{
+        margin: 0;
+        list-style-type: none;
+        padding-inline-start: 0;
+    }
+    .search-li{
+        display: flex;
+        justify-content: center;
+    }
     ::v-deep .el-input__inner{
         height: 65px;
         background: 0 0;
         color: #333;
         font-size: 1.5rem;
-        margin-left: 500px;
+        margin-left: 560px;
         border-radius: 3rem;
         padding: 1rem 1.5rem;
         border: 1px solid #999;
@@ -107,7 +161,6 @@ export default {
     }
     .block{
         text-align: center;
-        margin-right: 150px;
         margin-top: 20px;
     }
 .header {

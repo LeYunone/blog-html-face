@@ -113,7 +113,9 @@
             });
             const load = () => {
                 pageData.size += 3;
-                getList();
+                if(pageData.size!=13){
+                    getList();
+                }
             }
             const articleList = ref([]);
             const getList = () => {

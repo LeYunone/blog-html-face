@@ -37,13 +37,12 @@ export default {
         };
     },
     mounted:function(){
-        this.thisTypeBlog();//需要触发的函数
     },
 
     methods: {
         load(){
-            this.size+=3;
             this.thisTypeBlog();
+            this.size+=3;
         },
         prev(){
             this.$router.go(-1)

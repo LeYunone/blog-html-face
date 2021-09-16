@@ -66,7 +66,7 @@
     };
 </script>
 
-<style scoped>
+<style>
     .rt{
         margin-left: 250px;
         color: #ef6b6b;

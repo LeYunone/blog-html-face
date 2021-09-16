@@ -80,8 +80,64 @@
                     <p>版权声明：本站原创文章，于{{createTime}}，乐云一发表</p>
                     <p style="margin-top: 4px;">转载请注明:leyuna.xyz</p>
                 </div>
-                <div class="comment">
-                    <div style="text-align: center;font-size: 50px">待开发</div>
+                <div class="do-comment">
+                    <div class="do-information">
+                        <el-form inline="true"  label-width="70px">
+                            <el-form-item >
+                                <el-upload
+                                        class="avatar-uploader"
+                                        action="/leyuna/tourist/requestUpImg"
+                                        :show-file-list="false"
+                                        :on-success="handleAvatarSuccess"
+                                        :before-upload="beforeAvatarUpload">
+                                    <el-avatar class="avatar" fit="contain" v-if="imageUrl" shape="square" :size="100" :src="imageUrl"></el-avatar>
+                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                </el-upload>
+                            </el-form-item>
+                            <el-form-item label="署名">
+                                <el-input style="width: 300px" required="true" v-model="form.name"></el-input>
+                            </el-form-item>
+                            <el-form-item label="联系方式">
+                                <el-input style="width: 300px" v-model="form.information"></el-input>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button  type="success" @click="sumbitComment">提交</el-button>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                    <v-md-editor left-toolbar="undo|redo|clear|bold|italic|strikethrough|ul|ol|link|code" right-toolbar="" mode="edit" v-model="commentText" :include-level="[1,2,3,4]"
+                                 height="300px" disabled-menus="[]"></v-md-editor>
+                </div>
+                <div style="padding: .375em; font-weight: bold; font-size: 1.25em;">{{query.pageTotal}}条评论</div>
+                <div class="comment-all">
+                    <div class="comment" v-for="(item,index) in commentList">
+                        <el-avatar class="comment-img" shape="square" :size="50" :src="circleUrl"></el-avatar>
+                        <div class="comment-card">
+                            <div class="comment-head">{{item.name}}</div>
+                            <div class="comment-info">{{item.information}}</div>
+                            <div class="comment-content">
+                                <div v-html="item.content"></div>
+                            </div>
+                            <div class="comment-replay" v-for="(subItem,index) in item.subComment">
+                                <el-avatar class="comment-img" shape="square" :size="50" :src="circleUrl"></el-avatar>
+                                <div class="comment-replay-card">
+                                    <div class="comment-head">
+                                        <span>{{subItem.name}}</span>
+                                        <span style="color: #8590a6;padding: 10px">回复</span>
+                                        <span >{{subItem.respondent}}</span>
+                                    </div>
+                                    <div class="comment-info">{{subItem.information}}</div>
+                                    <div class="comment-content">
+                                        <div v-html="subItem.content"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-card">
+                        <el-pagination background layout="prev, pager, next" :current-page="query.pageIndex"
+                                       :page-size="query.pageSize" :total="query.pageTotal" @current-change="handlePageChange"></el-pagination>
+                    </div>
                 </div>
             </div>
     </div>
@@ -115,6 +171,17 @@
     export default {
         data() {
             return {
+                imageUrl:"",
+                form:{
+                  name:"",
+                  information:""
+                },
+                commentText:"",
+                query:{
+                    pageSize:10,
+                    pageTotal:0,
+                    pageIndex:1,
+                },
                 activeName: "roleName",
                 circleUrl: headUrl,
                 qqUrl:qqUrl,
@@ -131,12 +198,73 @@
                 type: "",
                 tag: "",
                 ifNav: true,
+                commentList:[],
+                commentType:1,
+                file:"",
             };
         },
         mounted: function () {
-            this.thisBlog();//需要触发的函数
+            this.thisBlog();//拿博客信息
+            this.comment(); //拿评论
         },
         methods: {
+            sumbitComment(){
+                if(file!=""){
+                    //如果游客上传了图片，则去文件服务器处理
+                    let formData = new FormData();
+                    formData.append('file',file);
+                    axios({
+                        url:"/leunya/server/tourist/upImg",
+                        method:"POST",
+                        data:formData
+                    }).then((res) => {
+
+                    })
+                }
+
+            },
+            handleAvatarSuccess(res, file) {
+                if(res.code=='404'){
+                    this.$message.error("别太频繁，明天再来换头像吧");
+                    this.imageUrl = res.srcData;
+                }else{
+                    this.imageUrl = URL.createObjectURL(file.raw);
+                    this.file=file;
+                }
+            },
+            beforeAvatarUpload(file) {
+                const fileSuffix = file.name.substring(file.name.lastIndexOf(".") + 1);
+                const whiteList = ["jpg", "png", "JPG", "PNG", "GIF","gif"];
+                const isLt2M = file.size / 1024 / 1024 < 2;
+                if (whiteList.indexOf(fileSuffix) === -1) {
+                    this.$message.error('请上传图片类型文件');
+                    return false;
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                    return false;
+                }
+            },
+            handlePageChange(val){
+                this.query.pageIndex = val;
+                this.comment();
+            },
+            comment(){
+                const blogId = this.$route.query.blogId;
+                axios({
+                    url:"/leyuna/tourist/comment/blog",
+                    methods:"GET",
+                    params:{
+                        index:this.query.pageIndex,
+                        size:this.query.pageSize,
+                        blogId:blogId,
+                        type:this.commentType
+                    },
+                }).then((res) => {
+                    this.commentList=res.data.page.records;
+                    this.query.pageTotal=res.data.page.total || 10;
+                })
+            },
             tabClick(tab, event) {
                 this.nav();
             },
@@ -213,7 +341,69 @@
     };
 </script>
 
-<style scoped>
+<style>
+    .do-comment{
+    }
+    .avatar-uploader{
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        width: 100px;
+        height: 100px;
+    }
+    .avatar-uploader .el-upload {
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        width: 100px;
+        height: 100px;
+    }
+    .avatar-uploader .el-upload:hover {
+        border-color: #409EFF;
+    }
+    .avatar-uploader-icon {
+        position: relative;
+        top: 40px;
+        font-size: 28px;
+        text-align: center;
+    }
+    .avatar {
+        display: block;
+    }
+    .page-card{
+        text-align: center;
+    }
+    .comment-replay{
+        padding-top:9px ;
+        border-top: 2.4px solid #f6f6f6;
+        display: flex;
+    }
+    .comment-content{
+        padding-top: 20px;
+        padding-bottom: 15px;
+    }
+    .comment-img{
+        margin-right: .75em;
+    }
+    .comment{
+        position: relative;
+        display: flex;
+        padding: .5em;
+        box-sizing: content-box;
+        line-height: 1.75;
+    }
+    .comment-head{
+    }
+    .comment-card{
+        flex: 1;
+        width: 0;
+        padding-bottom: .5em;
+        border-bottom: 1px dashed;
+    }
     .bottom-tip{
         background: #f3f3f3;
         border: #e9e9e9 1px solid;
@@ -316,8 +506,5 @@
 
     .blog-info span {
         padding-left: 23px;
-    }
-    .comment{
-        height: 1000px;
     }
 </style>

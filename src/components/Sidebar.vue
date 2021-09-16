@@ -154,7 +154,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .sidebar {
     display: block;
     position: absolute;

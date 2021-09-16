@@ -84,7 +84,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
     .type-tree{
         padding: 7px;
         margin-top: 10px;

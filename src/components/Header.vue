@@ -111,7 +111,7 @@ export default {
     },
 };
 </script>
-<style scoped>
+<style>
     .search-a :hover{
         color:#DB2828;
         border-left: 1px dashed #cc0000;

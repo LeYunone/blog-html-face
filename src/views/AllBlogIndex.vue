@@ -72,7 +72,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
     .blog_title{
         color: #0078e7;
         text-decoration: none;

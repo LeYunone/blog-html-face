@@ -138,7 +138,7 @@
     };
 </script>
 
-<style scoped>
+<style>
     .right-bott{
         height: 300px;
     }

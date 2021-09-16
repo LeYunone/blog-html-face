@@ -69,7 +69,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
     .crumbs{
         border: 1px solid #ebebeb;
         border-radius: 3px;

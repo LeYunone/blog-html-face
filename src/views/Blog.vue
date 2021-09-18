@@ -162,6 +162,7 @@
                             <div class="comment-replay-card">
                                 <div class="comment-head">
                                     <span>{{subItem.name}}</span>
+                                    <span class="webKing" v-if="item.admin==='admin'">站主</span>
                                     <span style="color: #8590a6;padding: 10px">回复</span>
                                     <span>{{subItem.respondent}}</span>
                                     <span class="comment-time">{{subItem.createTime}}</span>
@@ -561,6 +562,7 @@
     .webKing{
         display: inline-block;
         margin-left: .5em;
+        margin-right: .5em;
         padding: 0 .3em;
         border-radius: 3px;
         background: #3498db;

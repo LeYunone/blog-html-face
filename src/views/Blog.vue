@@ -96,10 +96,12 @@
                             </el-upload>
                         </el-form-item>
                         <el-form-item label="署名">
-                            <el-input style="width: 300px" required="true" v-model="form.name"></el-input>
+                            <el-input placeholder="请输入署名\" style="width: 300px" required="true"
+                                      v-model="form.name"></el-input>
                         </el-form-item>
                         <el-form-item label="联系方式">
-                            <el-input style="width: 300px" v-model="form.information"></el-input>
+                            <el-input placeholder="自由发挥:网站\邮箱\某些联系方式" style="width: 300px"
+                                      v-model="form.information"></el-input>
                         </el-form-item>
                         <el-form-item>
                             <el-button type="success" @click="sumbitComment">提交</el-button>
@@ -107,6 +109,7 @@
                         <v-md-editor left-toolbar="undo|redo|clear|bold|italic|strikethrough|ul|ol|link|code"
                                      right-toolbar="" mode="edit" v-model="commentText" :include-level="[1,2,3,4]"
                                      height="300px" disabled-menus="[]"></v-md-editor>
+                        <div class="length-count">{{commentText.length}}/500</div>
                     </el-form>
                 </div>
             </div>
@@ -117,15 +120,25 @@
                     <div class="comment-card">
                         <div class="comment-head">
                             <span>{{item.name}}</span>
+                            <span class="webKing" v-if="item.admin==='admin'">站主</span>
                             <span class="comment-time">{{item.createTime}}</span>
                         </div>
                         <div class="comment-info">{{item.information}}</div>
                         <div class="comment-content">
                             <div v-html="item.content"></div>
                         </div>
-                        <div @click="openReply(0,index)" class="reply"><i class="el-icon-message"></i>回复</div>
-                        <div v-if="isReply===index">
-                            <el-form style="border-top: 2.4px solid #000000; padding: 7px" inline="true" label-width="70px">
+                        <span @click="closeReply(item.id)" class="cancel-reply" v-if="isReply===item.id"
+                              style="color: crimson">取消回复</span>
+                        <span @click="openReply(item.id)" v-else class="reply"><i class="el-icon-message"></i>回复</span>
+                        <span>
+                             <svg @click="goods(item)" class="this-icon" aria-hidden="true">
+                                    <use xlink:href="#el-icon-heart"></use>
+                             </svg>
+                            : {{item.goods}}
+                        </span>
+                        <div v-if="isReply===item.id">
+                            <el-form style="border-top: 2.4px solid #000000; padding: 7px" inline="true"
+                                     label-width="70px">
                                 <el-form-item label="署名">
                                     <el-input style="width: 300px" required="true" v-model="subForm.name"></el-input>
                                 </el-form-item>
@@ -133,12 +146,14 @@
                                     <el-input style="width: 300px" v-model="subForm.information"></el-input>
                                 </el-form-item>
                                 <el-form-item>
-                                    <el-button type="success" @click="sumbitReplyComment(item.id,item.name)">提交</el-button>
+                                    <el-button type="success" @click="sumbitReplyComment(item.id,item.name)">提交
+                                    </el-button>
                                 </el-form-item>
                                 <v-md-editor left-toolbar="undo|redo|clear|bold|italic|strikethrough|ul|ol|link|code"
                                              right-toolbar="" mode="edit" v-model="replyCommentText"
                                              :include-level="[1,2,3,4]"
                                              height="180px" disabled-menus="[]"></v-md-editor>
+                                <div class="length-count">{{replyCommentText.length}}/500</div>
                             </el-form>
                         </div>
                         <div class="comment-replay" v-for="(subItem,subIndex) in item.subComment">
@@ -155,22 +170,38 @@
                                 <div class="comment-content">
                                     <div v-html="subItem.content"></div>
                                 </div>
-                                <div @click="openReply(1,subIndex)" class="reply"><i class="el-icon-message"></i>回复</div>
-                                <div v-if="subIsReply===subIndex">
-                                    <el-form style="border-top: 2.4px solid #000000; padding: 7px" inline="true" label-width="70px">
+                                <span @click="closeReply(subItem.id)" class="cancel-reply" v-if="isReply===subItem.id"
+                                     style="color: crimson">取消回复
+                                </span>
+                                <span @click="openReply(subItem.id)" v-else class="reply"><i class="el-icon-message"></i>回复
+                                </span>
+                                <span>
+                                     <svg @click="goods(subItem)" class="this-icon" aria-hidden="true">
+                                            <use xlink:href="#el-icon-heart"></use>
+                                     </svg>
+                                        : {{subItem.goods}}
+                                </span>
+                                <div v-if="isReply===subItem.id">
+                                    <el-form style="border-top: 2.4px solid #000000; padding: 7px" inline="true"
+                                             label-width="70px">
                                         <el-form-item label="署名">
-                                            <el-input style="width: 300px" required="true" v-model="subForm.name"></el-input>
+                                            <el-input style="width: 300px" required="true"
+                                                      v-model="subForm.name"></el-input>
                                         </el-form-item>
                                         <el-form-item label="联系方式">
                                             <el-input style="width: 300px" v-model="subForm.information"></el-input>
                                         </el-form-item>
                                         <el-form-item>
-                                            <el-button type="success" @click="sumbitReplyComment(item.id,subItem.name)">提交</el-button>
+                                            <el-button type="success" @click="sumbitReplyComment(item.id,subItem.name)">
+                                                提交
+                                            </el-button>
                                         </el-form-item>
-                                        <v-md-editor left-toolbar="undo|redo|clear|bold|italic|strikethrough|ul|ol|link|code"
-                                                     right-toolbar="" mode="edit" v-model="replyCommentText"
-                                                     :include-level="[1,2,3,4]"
-                                                     height="180px" disabled-menus="[]"></v-md-editor>
+                                        <v-md-editor
+                                                left-toolbar="undo|redo|clear|bold|italic|strikethrough|ul|ol|link|code"
+                                                right-toolbar="" mode="edit" v-model="replyCommentText"
+                                                :include-level="[1,2,3,4]"
+                                                height="180px" disabled-menus="[]"></v-md-editor>
+                                        <div class="length-count">{{replyCommentText.length}}/500</div>
                                     </el-form>
                                 </div>
                             </div>
@@ -215,10 +246,9 @@
     export default {
         data() {
             return {
-                subIsReply:"",
-                isReply:"",
+                isReply: "",
                 imageUrl: "",
-                subForm:{
+                subForm: {
                     name: "",
                     information: ""
                 },
@@ -226,7 +256,7 @@
                     name: "",
                     information: ""
                 },
-                replyCommentText:"",
+                replyCommentText: "",
                 commentText: "",
                 query: {
                     pageSize: 10,
@@ -260,46 +290,59 @@
             this.comment(); //拿评论
         },
         methods: {
-            sumbitReplyComment(id,reName){
+            goods(comment){
+              axios({
+                  url:"/leyuna/tourist/goods",
+                  method:"GET",
+                  params:{
+                      commentId:comment.id
+                  }
+              }).then((res) => {
+                  if(res.data.code=='404'){
+                      this.$message.error(res.data.srcData);
+                  }else{
+                      this.$message.success("点赞成功");
+                      comment.goods+=1;
+                  }
+              })
+            },
+            closeReply(id) {
+                this.isReply = "";
+            },
+            sumbitReplyComment(id, reName) {
                 const blogId = this.$route.query.blogId;
                 axios({
-                    url:"/leyuna/tourist/commpent",
-                    method:"POST",
-                    data:{
+                    url: "/leyuna/tourist/commpent",
+                    method: "POST",
+                    data: {
                         content: this.replyCommentText,
                         name: this.subForm.name,
                         information: this.subForm.information,
                         blogId: blogId,
-                        fatherCommentId:id,
-                        respondent:reName,
+                        fatherCommentId: id,
+                        respondent: reName,
                     }
                 }).then((res) => {
-                    if(res.data.code=='404'){
+                    if (res.data.code == '404') {
                         this.$message.error(res.data.srcData);
-                    }else{
+                    } else {
                         this.$message.success("发布成功");
                         this.replyCommentText = "";
                         this.subForm.name = "";
                         this.subForm.information = "";
-                        this.subIsReply="";
-                        this.isReply="";
+                        this.isReply = "";
                         this.comment();
                     }
                 })
             },
-            openReply(type,index){
-                if(type==0){
-                    this.isReply=index;
-                    this.subIsReply="";
-                }else{
-                    this.subIsReply=index;
-                    this.isReply="";
-                }
-                this.subForm.information="";
-                this.subForm.name="";
-                this.replyCommentText="";
+            openReply(id) {
+                this.isReply = id;
+                this.subForm.information = "";
+                this.subForm.name = "";
+                this.replyCommentText = "";
             },
             validator() {
+                //校验空
                 if (this.form.information == "") {
                     this.$notify({
                         title: '警告',
@@ -309,18 +352,39 @@
                 }
                 if (this.commentText == "") {
                     this.valiValue = false;
-                    this.$notify({
-                        title: '警告',
+                    this.$notify.error({
+                        title: '错误',
                         message: '你想交空白卷吗',
-                        type: 'warning'
                     });
                 }
                 if (this.form.name == "") {
                     this.valiValue = false;
-                    this.$notify({
-                        title: '警告',
+                    this.$notify.error({
+                        title: '错误',
                         message: '至少填个署名吧',
-                        type: 'warning'
+                    });
+                }
+
+                //校验值规则
+                if (this.form.name.length > 30) {
+                    this.valiValue = false;
+                    this.$notify.error({
+                        title: '错误',
+                        message: '你是要写天书吗[指署名]',
+                    });
+                }
+                if (this.commentText.length > 500 || this.replyCommentText.length > 500) {
+                    this.valiValue = false;
+                    this.$notify.error({
+                        title: '错误',
+                        message: '过了过了,字写多了！',
+                    });
+                }
+                if (this.form.information.length > 50) {
+                    this.valiValue = false;
+                    this.$notify.error({
+                        title: '错误',
+                        message: '喂喂喂，太自由发挥了[指联系方式]',
                     });
                 }
             },
@@ -494,6 +558,38 @@
 </script>
 
 <style>
+    .webKing{
+        display: inline-block;
+        margin-left: .5em;
+        padding: 0 .3em;
+        border-radius: 3px;
+        background: #3498db;
+        color: #fff;
+        font-size: 0.775em;
+    }
+    .this-icon {
+        margin-left: 15px;
+        width: 1rem;
+        height: 1rem;
+        vertical-align: -0.15em;
+        fill: currentColor;
+        overflow: hidden;
+    }
+
+    .this-icon:hover {
+        background-color: #f6a5a5;
+    }
+
+    .length-count {
+        color: crimson;
+        padding: 7px;
+        float: right;
+    }
+
+    .cancel-reply:hover {
+        color: yellow;
+    }
+
     .comment-time {
         float: right;
     }

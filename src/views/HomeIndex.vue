@@ -23,7 +23,7 @@
                             <el-divider content-position="left">乐云一 </el-divider>
                         </div>
                     </el-card>
-                    <div class="openBtn" @click="open('blog'+item.id)">
+                    <div class="ope nBtn" @click="open('blog'+item.id)">
                         <svg class="icon" aria-hidden="true">
                             <use xlink:href="#el-icon-transfer"></use>
                          </svg>
@@ -138,7 +138,7 @@
     };
 </script>
 
-<style>
+<style scoped>
     .right-bott{
         height: 300px;
     }

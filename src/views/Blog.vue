@@ -84,6 +84,7 @@
                 <div class="do-information">
                     <el-form inline="true" label-width="70px">
                         <el-form-item>
+                            <p style="color:#DB2828;font-family:'PingFang SC','Microsoft YaHei',Roboto,Arial,sans-serif">[头像:一天一次]</p>
                             <el-upload
                                     class="avatar-uploader"
                                     action="/leyuna/tourist/requestUpImg"
@@ -100,7 +101,7 @@
                                       v-model="form.name"></el-input>
                         </el-form-item>
                         <el-form-item label="联系方式">
-                            <el-input placeholder="自由发挥:网站\邮箱\某些联系方式" style="width: 300px"
+                            <el-input placeholder="自由发挥:网站\邮箱\某些联系方式(选填...)" style="width: 300px"
                                       v-model="form.information"></el-input>
                         </el-form-item>
                         <el-form-item>
@@ -109,7 +110,7 @@
                         <v-md-editor left-toolbar="undo|redo|clear|bold|italic|strikethrough|ul|ol|link|code"
                                      right-toolbar="" mode="edit" v-model="commentText" :include-level="[1,2,3,4]"
                                      height="300px" disabled-menus="[]"></v-md-editor>
-                        <div class="length-count">{{commentText.length}}/500</div>
+                        <div class="length-count">{{commentText.length}}/500[30s/]</div>
                     </el-form>
                 </div>
             </div>
@@ -162,7 +163,7 @@
                             <div class="comment-replay-card">
                                 <div class="comment-head">
                                     <span>{{subItem.name}}</span>
-                                    <span class="webKing" v-if="item.admin==='admin'">站主</span>
+                                    <span class="webKing" v-if="subItem.admin==='admin'">站主</span>
                                     <span style="color: #8590a6;padding: 10px">回复</span>
                                     <span>{{subItem.respondent}}</span>
                                     <span class="comment-time">{{subItem.createTime}}</span>

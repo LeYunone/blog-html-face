@@ -80,7 +80,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
     .blog_title{
         color: #0078e7;
         text-decoration: none;

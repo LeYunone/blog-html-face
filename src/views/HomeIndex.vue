@@ -116,6 +116,8 @@
                 if(pageData.size!=13){
                     getList();
                 }
+                getList();
+                pageData.size += 3;
             }
             const articleList = ref([]);
             const getList = () => {
@@ -130,7 +132,6 @@
                     articleList.value = res.data.page.records;
                 })
             }
-            getList();
 
             return {
                 articleList,

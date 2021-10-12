@@ -1,4 +1,8 @@
-import {createRouter, createWebHashHistory} from "vue-router";
+import {
+    createMemoryHistory,
+    createRouter as _createRouter,
+    createWebHistory
+} from 'vue-router'
 import Home from "../views/Home.vue";
 
 const routes = [
@@ -68,8 +72,11 @@ const routes = [
     },
 ];
 
-const router = createRouter({
-    history: createWebHashHistory(),
-    routes
-});
-export default router;
+export function createRouter() {
+    return _createRouter({
+        // use appropriate history implementation for server/client
+        // import.meta.env.SSR is injected by Vite.
+        history: import.meta.env.SSR ? createMemoryHistory() : createWebHistory(),
+        routes
+    })
+}

@@ -1,7 +1,6 @@
-import {createApp} from 'vue'
 import App from './App.vue'
-import router from './router'
 import store from './store'
+import { createRouter } from './router'
 import installElementPlus from './plugins/element'
 import './assets/css/icon.css'
 import './assets/css/iconfont.css'
@@ -25,11 +24,17 @@ VueMarkdownEditor.use(vuepressTheme, {
 VueMarkdownEditor.use(createTodoListPlugin());
 VueMarkdownEditor.use(createAlignPlugin());
 
-const app = createApp(App)
-installElementPlus(app)
-app
-    .use(store)
-    .use(router)
-    .use(VMdPreviewHtml)
-    .use(VueMarkdownEditor)
-    .mount('#app')
+export function createApp() {
+    const app = createSSRApp(App)
+    installElementPlus(app)
+    const router = createRouter()
+    app.use(router)
+        .use(store)
+        .use(VMdPreviewHtml)
+        .use(VueMarkdownEditor)
+        .mount('#app')
+    return { app, router }
+}
+(function(window) {
+    (typeof window == "undefined" ? global : window)
+});

@@ -20,7 +20,7 @@
         <div class="search-content">
             <ol class="search-ol">
                 <li class="search-li" v-for="(item,index) in dataList">
-                    <a target="_blank" :href="'#/blog?blogId='+item.id" class="search-a"> <span v-html=item.title></span></a>
+                    <a target="_blank" :href="'/blog?blogId='+item.id" class="search-a"> <span v-html=item.title></span></a>
                 </li>
             </ol>
         </div>

@@ -1,5 +1,6 @@
 import App from './App.vue'
 import store from './store'
+import { createSSRApp } from 'vue'
 import { createRouter } from './router'
 import installElementPlus from './plugins/element'
 import './assets/css/icon.css'

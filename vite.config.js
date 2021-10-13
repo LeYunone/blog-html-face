@@ -15,7 +15,19 @@ export default defineConfig({
     publicPath: '../../',
     assetsDir: 'static',
     parallel: false,
-    plugins: [vue()],
+    plugins: [vue(
+        {
+            template: {
+                ssr: true,
+                compilerOptions: {
+                    directiveTransforms: {
+                        'img-lazy-load': ssrTransformCustomDir,
+                        'rescroll': ssrTransformCustomDir
+                    }
+                }
+            }
+        }
+    )],
     publicDir:'public',
     server: {
         host: 'localhost',
@@ -39,3 +51,10 @@ export default defineConfig({
         outDir: 'dist',//Specify the output directory (relative to project root).
     }
 })
+
+export const ssrTransformCustomDir = () => {
+    return {
+        props: [],
+        needRuntime: true
+    }
+}

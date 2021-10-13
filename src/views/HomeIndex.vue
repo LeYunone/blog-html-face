@@ -17,7 +17,7 @@
                             <!--      <v-md-preview-html height="50px" :html="item.blogContent" preview-class="vuepress-markdown-body"></v-md-preview-html>-->
                         </div>
                         <div v-if="item.tag!=null">
-                            <el-divider content-position="left">乐云一 <el-link :href="'#/blogindex?tagName='+str" class="home-tag" v-for="(str,index) in item.tag.split(',')">{{str}}</el-link></el-divider>
+                            <el-divider content-position="left">乐云一 <span @click="toBlogindex(str)" class="home-tag" v-for="(str,index) in item.tag.split(',')">{{str}}</span></el-divider>
                         </div>
                         <div v-else>
                             <el-divider content-position="left">乐云一 </el-divider>
@@ -90,7 +90,7 @@
         },
         methods: {
             toBlogindex(tagName){
-                this.$router.push({path:'',query:{tagName:tagName}});
+                this.$router.push({path:'/blogindex',query:{tagName:tagName}});
             },
             open(id) {
                 let doc = document.getElementById(id);
@@ -101,6 +101,7 @@
                 }
             },
             toBlog(id) {
+                // this.$router.push({path: '/blog', query: {blogId: id}});
                 const {href} = this.$router.resolve({path: '/blog', query: {blogId: id}});
                 window.open(href, '_blank');
             }

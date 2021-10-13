@@ -559,7 +559,7 @@
     };
 </script>
 
-<style scoped>
+<style>
     .webKing{
         display: inline-block;
         margin-left: .5em;

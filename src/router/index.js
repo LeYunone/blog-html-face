@@ -21,7 +21,7 @@ const routes = [
                 meta: {
                     title: '主站首页'
                 },
-                component: () => import ( /* webpackChunkName: "dashboard" */ "../views/HomeIndex.vue")
+                component: () => import ("../views/HomeIndex.vue")
             },
             {
                 path:"/type",
@@ -77,8 +77,8 @@ export function createRouter() {
     return _createRouter({
         // use appropriate history implementation for server/client
         // import.meta.env.SSR is injected by Vite.
-        // history: import.meta.env.SSR ? createMemoryHistory() : createWebHistory(),
-        history:createWebHashHistory(),
+        history: import.meta.env.SSR ? createMemoryHistory() : createWebHistory(),
+        // history:createWebHashHistory(),
         routes
     })
 }

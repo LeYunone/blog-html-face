@@ -5,7 +5,6 @@ import { createRouter } from './router'
 import installElementPlus from './plugins/element'
 import './assets/css/icon.css'
 import './assets/css/iconfont.css'
-import './assets/css/iconfont';
 
 import VueMarkdownEditor from '@kangc/v-md-editor';
 import '@kangc/v-md-editor/lib/style/base-editor.css';
@@ -18,7 +17,6 @@ import '@kangc/v-md-editor/lib/style/preview-html.css';
 import createTodoListPlugin from '@kangc/v-md-editor/lib/plugins/todo-list/index';
 import '@kangc/v-md-editor/lib/plugins/todo-list/todo-list.css';
 import createAlignPlugin from '@kangc/v-md-editor/lib/plugins/align';
-
 VueMarkdownEditor.use(vuepressTheme, {
     Prism,
 });
@@ -33,9 +31,11 @@ export function createApp() {
         .use(store)
         .use(VMdPreviewHtml)
         .use(VueMarkdownEditor)
-        .mount('#app')
     return { app, router }
 }
-(function(window) {
-    (typeof window == "undefined" ? global : window)
-});
+
+export default{
+    beforeMount(){
+        this.$options.components.Loading = () =>import('./assets/css/iconfont');
+    }
+}

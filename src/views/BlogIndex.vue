@@ -39,11 +39,14 @@ export default {
         };
     },
     mounted:function(){
+        this.thisTypeBlog();
     },
 
     methods: {
         load(){
-            this.thisTypeBlog();
+            if(this.size!=23){
+                this.thisTypeBlog();
+            }
             this.size+=3;
         },
         prev(){

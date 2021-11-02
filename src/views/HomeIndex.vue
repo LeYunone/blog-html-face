@@ -112,7 +112,9 @@
                 size: 10
             });
             const load = () => {
-                getList();
+                if(pageData.size!=10){
+                    getList();
+                }
                 pageData.size += 3;
             }
             const articleList = ref([]);
@@ -128,10 +130,11 @@
                     articleList.value = res.data.page.records;
                 })
             }
-
+            getList();
             return {
                 articleList,
                 pageData,
+                getList,
                 load
             };
         },

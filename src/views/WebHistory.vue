@@ -40,11 +40,14 @@ export default {
         };
     },
     mounted:function(){
+        this.thisHistory();
     },
 
     methods: {
         load(){
-            this.thisHistory();
+            if(this.size!=23){
+                this.thisHistory();
+            }
             this.size+=3;
         },
         prev(){

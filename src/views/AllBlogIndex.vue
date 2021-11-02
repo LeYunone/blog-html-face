@@ -37,11 +37,14 @@ export default {
         };
     },
     mounted:function(){
+        this.thisTypeBlog();
     },
 
     methods: {
         load(){
-            this.thisTypeBlog();
+            if(this.size!=20){
+                this.thisTypeBlog();
+            }
             this.size+=3;
         },
         prev(){

@@ -10,10 +10,10 @@
         </div>
         <div class="container2">
             <div class="plugins-tips">
-                <P class="tip_title">
+                <p class="tip_title">
                     <i class="el-icon-collection-tag">标签</i>
                     <span class="rt"> 红的用的多 ； 黄的也用的多 ； 绿的一般般 ； 蓝的有些少 ； 灰色几乎没用</span>
-                </P>
+                </p>
             </div>
             <div class="source">
                 <span v-for="(item,index) in tags">

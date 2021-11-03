@@ -86,7 +86,14 @@
         data() {
             return {
                 drawer: false,
+                pageData:{
+                    index:1,
+                    size:10
+                }
             }
+        },
+        mounted:function(){
+            this.getList();
         },
         methods: {
             toBlogindex(tagName){
@@ -103,41 +110,27 @@
             toBlog(id) {
                 const {href} = this.$router.resolve({path: '/blog', query: {blogId: id}});
                 window.open(href, '_blank');
-            }
-        },
-        name: "home",
-        setup() {
-            let pageData = reactive({
-                index: 1,
-                size: 10
-            });
-            const load = () => {
-                if(pageData.size!=10){
-                    getList();
+            },
+            load(){
+                if(this.pageData.size!=10){
+                    this.getList();
                 }
-                pageData.size += 3;
-            }
-            const articleList = ref([]);
-            const getList = () => {
+                this.pageData.size+=3;
+            },
+            getList(){
                 axios({
                     url: "/leyuna/blog/blogs",
                     method: "get",
                     params: {
-                        index: pageData.index,
-                        size: pageData.size
+                        index: this.pageData.index,
+                        size: this.pageData.size
                     }
                 }).then((res) => {
                     articleList.value = res.data.page.records;
                 })
             }
-            getList();
-            return {
-                articleList,
-                pageData,
-                getList,
-                load
-            };
         },
+        name: "home",
     };
 </script>
 

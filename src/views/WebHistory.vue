@@ -3,8 +3,6 @@
         <div class="crumbs">
             <el-page-header  @back="prev" >
             </el-page-header>
-            <el-page-header v-else @back="prev" >
-            </el-page-header>
         </div>
         <div class="container2">
             <el-timeline v-for="(item,index) in articleList">

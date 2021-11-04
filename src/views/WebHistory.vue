@@ -1,9 +1,9 @@
 <template>
     <div class="maxBox" v-infinite-scroll="load">
         <div class="crumbs">
-            <el-page-header v-if="tagName!=undefined" @back="prev" :content="tagName">
+            <el-page-header  @back="prev" >
             </el-page-header>
-            <el-page-header v-else @back="prev" :content="typeName">
+            <el-page-header v-else @back="prev" >
             </el-page-header>
         </div>
         <div class="container2">

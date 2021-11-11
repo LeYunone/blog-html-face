@@ -89,7 +89,8 @@
                 pageData:{
                     index:1,
                     size:10
-                }
+                },
+                articleList:[]
             }
         },
         mounted:function(){
@@ -126,7 +127,7 @@
                         size: this.pageData.size
                     }
                 }).then((res) => {
-                    articleList.value = res.data.page.records;
+                    this.articleList = res.data.page.records;
                 })
             }
         },

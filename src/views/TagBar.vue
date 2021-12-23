@@ -52,8 +52,8 @@
                     url:"/leyuna/tagType/tags",
                     method:"GET",
                 }).then((res) => {
-                    this.tags=res.data.listData;
-                    this.tagCount=res.data.objData;
+                    this.tags=res.data.data.records;
+                    this.tagCount=res.data.data.total;
                 })
             }
         },

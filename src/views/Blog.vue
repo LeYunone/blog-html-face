@@ -300,8 +300,8 @@
                       commentId:comment.id
                   }
               }).then((res) => {
-                  if(res.data.code=='404'){
-                      this.$message.error(res.data.srcData);
+                  if(!res.data.status){
+                      this.$message.error(res.data.message);
                   }else{
                       this.$message.success("点赞成功");
                       comment.goods+=1;
@@ -325,8 +325,8 @@
                         respondent: reName,
                     }
                 }).then((res) => {
-                    if (res.data.code == '404') {
-                        this.$message.error(res.data.srcData);
+                    if (res.data.status) {
+                        this.$message.error(res.data.message);
                     } else {
                         this.$message.success("发布成功");
                         this.replyCommentText = "";
@@ -409,8 +409,8 @@
                         dataType: 'json',
                         data: formData
                     }).then((res) => {
-                        if (res.data.code == '404') {
-                            this.$message.error(res.data.srcData);
+                        if (!res.data.status) {
+                            this.$message.error(res.data.message);
                         } else {
                             const blogId = this.$route.query.blogId;
                             //添加本次评论
@@ -420,21 +420,21 @@
                                 data: {
                                     content: this.commentText,
                                     name: this.form.name,
-                                    commentHead: res.data.srcData,
+                                    commentHead: res.data.data,
                                     information: this.form.information,
                                     blogId: blogId,
-                                    ip: res.data.objData,
+                                    ip: res.data.message
                                 }
                             }).then((res) => {
-                                if (res.data.code == '404') {
-                                    this.$message.error(res.data.srcData);
+                                if (!res.data.status) {
+                                    this.$message.error(res.data.message);
                                 } else {
                                     this.$message.success("发布成功");
                                     this.commentText = "";
                                     this.form.name = "";
                                     this.form.information = "";
                                     this.query.pageTotal += 1;
-                                    this.commentList.splice(0, 0, res.data.objData);
+                                    this.commentList.splice(0, 0, res.data.data);
                                 }
                             })
                         }
@@ -442,9 +442,9 @@
                 }
             },
             handleAvatarSuccess(res, file) {
-                if (res.code == '404') {
+                if (!res.status) {
                     this.$message.error("别太频繁，明天再来换头像吧");
-                    this.imageUrl = res.srcData;
+                    this.imageUrl = res.message;
                 } else {
                     this.imageUrl = URL.createObjectURL(file.raw);
                     this.file = file.raw;
@@ -479,8 +479,8 @@
                         type: this.commentType
                     },
                 }).then((res) => {
-                    this.commentList = res.data.page.records;
-                    this.query.pageTotal = res.data.page.total;
+                    this.commentList = res.data.data.records;
+                    this.query.pageTotal = res.data.data.total;
                 })
             },
             tabClick(tab, event) {
@@ -520,7 +520,7 @@
                     url: "/leyuna/blog/blog/" + blogId,
                     method: "GET",
                 }).then((res) => {
-                    let blog = res.data.objData;
+                    let blog = res.data.data;
                     this.blogTitle = blog.title;
                     this.blogContent = blog.blogContent;
                     this.html = xss.process(VueMarkdownEditor.vMdParser.themeConfig.markdownParser.render(this.blogContent));

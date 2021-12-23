@@ -60,8 +60,8 @@ export default {
                     "size":this.size,
                 }
             }).then((res) =>{
-                this.articleList=res.data.page.records;
-                this.blogCount=res.data.objData;
+                this.articleList=res.data.data.records;
+                this.blogCount=res.data.data.total;
             })
         },
         toBlog(id){

@@ -123,11 +123,11 @@
                     url: "/leyuna/blog/blogs",
                     method: "get",
                     params: {
-                        index: this.pageData.index,
-                        size: this.pageData.size
+                        index: this.index,
+                        size: this.size
                     }
                 }).then((res) => {
-                    this.articleList = res.data.page.records;
+                    this.articleList = res.data.data.records;
                 })
             }
         },

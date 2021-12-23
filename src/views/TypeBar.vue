@@ -49,8 +49,8 @@ export default {
                 url:"/leyuna/tagType/treeType",
                 method : 'GET'
             }).then((res) => {
-                data.value=res.data.listData;
-                typeCount.value=res.data.objData;
+                data.value=res.data.data;
+                typeCount.value=data.size;
             })
         }
         getType();

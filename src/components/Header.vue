@@ -76,11 +76,11 @@ export default {
                         size:this.query.pageSize
                     },
                 }).then((res) => {
-                    if(res.data.code=='200'){
-                        this.dataList=res.data.objData.listData;
-                        this.pageTotal=res.data.objData.totole;
+                    if(res.data.data.code=='200'){
+                        this.dataList=res.data.data.objData.listData;
+                        this.pageTotal=res.data.data.objData.totole;
                     }else{
-                        ElMessage.error(res.data.srcData);
+                        ElMessage.error(res.data.data.srcData);
                     }
                 })
             }

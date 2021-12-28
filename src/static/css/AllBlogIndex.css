@@ -1,0 +1,19 @@
+.blog_title{
+    color: #0078e7;
+    text-decoration: none;
+    transition: color .1s;
+    font-family: 'Songti SC','Noto Serif SC',STZhongsong,STKaiti,KaiTi,Roboto,serif;
+    font-size: 23px;
+}
+.blog_tips{
+    margin-top: 15px;
+}
+.blog_title:hover{
+    color:crimson;
+}
+.crumbs{
+    border: 1px solid #ebebeb;
+    border-radius: 3px;
+    transition: .2s;
+    background-color:white;
+}

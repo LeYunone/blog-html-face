@@ -71,10 +71,5 @@ export default {
 </script>
 
 <style scoped>
-    .crumbs{
-        border: 1px solid #ebebeb;
-        border-radius: 3px;
-        transition: .2s;
-        background-color:white;
-    }
+    @import "../static/css/WebHistory.css";
 </style>

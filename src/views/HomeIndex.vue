@@ -47,14 +47,32 @@
                 <el-divider></el-divider>
             </div>
             <div class="right-bott">
-                <el-button @click="drawer = true" type="primary" style="margin-left: 16px;">
+                <el-button @click="openDisk" type="primary" style="margin-left: 16px;">
                     待开发
                 </el-button>
                 <el-drawer
                         title="我是标题"
-                        v-model="drawer"
+                        v-model="diskDrawer"
                         :with-header="false">
-                    <el-progress type="circle" :percentage="50"></el-progress>
+                    <div id="user_disk" v-if="user_disk">
+                        <el-progress type="circle" :percentage="50"></el-progress>
+                    </div>
+                    <el-dialog :before-close="close_login" title="登陆" v-model="login_user" width="30%">
+                        <el-form label-width="70px">
+                            <el-form-item label="用户名">
+                                <el-input v-model="form.userName"></el-input>
+                            </el-form-item>
+                            <el-form-item label="密码">
+                                <el-input type="password" v-model="form.passWord"></el-input>
+                            </el-form-item>
+                        </el-form>
+                        <template #footer>
+                        <span class="dialog-footer">
+                            <el-button @click="diskDrawer = false">取 消</el-button>
+                            <el-button type="primary" @click="login">确 定</el-button>
+                        </span>
+                        </template>
+                    </el-dialog>
                 </el-drawer>
             </div>
         </el-card>
@@ -85,12 +103,25 @@
     export default {
         data() {
             return {
-                drawer: false,
+                form:{
+                    userName:"",
+                    passWord:""
+                },
+                user_disk:false,
+                login_user:false,
+                diskDrawer: false,
                 pageData:{
                     index:1,
                     size:10
                 },
-                articleList:[]
+                articleList:[],
+                fileList:[],
+                imgList:[],
+                musicList:[],
+                videoList:[],
+                otherList:[],
+                fileCount:0,
+                fileTotalSize:0
             }
         },
         mounted:function(){
@@ -118,7 +149,7 @@
                 }
                 this.pageData.size+=3;
             },
-            getList(){
+            getList() {
                 axios({
                     url: "/leyuna/blog/blogs",
                     method: "get",
@@ -129,6 +160,48 @@
                 }).then((res) => {
                     this.articleList = res.data.data.records;
                 })
+            },
+            openDisk(){
+                axios({
+                    url:"/leyuna/disk/getDiskInfo",
+                    method:"GET"
+                }).then((res) => {
+                    var data=res.data;
+                    console.log(data);
+                    if(data.status){
+                        this.fileList=data.fileList;
+                        this.fileCount=data.fileCount;
+                        this.fileTotalSize=data.fileTotalSize;
+                        this.user_disk=true;
+                    }else{
+                        //用户未登陆，弹出登陆框
+                        ElMessage.error(data.message);
+                        this.login_user=true;
+                    }
+                })
+                this.diskDrawer=true;
+            },
+            login(){
+                axios({
+                    url:"/leyuna/user/login",
+                    method:"POST",
+                    data:{
+                        "userName":this.form.userName,
+                        "passWord":this.form.passWord
+                    }
+                }).then((res => {
+                    var data=res.data;
+                    if(data.status){
+                        this.openDisk();
+                    }else{
+                        ElMessage.error(data.message);
+                        this.form.userName="";
+                        this.form.passWord="";
+                    }
+                }))
+            },
+            close_login(){
+                this.diskDrawer=false;
             }
         },
         name: "home",

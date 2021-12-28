@@ -80,7 +80,7 @@ export default {
                         this.dataList=res.data.data.objData.listData;
                         this.pageTotal=res.data.data.objData.totole;
                     }else{
-                        ElMessage.error(res.data.data.srcData);
+                        ElMessage.error(res.data.data.message);
                     }
                 })
             }

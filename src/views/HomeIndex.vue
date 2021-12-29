@@ -17,18 +17,22 @@
                             <!--      <v-md-preview-html height="50px" :html="item.blogContent" preview-class="vuepress-markdown-body"></v-md-preview-html>-->
                         </div>
                         <div v-if="item.tag!=null">
-                            <el-divider content-position="left">乐云一 <el-link :href="'#/blogindex?tagName='+str" class="home-tag" v-for="(str,index) in item.tag.split(',')">{{str}}</el-link></el-divider>
+                            <el-divider content-position="left">乐云一
+                                <el-link :href="'#/blogindex?tagName='+str" class="home-tag"
+                                         v-for="(str,index) in item.tag.split(',')">{{str}}
+                                </el-link>
+                            </el-divider>
                         </div>
                         <div v-else>
-                            <el-divider content-position="left">乐云一 </el-divider>
+                            <el-divider content-position="left">乐云一</el-divider>
                         </div>
                     </el-card>
                     <div class="openBtn" @click="open('blog'+item.id)">
                         <svg class="icon" aria-hidden="true">
                             <use xlink:href="#el-icon-transfer"></use>
-                         </svg>
+                        </svg>
                     </div>
-                    <div class="md-editor"  :id="'blog'+item.id" name="draw" style="display: none">
+                    <div class="md-editor" :id="'blog'+item.id" name="draw" style="display: none">
                         <v-md-editor v-model="item.blogContent" mode="preview"></v-md-editor>
                     </div>
                 </el-col>
@@ -55,7 +59,32 @@
                         v-model="diskDrawer"
                         :with-header="false">
                     <div id="user_disk" v-if="user_disk">
-                        <el-progress type="circle" :percentage="50"></el-progress>
+                        <el-progress type="circle" :percentage="fileTotalSize"></el-progress>
+                        <el-upload
+                                class="upload-demo"
+                                ref="upload"
+                                :on-preview="handlePreview"
+                                :on-remove="handleRemove"
+                                :file-list="fileList"
+                                :auto-upload="false">
+                            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                            <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传
+                            </el-button>
+                            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                        </el-upload>
+
+
+                        <el-tabs v-model="default_fileList" @tab-click="handleClick">
+                            <el-tab-pane label="全部文件" name="first">
+                                <el-empty v-if="allFileList == undefined || allFileList.length <= 0"
+                                          description="描述文字"></el-empty>
+                            </el-tab-pane>
+                            <el-tab-pane label="图片" name="second">配置管理</el-tab-pane>
+                            <el-tab-pane label="音频" name="third">角色管理</el-tab-pane>
+                            <el-tab-pane label="视频" name="fourth">定时任务补偿</el-tab-pane>
+                            <el-tab-pane label="文档" name="fifth">角色管理</el-tab-pane>
+                            <el-tab-pane label="其他" name="sixth">定时任务补偿</el-tab-pane>
+                        </el-tabs>
                     </div>
                     <el-dialog :before-close="close_login" title="登陆" v-model="login_user" width="30%">
                         <el-form label-width="70px">
@@ -103,51 +132,77 @@
     export default {
         data() {
             return {
-                form:{
-                    userName:"",
-                    passWord:""
+                default_fileList: "first",
+                form: {
+                    userName: "",
+                    passWord: ""
                 },
-                user_disk:false,
-                login_user:false,
+                user_disk: false,
+                login_user: false,
                 diskDrawer: false,
-                pageData:{
-                    index:1,
-                    size:10
+                pageData: {
+                    index: 1,
+                    size: 10
                 },
-                articleList:[],
-                fileList:[],
-                imgList:[],
-                musicList:[],
-                videoList:[],
-                otherList:[],
-                fileCount:0,
-                fileTotalSize:0
+                fileList: [],
+                articleList: [],
+                allFileList: [],
+                imgList: [],
+                musicList: [],
+                videoList: [],
+                otherList: [],
+                fileCount: 0,
+                fileTotalSize: 0
             }
         },
-        mounted:function(){
+        mounted: function () {
             this.getList();
         },
         methods: {
-            toBlogindex(tagName){
-                this.$router.push({path:'',query:{tagName:tagName}});
+            handleRemove(file, fileList) {
+                console.log(file, fileList);
+            },
+            handlePreview(file) {
+                console.log(file);
+            },
+            submitUpload() {
+                let formData = new FormData();
+                formData.append('files', this.fileList);
+                axios({
+                    url: "/leyuna/disk/uploadFile",
+                    method: "POST",
+                    processData: false, // 使数据不做处理
+                    contentType: false,
+                    dataType: 'json',
+                    data: formData
+                }).then(res => {
+                    if (res.data.status) {
+
+                    } else {
+                        this.$message.error(res.data.message);
+                    }
+                })
+            },
+            toBlogindex(tagName) {
+                this.$router.push({path: '', query: {tagName: tagName}});
             },
             open(id) {
                 let doc = document.getElementById(id);
-                if(doc.getAttribute("style").match("none")){
-                    doc.setAttribute("style","display:block")
-                }else{
-                    doc.setAttribute("style","display:none")
+                if (doc.getAttribute("style").match("none")) {
+                    doc.setAttribute("style", "display:block")
+                } else {
+                    doc.setAttribute("style", "display:none")
                 }
             },
             toBlog(id) {
                 const {href} = this.$router.resolve({path: '/blog', query: {blogId: id}});
                 window.open(href, '_blank');
             },
-            load(){
-                if(this.pageData.size!=10){
+            load() {
+                if (this.pageData.size != 10) {
                     this.getList();
                 }
-                this.pageData.size+=3;
+                this.pageData.size += 3;
             },
             getList() {
                 axios({
@@ -161,47 +216,49 @@
                     this.articleList = res.data.data.records;
                 })
             },
-            openDisk(){
+            openDisk() {
                 axios({
-                    url:"/leyuna/disk/getDiskInfo",
-                    method:"GET"
+                    url: "/leyuna/disk/getDiskInfo",
+                    method: "GET"
                 }).then((res) => {
-                    var data=res.data;
+                    var data = res.data;
                     console.log(data);
-                    if(data.status){
-                        this.fileList=data.fileList;
-                        this.fileCount=data.fileCount;
-                        this.fileTotalSize=data.fileTotalSize;
-                        this.user_disk=true;
-                    }else{
+                    if (data.status) {
+                        this.allFileList = data.fileList;
+                        this.fileCount = data.fileCount;
+                        this.fileTotalSize = data.fileTotalSize;
+                        this.user_disk = true;
+                        this.login_user = false;
+                    } else {
                         //用户未登陆，弹出登陆框
                         ElMessage.error(data.message);
-                        this.login_user=true;
+                        this.login_user = true;
                     }
                 })
-                this.diskDrawer=true;
+                this.diskDrawer = true;
             },
-            login(){
+            login() {
                 axios({
-                    url:"/leyuna/user/login",
-                    method:"POST",
-                    data:{
-                        "userName":this.form.userName,
-                        "passWord":this.form.passWord
+                    url: "/leyuna/user/login",
+                    method: "POST",
+                    data: {
+                        "userName": this.form.userName,
+                        "passWord": this.form.passWord
                     }
                 }).then((res => {
-                    var data=res.data;
-                    if(data.status){
+                    var data = res.data;
+                    if (data.status) {
                         this.openDisk();
-                    }else{
+                    } else {
                         ElMessage.error(data.message);
-                        this.form.userName="";
-                        this.form.passWord="";
+                        this.form.userName = "";
+                        this.form.passWord = "";
                     }
                 }))
             },
-            close_login(){
-                this.diskDrawer=false;
+            close_login() {
+                this.diskDrawer = false;
+                this.login_user = false;
             }
         },
         name: "home",

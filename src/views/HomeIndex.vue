@@ -63,16 +63,16 @@
                         <el-upload
                                 class="upload-demo"
                                 ref="upload"
+                                :on-success="upSuccess"
                                 :on-preview="handlePreview"
+                                :action="uploadUrl"
                                 :on-remove="handleRemove"
                                 :file-list="fileList"
+                                multiple="true"
                                 :auto-upload="false">
                             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-                            <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传
-                            </el-button>
-                            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                         </el-upload>
-
+                        <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传</el-button>
 
                         <el-tabs v-model="default_fileList" @tab-click="handleClick">
                             <el-tab-pane label="全部文件" name="first">
@@ -132,6 +132,7 @@
     export default {
         data() {
             return {
+                uploadUrl:"",
                 default_fileList: "first",
                 form: {
                     userName: "",
@@ -165,22 +166,17 @@
             handlePreview(file) {
                 console.log(file);
             },
-            submitUpload() {
-                let formData = new FormData();
-                formData.append('files', this.fileList);
-                axios({
-                    url: "/leyuna/disk/uploadFile",
-                    method: "POST",
-                    processData: false, // 使数据不做处理
-                    contentType: false,
-                    dataType: 'json',
-                    data: formData
-                }).then(res => {
-                    if (res.data.status) {
-
-                    } else {
-                        this.$message.error(res.data.message);
-                    }
+            upSuccess(res){
+                if(res.status){
+                    ElMessage.success("上传成功");
+                }else{
+                    ElMessage.error(res.message)
+                }
+            },
+            submitUpload(){
+                this.uploadUrl="/leyuna/disk/uploadFile"
+                this.$nextTick(() => {
+                    this.$refs.upload.submit()
                 })
             },
             toBlogindex(tagName) {

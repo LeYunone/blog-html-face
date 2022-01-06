@@ -65,6 +65,8 @@
                                 ref="upload"
                                 :on-success="upSuccess"
                                 :on-preview="handlePreview"
+                                :on-error="upError"
+                                :before-upload="before_upload"
                                 :action="uploadUrl"
                                 :on-remove="handleRemove"
                                 :file-list="fileList"
@@ -172,6 +174,33 @@
                 }else{
                     ElMessage.error(res.message)
                 }
+            },
+            upError(res){
+                ElMessage.error("操作失败：异常")
+            },
+            before_upload(file){
+                let formData = new FormData();
+                formData.append('file', file);
+                axios({
+                    url: "/leyuna/file/requestSaveFile",
+                    method: "POST",
+                    processData: false, // 使数据不做处理
+                    contentType: false,
+                    dataType: 'json',
+                    data: formData
+                }).then(res=>{
+                    var d=res.data;
+                    if(d.status){
+                        if(d.data==1){
+                            return true;
+                        }
+                        ElMessage.success("上传成功");
+                        return false;
+                    }else{
+                        ElMessage.error(res.message);
+                        return false;
+                    }
+                })
             },
             submitUpload(){
                 this.uploadUrl="/leyuna/disk/uploadFile"

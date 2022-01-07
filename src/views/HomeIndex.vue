@@ -55,7 +55,7 @@
                     待开发
                 </el-button>
                 <el-drawer
-                        title="我是标题"
+                        title="LEYUNA-DISK"
                         v-model="diskDrawer"
                         :with-header="false">
                     <div id="user_disk" v-if="user_disk">
@@ -65,15 +65,26 @@
                                 ref="upload"
                                 :on-success="upSuccess"
                                 :on-preview="handlePreview"
+                                :http-request="upLoadFile"
                                 :on-error="upError"
                                 :before-upload="before_upload"
-                                :action="uploadUrl"
                                 :on-remove="handleRemove"
                                 :file-list="fileList"
                                 multiple="true"
                                 :auto-upload="false">
                             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
                         </el-upload>
+
+                        <el-popover
+                                disabled="true"
+                                placement="bottom"
+                                width="400"
+                                trigger="click"
+                                content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
+                            <el-date-picker type="date" placeholder="选择日期" v-model="upLoadParam.saveTime" style="width: 100%;"></el-date-picker>
+                            <el-button slot="reference">click 激活</el-button>
+                        </el-popover>
+
                         <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传</el-button>
 
                         <el-tabs v-model="default_fileList" @tab-click="handleClick">
@@ -140,6 +151,10 @@
                     userName: "",
                     passWord: ""
                 },
+                upLoadParam:{
+                    saveTime:"",
+                    openSaveTime:false
+                },
                 user_disk: false,
                 login_user: false,
                 diskDrawer: false,
@@ -202,8 +217,10 @@
                     }
                 })
             },
+            upLoadFile(option){
+                console.log(option.file);
+            },
             submitUpload(){
-                this.uploadUrl="/leyuna/disk/uploadFile"
                 this.$nextTick(() => {
                     this.$refs.upload.submit()
                 })

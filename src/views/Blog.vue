@@ -429,6 +429,7 @@
                                 if (!res.data.status) {
                                     this.$message.error(res.data.message);
                                 } else {
+                                    this.valiValue=true;
                                     this.$message.success("发布成功");
                                     this.commentText = "";
                                     this.form.name = "";

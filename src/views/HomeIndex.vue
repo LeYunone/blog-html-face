@@ -63,30 +63,26 @@
                         <el-upload
                                 class="upload-demo"
                                 ref="upload"
-                                :on-success="upSuccess"
                                 :on-preview="handlePreview"
                                 :http-request="upLoadFile"
-                                :on-error="upError"
-                                :before-upload="before_upload"
                                 :on-remove="handleRemove"
                                 :file-list="fileList"
                                 multiple="true"
                                 :auto-upload="false">
                             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
                         </el-upload>
-
-                        <el-popover
-                                disabled="true"
-                                placement="bottom"
-                                width="400"
-                                trigger="click"
-                                content="这是一段内容,这是一段内容,这是一段内容,这是一段内容。">
-                            <el-date-picker type="date" placeholder="选择日期" v-model="upLoadParam.saveTime" style="width: 100%;"></el-date-picker>
-                            <el-button slot="reference">click 激活</el-button>
-                        </el-popover>
-
-                        <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传</el-button>
-
+                        <el-button style="margin: 15px;" size="small" type="success" @click="submitUpload">上传
+                        </el-button>
+                        <div>
+                            <el-date-picker :disabled-date="publishDateAfter"
+                                            type="date" placeholder="保存时间" v-model="upLoadParam.saveTime"
+                                            style="width: 24%;"></el-date-picker>
+                        </div>
+                        <el-tooltip class="item" effect="dark" content="选择保存时间：
+                                到某年某日自动过期;" placement="bottom">
+                            <i style="font-size:24px" class="el-icon-bell">
+                            </i>
+                        </el-tooltip>
                         <el-tabs v-model="default_fileList" @tab-click="handleClick">
                             <el-tab-pane label="全部文件" name="first">
                                 <el-empty v-if="allFileList == undefined || allFileList.length <= 0"
@@ -145,15 +141,14 @@
     export default {
         data() {
             return {
-                uploadUrl:"",
+                uploadUrl: "",
                 default_fileList: "first",
                 form: {
                     userName: "",
                     passWord: ""
                 },
-                upLoadParam:{
-                    saveTime:"",
-                    openSaveTime:false
+                upLoadParam: {
+                    saveTime: "",
                 },
                 user_disk: false,
                 login_user: false,
@@ -167,60 +162,86 @@
                 allFileList: [],
                 imgList: [],
                 musicList: [],
-                videoList: [],
-                otherList: [],
                 fileCount: 0,
-                fileTotalSize: 0
+                fileTotalSize: 0,
+                upLoadValiValue: -1,
             }
         },
         mounted: function () {
             this.getList();
         },
         methods: {
+            publishDateAfter(time) {
+                return time.getTime() <= Date.now();
+            },
             handleRemove(file, fileList) {
                 console.log(file, fileList);
             },
             handlePreview(file) {
                 console.log(file);
             },
-            upSuccess(res){
-                if(res.status){
-                    ElMessage.success("上传成功");
-                }else{
-                    ElMessage.error(res.message)
-                }
-            },
-            upError(res){
-                ElMessage.error("操作失败：异常")
-            },
-            before_upload(file){
+            async before_upload(file) {
                 let formData = new FormData();
                 formData.append('file', file);
-                axios({
+                const res = await axios({
                     url: "/leyuna/file/requestSaveFile",
                     method: "POST",
+                    async: false,
                     processData: false, // 使数据不做处理
                     contentType: false,
                     dataType: 'json',
                     data: formData
-                }).then(res=>{
-                    var d=res.data;
-                    if(d.status){
-                        if(d.data==1){
-                            return true;
-                        }
-                        ElMessage.success("上传成功");
-                        return false;
-                    }else{
-                        ElMessage.error(res.message);
-                        return false;
-                    }
                 })
+                // .then(res => {
+                var d = res.data;
+                if (d.status) {
+                    if (d.data == 1) {
+                        this.upLoadValiValue = 1;
+                    } else {
+                        this.upLoadValiValue = 0;
+                    }
+                } else {
+                    this.upLoadValiValue = -1;
+                }
+                // })
             },
-            upLoadFile(option){
+            async upLoadFile(option) {
+                var file = option.file;
+                await this.before_upload(file);
+                //上传文件
+                var upLoadValiValue = this.upLoadValiValue;
+                console.log(upLoadValiValue)
+                if (upLoadValiValue == 1) {
+                    let formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('saveTime',this.upLoadParam.saveTime)
+                    axios({
+                        url: "/leyuna/disk/uploadFile",
+                        method: "POST",
+                        processData: false, // 使数据不做处理
+                        contentType: false,
+                        dataType: 'json',
+                        data: {
+                            file:file,
+                            saveTime: this.upLoadParam.saveTime
+                        }
+                    }).then(res => {
+                        var data = res.data;
+                        if (data.status) {
+                            ElMessage.success("上传成功");
+                        } else {
+                            ElMessage.error(data.message);
+                        }
+                    })
+                } else if (upLoadValiValue == 0) {
+                    ElMessage.success("上传成功");
+                } else {
+                    ElMessage.error("UpLoadFile Error");
+                }
+
                 console.log(option.file);
             },
-            submitUpload(){
+            submitUpload() {
                 this.$nextTick(() => {
                     this.$refs.upload.submit()
                 })

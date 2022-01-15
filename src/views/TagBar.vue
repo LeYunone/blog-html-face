@@ -52,8 +52,8 @@
                     url:"/leyuna/tagType/tags",
                     method:"GET",
                 }).then((res) => {
-                    this.tags=res.data.listData;
-                    this.tagCount=res.data.objData;
+                    this.tags=res.data.data.records;
+                    this.tagCount=res.data.data.total;
                 })
             }
         },
@@ -67,28 +67,5 @@
 </script>
 
 <style scoped>
-    .rt{
-        margin-left: 250px;
-        color: #ef6b6b;
-    }
-    .content-title {
-        font-weight: 400;
-        line-height: 50px;
-        margin: 10px 0;
-        font-size: 22px;
-        color: #1f2f3d;
-    }
-    .tip_title{
-        margin-right:20px;
-        font-size: 1.5rem;
-        font-weight: 900;
-        font-family: 'Songti SC','Noto Serif SC',STZhongsong,STKaiti,KaiTi,Roboto,serif;
-    }
-    .source{
-        margin-top: 20px;
-    }
-    .mytag{
-        text-align: center;
-        margin-left: 10px;
-    }
+    @import "../static/css/TagBar.css";
 </style>

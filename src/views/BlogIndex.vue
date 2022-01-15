@@ -39,11 +39,14 @@ export default {
         };
     },
     mounted:function(){
+        this.thisTypeBlog();
     },
 
     methods: {
         load(){
-            this.thisTypeBlog();
+            if(this.size!=23){
+                this.thisTypeBlog();
+            }
             this.size+=3;
         },
         prev(){
@@ -65,8 +68,8 @@ export default {
                     "tagName":tagName,
                 }
             }).then((res) =>{
-                this.articleList=res.data.page.records;
-                this.blogCount=res.data.objData;
+                this.articleList=res.data.data.records;
+                this.blogCount=res.data.data.total;
             })
         },
         toBlog(id){
@@ -81,23 +84,5 @@ export default {
 </script>
 
 <style scoped>
-    .blog_title{
-        color: #0078e7;
-        text-decoration: none;
-        transition: color .1s;
-        font-family: 'Songti SC','Noto Serif SC',STZhongsong,STKaiti,KaiTi,Roboto,serif;
-        font-size: 23px;
-    }
-    .blog_tips{
-        margin-top: 15px;
-    }
-    .blog_title:hover{
-        color:crimson;
-    }
-    .crumbs{
-        border: 1px solid #ebebeb;
-        border-radius: 3px;
-        transition: .2s;
-        background-color:white;
-    }
+    @import "../static/css/BlogIndex.css";
 </style>

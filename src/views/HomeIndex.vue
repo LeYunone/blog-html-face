@@ -17,18 +17,22 @@
                             <!--      <v-md-preview-html height="50px" :html="item.blogContent" preview-class="vuepress-markdown-body"></v-md-preview-html>-->
                         </div>
                         <div v-if="item.tag!=null">
-                            <el-divider content-position="left">乐云一 <el-link :href="'#/blogindex?tagName='+str" class="home-tag" v-for="(str,index) in item.tag.split(',')">{{str}}</el-link></el-divider>
+                            <el-divider content-position="left">乐云一
+                                <el-link :href="'#/blogindex?tagName='+str" class="home-tag"
+                                         v-for="(str,index) in item.tag.split(',')">{{str}}
+                                </el-link>
+                            </el-divider>
                         </div>
                         <div v-else>
-                            <el-divider content-position="left">乐云一 </el-divider>
+                            <el-divider content-position="left">乐云一</el-divider>
                         </div>
                     </el-card>
                     <div class="openBtn" @click="open('blog'+item.id)">
                         <svg class="icon" aria-hidden="true">
                             <use xlink:href="#el-icon-transfer"></use>
-                         </svg>
+                        </svg>
                     </div>
-                    <div class="md-editor"  :id="'blog'+item.id" name="draw" style="display: none">
+                    <div class="md-editor" :id="'blog'+item.id" name="draw" style="display: none">
                         <v-md-editor v-model="item.blogContent" mode="preview"></v-md-editor>
                     </div>
                 </el-col>
@@ -47,14 +51,66 @@
                 <el-divider></el-divider>
             </div>
             <div class="right-bott">
-                <el-button @click="drawer = true" type="primary" style="margin-left: 16px;">
+                <el-button @click="openDisk" type="primary" style="margin-left: 16px;">
                     待开发
                 </el-button>
                 <el-drawer
-                        title="我是标题"
-                        v-model="drawer"
+                        title="LEYUNA-DISK"
+                        v-model="diskDrawer"
                         :with-header="false">
-                    <span>开发中...</span>
+                    <div id="user_disk" v-if="user_disk">
+                        <el-progress type="circle" :percentage="fileTotalSize"></el-progress>
+                        <el-upload
+                                class="upload-demo"
+                                ref="upload"
+                                :on-preview="handlePreview"
+                                :http-request="upLoadFile"
+                                :on-remove="handleRemove"
+                                :file-list="fileList"
+                                multiple="true"
+                                :auto-upload="false">
+                            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                        </el-upload>
+                        <el-button style="margin: 15px;" size="small" type="success" @click="submitUpload">上传
+                        </el-button>
+                        <div>
+                            <el-date-picker :disabled-date="publishDateAfter"
+                                            type="date" placeholder="保存时间" v-model="upLoadParam.saveTime"
+                                            style="width: 24%;"></el-date-picker>
+                        </div>
+                        <el-tooltip class="item" effect="dark" content="选择保存时间：
+                                到某年某日自动过期;" placement="bottom">
+                            <i style="font-size:24px" class="el-icon-bell">
+                            </i>
+                        </el-tooltip>
+                        <el-tabs v-model="default_fileList" @tab-click="handleClick">
+                            <el-tab-pane label="全部文件" name="first">
+                                <el-empty v-if="allFileList == undefined || allFileList.length <= 0"
+                                          description="描述文字"></el-empty>
+                            </el-tab-pane>
+                            <el-tab-pane label="图片" name="second">配置管理</el-tab-pane>
+                            <el-tab-pane label="音频" name="third">角色管理</el-tab-pane>
+                            <el-tab-pane label="视频" name="fourth">定时任务补偿</el-tab-pane>
+                            <el-tab-pane label="文档" name="fifth">角色管理</el-tab-pane>
+                            <el-tab-pane label="其他" name="sixth">定时任务补偿</el-tab-pane>
+                        </el-tabs>
+                    </div>
+                    <el-dialog :before-close="close_login" title="登陆" v-model="login_user" width="30%">
+                        <el-form label-width="70px">
+                            <el-form-item label="用户名">
+                                <el-input v-model="form.userName"></el-input>
+                            </el-form-item>
+                            <el-form-item label="密码">
+                                <el-input type="password" v-model="form.passWord"></el-input>
+                            </el-form-item>
+                        </el-form>
+                        <template #footer>
+                        <span class="dialog-footer">
+                            <el-button @click="diskDrawer = false">取 消</el-button>
+                            <el-button type="primary" @click="login">确 定</el-button>
+                        </span>
+                        </template>
+                    </el-dialog>
                 </el-drawer>
             </div>
         </el-card>
@@ -85,157 +141,193 @@
     export default {
         data() {
             return {
-                drawer: false,
+                uploadUrl: "",
+                default_fileList: "first",
+                form: {
+                    userName: "",
+                    passWord: ""
+                },
+                upLoadParam: {
+                    saveTime: "",
+                },
+                user_disk: false,
+                login_user: false,
+                diskDrawer: false,
+                pageData: {
+                    index: 1,
+                    size: 10
+                },
+                fileList: [],
+                articleList: [],
+                allFileList: [],
+                imgList: [],
+                musicList: [],
+                fileCount: 0,
+                fileTotalSize: 0,
+                upLoadValiValue: -1,
             }
         },
+        mounted: function () {
+            this.getList();
+        },
         methods: {
-            toBlogindex(tagName){
-                this.$router.push({path:'',query:{tagName:tagName}});
+            publishDateAfter(time) {
+                return time.getTime() <= Date.now();
+            },
+            handleRemove(file, fileList) {
+                console.log(file, fileList);
+            },
+            handlePreview(file) {
+                console.log(file);
+            },
+            async before_upload(file) {
+                let formData = new FormData();
+                formData.append('file', file);
+                const res = await axios({
+                    url: "/leyuna/file/requestSaveFile",
+                    method: "POST",
+                    async: false,
+                    processData: false, // 使数据不做处理
+                    contentType: false,
+                    dataType: 'json',
+                    data: formData
+                })
+                // .then(res => {
+                var d = res.data;
+                if (d.status) {
+                    if (d.data == 1) {
+                        this.upLoadValiValue = 1;
+                    } else {
+                        this.upLoadValiValue = 0;
+                    }
+                } else {
+                    this.upLoadValiValue = -1;
+                }
+                // })
+            },
+            async upLoadFile(option) {
+                var file = option.file;
+                await this.before_upload(file);
+                //上传文件
+                var upLoadValiValue = this.upLoadValiValue;
+                console.log(upLoadValiValue)
+                if (upLoadValiValue == 1) {
+                    let formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('saveTime',this.upLoadParam.saveTime)
+                    axios({
+                        url: "/leyuna/disk/uploadFile",
+                        method: "POST",
+                        processData: false, // 使数据不做处理
+                        contentType: false,
+                        dataType: 'json',
+                        data: {
+                            file:file,
+                            saveTime: this.upLoadParam.saveTime
+                        }
+                    }).then(res => {
+                        var data = res.data;
+                        if (data.status) {
+                            ElMessage.success("上传成功");
+                        } else {
+                            ElMessage.error(data.message);
+                        }
+                    })
+                } else if (upLoadValiValue == 0) {
+                    ElMessage.success("上传成功");
+                } else {
+                    ElMessage.error("UpLoadFile Error");
+                }
+
+                console.log(option.file);
+            },
+            submitUpload() {
+                this.$nextTick(() => {
+                    this.$refs.upload.submit()
+                })
+            },
+            toBlogindex(tagName) {
+                this.$router.push({path: '', query: {tagName: tagName}});
             },
             open(id) {
                 let doc = document.getElementById(id);
-                if(doc.getAttribute("style").match("none")){
-                    doc.setAttribute("style","display:block")
-                }else{
-                    doc.setAttribute("style","display:none")
+                if (doc.getAttribute("style").match("none")) {
+                    doc.setAttribute("style", "display:block")
+                } else {
+                    doc.setAttribute("style", "display:none")
                 }
             },
             toBlog(id) {
                 const {href} = this.$router.resolve({path: '/blog', query: {blogId: id}});
                 window.open(href, '_blank');
-            }
-        },
-        name: "home",
-        setup() {
-            let pageData = reactive({
-                index: 1,
-                size: 10
-            });
-            const load = () => {
-                pageData.size += 3;
-                if(pageData.size!=13){
-                    getList();
+            },
+            load() {
+                if (this.pageData.size != 10) {
+                    this.getList();
                 }
-                getList();
-                pageData.size += 3;
-            }
-            const articleList = ref([]);
-            const getList = () => {
+                this.pageData.size += 3;
+            },
+            getList() {
                 axios({
                     url: "/leyuna/blog/blogs",
                     method: "get",
                     params: {
-                        index: pageData.index,
-                        size: pageData.size
+                        index: this.index,
+                        size: this.size
                     }
                 }).then((res) => {
-                    articleList.value = res.data.page.records;
+                    this.articleList = res.data.data.records;
                 })
+            },
+            openDisk() {
+                axios({
+                    url: "/leyuna/disk/getDiskInfo",
+                    method: "GET"
+                }).then((res) => {
+                    var data = res.data;
+                    console.log(data);
+                    if (data.status) {
+                        this.allFileList = data.fileList;
+                        this.fileCount = data.fileCount;
+                        this.fileTotalSize = data.fileTotalSize;
+                        this.user_disk = true;
+                        this.login_user = false;
+                    } else {
+                        //用户未登陆，弹出登陆框
+                        ElMessage.error(data.message);
+                        this.login_user = true;
+                    }
+                })
+                this.diskDrawer = true;
+            },
+            login() {
+                axios({
+                    url: "/leyuna/user/login",
+                    method: "POST",
+                    data: {
+                        "userName": this.form.userName,
+                        "passWord": this.form.passWord
+                    }
+                }).then((res => {
+                    var data = res.data;
+                    if (data.status) {
+                        this.openDisk();
+                    } else {
+                        ElMessage.error(data.message);
+                        this.form.userName = "";
+                        this.form.passWord = "";
+                    }
+                }))
+            },
+            close_login() {
+                this.diskDrawer = false;
+                this.login_user = false;
             }
-
-            return {
-                articleList,
-                pageData,
-                load
-            };
         },
+        name: "home",
     };
 </script>
 
 <style scoped>
-    .right-bott{
-        height: 300px;
-    }
-    .home-tag{
-        padding: 7px;
-        color: #f6a939;
-        border-radius: 4px;
-    }
-    .right-top{
-        padding: .6rem 1rem;
-        border-left: 4px solid #4eaaff;;
-        background-color:rgba(0,120,231,.05);
-        height: 300px;
-        font-family: 'PingFang SC','Microsoft YaHei',Roboto,Arial,sans-serif;
-    }
-    .box-right-card{
-        position: absolute;
-        top:10px;
-        right: 100px;
-        height: 670px;
-        width: 300px;
-        float:right;
-        opacity: 0.9;
-    }
-    .clearfix {
-        clear:both;
-    }
-    .openBtn{
-        position: relative;
-        bottom: 20px;
-        text-align: center;
-        background-color: #fafafa;
-    }
-    .draw-enter-active, .draw-leave-active {
-        transition: all 1s ease;
-    }
-
-    .draw-enter, .draw-leave-to {
-        height: 0;
-    }
-    .md-editor{
-        position: relative;
-        bottom: 20px;
-        opacity: 0.97;
-        height: 100%;
-    }
-    .blog-content {
-        padding: 8px 16px;
-        background-color: #ecf8ff;
-        border-radius: 4px;
-        border-left: 5px solid #348fc3;
-        margin: 20px 0;
-    }
-
-    .blog-content-into {
-        padding: 7px;
-    }
-
-    .sharelistBox {
-        transition: all 0.5s ease-out;
-        font-size: 15px;
-        padding-left: 90px;
-    }
-
-    .indexContent {
-        opacity: 0.96;
-    }
-
-    .article_title {
-        text-align: center;
-        color: #409EFF;
-        margin: 0;
-        padding: 10px;
-        font-size: 1.5rem;
-        font-weight: 900;
-        font-family: 'Hiragino Sans GB';
-    }
-
-    .article_title:hover {
-        color: #E6A23C;
-        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    }
-
-    .box-card {
-        width: 500px;
-        height: 350px;
-        background-color: white;
-        display: block;
-        right: 28px;
-        top: 40px;
-        bottom: 40px;
-        position: relative;
-        overflow: hidden;
-        float: right;
-    }
+    @import "../static/css/HomeIndex.css";
 </style>

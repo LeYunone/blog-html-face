@@ -300,8 +300,8 @@
                       commentId:comment.id
                   }
               }).then((res) => {
-                  if(res.data.code=='404'){
-                      this.$message.error(res.data.srcData);
+                  if(!res.data.status){
+                      this.$message.error(res.data.message);
                   }else{
                       this.$message.success("点赞成功");
                       comment.goods+=1;
@@ -325,8 +325,8 @@
                         respondent: reName,
                     }
                 }).then((res) => {
-                    if (res.data.code == '404') {
-                        this.$message.error(res.data.srcData);
+                    if (res.data.status) {
+                        this.$message.error(res.data.message);
                     } else {
                         this.$message.success("发布成功");
                         this.replyCommentText = "";
@@ -409,8 +409,8 @@
                         dataType: 'json',
                         data: formData
                     }).then((res) => {
-                        if (res.data.code == '404') {
-                            this.$message.error(res.data.srcData);
+                        if (!res.data.status) {
+                            this.$message.error(res.data.message);
                         } else {
                             const blogId = this.$route.query.blogId;
                             //添加本次评论
@@ -420,21 +420,22 @@
                                 data: {
                                     content: this.commentText,
                                     name: this.form.name,
-                                    commentHead: res.data.srcData,
+                                    commentHead: res.data.data,
                                     information: this.form.information,
                                     blogId: blogId,
-                                    ip: res.data.objData,
+                                    ip: res.data.message
                                 }
                             }).then((res) => {
-                                if (res.data.code == '404') {
-                                    this.$message.error(res.data.srcData);
+                                if (!res.data.status) {
+                                    this.$message.error(res.data.message);
                                 } else {
+                                    this.valiValue=true;
                                     this.$message.success("发布成功");
                                     this.commentText = "";
                                     this.form.name = "";
                                     this.form.information = "";
                                     this.query.pageTotal += 1;
-                                    this.commentList.splice(0, 0, res.data.objData);
+                                    this.commentList.splice(0, 0, res.data.data);
                                 }
                             })
                         }
@@ -442,9 +443,9 @@
                 }
             },
             handleAvatarSuccess(res, file) {
-                if (res.code == '404') {
+                if (!res.status) {
                     this.$message.error("别太频繁，明天再来换头像吧");
-                    this.imageUrl = res.srcData;
+                    this.imageUrl = res.message;
                 } else {
                     this.imageUrl = URL.createObjectURL(file.raw);
                     this.file = file.raw;
@@ -479,8 +480,8 @@
                         type: this.commentType
                     },
                 }).then((res) => {
-                    this.commentList = res.data.page.records;
-                    this.query.pageTotal = res.data.page.total;
+                    this.commentList = res.data.data.records;
+                    this.query.pageTotal = res.data.data.total;
                 })
             },
             tabClick(tab, event) {
@@ -520,7 +521,7 @@
                     url: "/leyuna/blog/blog/" + blogId,
                     method: "GET",
                 }).then((res) => {
-                    let blog = res.data.objData;
+                    let blog = res.data.data;
                     this.blogTitle = blog.title;
                     this.blogContent = blog.blogContent;
                     this.html = xss.process(VueMarkdownEditor.vMdParser.themeConfig.markdownParser.render(this.blogContent));
@@ -559,232 +560,6 @@
     };
 </script>
 
-<style scoped>
-    .webKing{
-        display: inline-block;
-        margin-left: .5em;
-        margin-right: .5em;
-        padding: 0 .3em;
-        border-radius: 3px;
-        background: #3498db;
-        color: #fff;
-        font-size: 0.775em;
-    }
-    .this-icon {
-        margin-left: 15px;
-        width: 1rem;
-        height: 1rem;
-        vertical-align: -0.15em;
-        fill: currentColor;
-        overflow: hidden;
-    }
-
-    .this-icon:hover {
-        background-color: #f6a5a5;
-    }
-
-    .length-count {
-        color: crimson;
-        padding: 7px;
-        float: right;
-    }
-
-    .cancel-reply:hover {
-        color: yellow;
-    }
-
-    .comment-time {
-        float: right;
-    }
-
-    .reply:hover {
-        color: #b3e19d;
-    }
-
-    .do-comment {
-    }
-
-    .avatar-uploader {
-        border: 1px dashed #d9d9d9;
-        border-radius: 6px;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        width: 100px;
-        height: 100px;
-    }
-
-    .avatar-uploader .el-upload {
-        border: 1px dashed #d9d9d9;
-        border-radius: 6px;
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        width: 100px;
-        height: 100px;
-    }
-
-    .avatar-uploader .el-upload:hover {
-        border-color: #409EFF;
-    }
-
-    .avatar-uploader-icon {
-        position: relative;
-        top: 40px;
-        font-size: 28px;
-        text-align: center;
-    }
-
-    .avatar {
-        display: block;
-    }
-
-    .page-card {
-        text-align: center;
-    }
-
-    .comment-replay {
-        padding-top: 9px;
-        border-top: 2.4px solid #f6f6f6;
-        display: flex;
-    }
-
-    .comment-content {
-        padding-top: 20px;
-        padding-bottom: 15px;
-    }
-
-    .comment-img {
-        margin-right: .75em;
-    }
-
-    .comment {
-        position: relative;
-        display: flex;
-        padding: .5em;
-        box-sizing: content-box;
-        line-height: 1.75;
-    }
-
-    .comment-head {
-    }
-
-    .comment-replay-card {
-        flex: 1;
-    }
-
-    .comment-card {
-        flex: 1;
-        width: 0;
-        padding-bottom: .5em;
-        border-bottom: 1px dashed;
-    }
-
-    .bottom-tip {
-        background: #f3f3f3;
-        border: #e9e9e9 1px solid;
-        margin-bottom: 20px;
-        color: #a0a0a0;
-        padding: 25px 20px;
-    }
-
-    #nav-card {
-        text-align: left;
-        padding: 20px;
-        font-size: 19px;
-        font-family: SimHei;
-    }
-
-    #nav-card div:hover {
-        background-color: rgba(232, 222, 222, 0.67);
-    }
-
-    .v-md-editor-preview {
-        position: relative;
-    }
-
-    .bar-top {
-        width: 100%;
-    }
-
-    .switch-bar {
-        position: absolute;
-        right: 7px;
-        top: 150px;
-    }
-
-    .blogCss {
-        color: red;
-    }
-
-    body {
-        background-color: #fff;
-        overflow: scroll;
-    }
-
-    .main {
-        background: #fff;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        padding-left: 50px;
-        margin-right: 130px;
-        width: 73%;
-        float: right;
-        overflow-x: hidden;
-        overflow-y: scroll;
-        height: 100%;
-    }
-
-    .blog-nav {
-        position: fixed;
-        overflow-y: auto;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        width: 20rem;
-        background-color: #fff;
-        background-image: url("../assets/img/blog-bar.jpg");
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: bottom 1rem center;
-        text-align: center;
-        z-index: 10;
-        transition-property: all;
-        transition-duration: .3s;
-        transition-delay: 0s;
-        box-shadow: 0 0 2px;
-    }
-
-    .blog-content {
-        display: flex;
-        flex-direction: column;
-        color: #333;
-        background-color: #fff;
-        margin: 0;
-        padding-top: 2.5rem;
-        margin: 0 1rem 1rem 1rem;
-        background-color: #fff;
-        padding: 1rem .5rem;
-    }
-
-    .blog-title {
-        margin: 0;
-        padding: 10px;
-        font-size: 1.5rem;
-        font-weight: 900;
-        font-family: 'Songti SC', 'Noto Serif SC', STZhongsong, STKaiti, KaiTi, Roboto, serif;
-        line-height: 2;
-    }
-
-    .blog-header {
-        text-align: center;
-    }
-
-    .blog-info {
-        font-size: 14px;
-    }
-
-    .blog-info span {
-        padding-left: 23px;
-    }
+<style>
+    @import "../static/css/Blog.css";
 </style>

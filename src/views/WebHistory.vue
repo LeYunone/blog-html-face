@@ -1,9 +1,7 @@
 <template>
     <div class="maxBox" v-infinite-scroll="load">
         <div class="crumbs">
-            <el-page-header v-if="tagName!=undefined" @back="prev" :content="tagName">
-            </el-page-header>
-            <el-page-header v-else @back="prev" :content="typeName">
+            <el-page-header  @back="prev">
             </el-page-header>
         </div>
         <div class="container2">
@@ -40,11 +38,14 @@ export default {
         };
     },
     mounted:function(){
+        this.thisHistory();
     },
 
     methods: {
         load(){
-            this.thisHistory();
+            if(this.size!=23){
+                this.thisHistory();
+            }
             this.size+=3;
         },
         prev(){
@@ -59,7 +60,7 @@ export default {
                     "size":this.size,
                 }
             }).then((res) =>{
-                this.articleList=res.data.page.records;
+                this.articleList=res.data.data.records;
             })
         },
     }
@@ -70,10 +71,5 @@ export default {
 </script>
 
 <style scoped>
-    .crumbs{
-        border: 1px solid #ebebeb;
-        border-radius: 3px;
-        transition: .2s;
-        background-color:white;
-    }
+    @import "../static/css/WebHistory.css";
 </style>

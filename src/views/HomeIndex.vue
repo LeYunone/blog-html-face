@@ -76,10 +76,12 @@
                         <div>
                             <el-date-picker :disabled-date="publishDateAfter"
                                             type="date" placeholder="保存时间" v-model="upLoadParam.saveTime"
+                                            value-format="yyyy-MM-dd"
+                                            @change="getSTime"
                                             style="width: 24%;"></el-date-picker>
                         </div>
                         <el-tooltip class="item" effect="dark" content="选择保存时间：
-                                到某年某日自动过期;" placement="bottom">
+                                到某年某日自动过期;未选择默认：永久保存" placement="bottom">
                             <i style="font-size:24px" class="el-icon-bell">
                             </i>
                         </el-tooltip>
@@ -171,6 +173,11 @@
             this.getList();
         },
         methods: {
+            getSTime(val) {
+                this.val = this.val.format("YYYY-MM-DD HH:mm:ss");
+                alert(val)
+                this.upLoadParam.saveTime=val;
+            },
             publishDateAfter(time) {
                 return time.getTime() <= Date.now();
             },
@@ -221,10 +228,7 @@
                         processData: false, // 使数据不做处理
                         contentType: false,
                         dataType: 'json',
-                        data: {
-                            file:file,
-                            saveTime: this.upLoadParam.saveTime
-                        }
+                        data: formData
                     }).then(res => {
                         var data = res.data;
                         if (data.status) {

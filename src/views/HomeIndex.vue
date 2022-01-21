@@ -71,13 +71,13 @@
                                 :auto-upload="false">
                             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
                         </el-upload>
+                        <el-progress v-if="show" :percentage="percentage"></el-progress>
                         <el-button style="margin: 15px;" size="small" type="success" @click="submitUpload">上传
                         </el-button>
                         <div>
                             <el-date-picker :disabled-date="publishDateAfter"
                                             type="date" placeholder="保存时间" v-model="upLoadParam.saveTime"
-                                            value-format="yyyy-MM-dd"
-                                            @change="getSTime"
+                                            value-format="YYYY-MM-DD HH:mm:ss"
                                             style="width: 24%;"></el-date-picker>
                         </div>
                         <el-tooltip class="item" effect="dark" content="选择保存时间：
@@ -89,6 +89,41 @@
                             <el-tab-pane label="全部文件" name="first">
                                 <el-empty v-if="allFileList == undefined || allFileList.length <= 0"
                                           description="描述文字"></el-empty>
+                                <el-table v-else
+                                        :data="allFileList"
+                                        border
+                                        style="width: 100%">
+                                    <el-table-column
+                                            fixed
+                                            prop="name"
+                                            label="文件名"
+                                            width="120">
+                                    </el-table-column>
+                                    <el-table-column
+                                            prop="fileType"
+                                            label="文件类型"
+                                            width="120">
+                                    </el-table-column>
+                                    <el-table-column
+                                            prop="createDt"
+                                            label="上传时间"
+                                            width="120">
+                                    </el-table-column>
+                                    <el-table-column
+                                            prop="fileSize"
+                                            label="文件大小"
+                                            width="120">
+                                    </el-table-column>
+                                    <el-table-column
+                                            fixed="right"
+                                            label="操作"
+                                            width="100">
+                                        <template slot-scope="scope">
+                                            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+                                            <el-button type="text" size="small">编辑</el-button>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
                             </el-tab-pane>
                             <el-tab-pane label="图片" name="second">配置管理</el-tab-pane>
                             <el-tab-pane label="音频" name="third">角色管理</el-tab-pane>
@@ -143,6 +178,8 @@
     export default {
         data() {
             return {
+                percentage:"",
+                show:"",
                 uploadUrl: "",
                 default_fileList: "first",
                 form: {
@@ -174,7 +211,7 @@
         },
         methods: {
             getSTime(val) {
-                this.val = this.val.format("YYYY-MM-DD HH:mm:ss");
+                this.val = this.val.format("YYYY-MM-DD");
                 alert(val)
                 this.upLoadParam.saveTime=val;
             },
@@ -212,27 +249,36 @@
                 }
                 // })
             },
-            async upLoadFile(option) {
-                var file = option.file;
+            async upLoadFile(param) {
+                var file = param.file;
                 await this.before_upload(file);
                 //上传文件
                 var upLoadValiValue = this.upLoadValiValue;
-                console.log(upLoadValiValue)
+                console.log(this.upLoadParam.saveTime)
                 if (upLoadValiValue == 1) {
                     let formData = new FormData();
                     formData.append('file', file);
                     formData.append('saveTime',this.upLoadParam.saveTime)
+                    this.show=true;
                     axios({
                         url: "/leyuna/disk/uploadFile",
                         method: "POST",
                         processData: false, // 使数据不做处理
                         contentType: false,
                         dataType: 'json',
-                        data: formData
+                        data: formData,
+                        onUploadProgress: (progressEvent) => {
+                            // onUploadProgress 文件上传时的函数   上传进度
+                            this.percentage = Number(
+                                ((progressEvent.loaded / progressEvent.total) * 100).toFixed(0)
+                            );
+                        }
                     }).then(res => {
                         var data = res.data;
                         if (data.status) {
+                            this.percentage=0;
                             ElMessage.success("上传成功");
+                            this.fileTotalSize = data.data.fileTotalSize;
                         } else {
                             ElMessage.error(data.message);
                         }
@@ -291,9 +337,9 @@
                     var data = res.data;
                     console.log(data);
                     if (data.status) {
-                        this.allFileList = data.fileList;
-                        this.fileCount = data.fileCount;
-                        this.fileTotalSize = data.fileTotalSize;
+                        this.allFileList = data.data.fileList;
+                        this.fileCount = data.data.fileCount;
+                        this.fileTotalSize = data.data.fileTotalSize;
                         this.user_disk = true;
                         this.login_user = false;
                     } else {

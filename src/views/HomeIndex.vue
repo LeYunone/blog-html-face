@@ -78,6 +78,7 @@
                             <el-date-picker :disabled-date="publishDateAfter"
                                             type="date" placeholder="保存时间" v-model="upLoadParam.saveTime"
                                             value-format="YYYY-MM-DD HH:mm:ss"
+                                            value-format="YYYY-MM-DD"
                                             style="width: 24%;"></el-date-picker>
                         </div>
                         <el-tooltip class="item" effect="dark" content="选择保存时间：

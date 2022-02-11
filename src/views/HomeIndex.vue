@@ -77,7 +77,6 @@
                         <div>
                             <el-date-picker :disabled-date="publishDateAfter"
                                             type="date" placeholder="保存时间" v-model="upLoadParam.saveTime"
-                                            value-format="YYYY-MM-DD HH:mm:ss"
                                             value-format="YYYY-MM-DD"
                                             style="width: 24%;"></el-date-picker>
                         </div>
@@ -86,51 +85,51 @@
                             <i style="font-size:24px" class="el-icon-bell">
                             </i>
                         </el-tooltip>
-                        <el-tabs v-model="default_fileList" @tab-click="handleClick">
-                            <el-tab-pane label="全部文件" name="first">
-                                <el-empty v-if="allFileList == undefined || allFileList.length <= 0"
-                                          description="描述文字"></el-empty>
-                                <el-table v-else
-                                        :data="allFileList"
-                                        border
-                                        style="width: 100%">
-                                    <el-table-column
-                                            fixed
-                                            prop="name"
-                                            label="文件名"
-                                            width="120">
-                                    </el-table-column>
-                                    <el-table-column
-                                            prop="fileType"
-                                            label="文件类型"
-                                            width="120">
-                                    </el-table-column>
-                                    <el-table-column
-                                            prop="createDt"
-                                            label="上传时间"
-                                            width="120">
-                                    </el-table-column>
-                                    <el-table-column
-                                            prop="fileSize"
-                                            label="文件大小"
-                                            width="120">
-                                    </el-table-column>
-                                    <el-table-column
-                                            fixed="right"
-                                            label="操作"
-                                            width="100">
-                                        <template slot-scope="scope">
-                                            <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-                                            <el-button type="text" size="small">编辑</el-button>
-                                        </template>
-                                    </el-table-column>
-                                </el-table>
-                            </el-tab-pane>
-                            <el-tab-pane label="图片" name="second">配置管理</el-tab-pane>
-                            <el-tab-pane label="音频" name="third">角色管理</el-tab-pane>
-                            <el-tab-pane label="视频" name="fourth">定时任务补偿</el-tab-pane>
-                            <el-tab-pane label="文档" name="fifth">角色管理</el-tab-pane>
-                            <el-tab-pane label="其他" name="sixth">定时任务补偿</el-tab-pane>
+                        <el-tabs v-model="default_fileList" @tab-click="tableClick">
+                            <el-tab-pane label="全部文件" name="0"></el-tab-pane>
+                            <el-tab-pane label="图片" name="1"></el-tab-pane>
+                            <el-tab-pane label="音频" name="2"></el-tab-pane>
+                            <el-tab-pane label="视频" name="3"></el-tab-pane>
+                            <el-tab-pane label="文档" name="4"></el-tab-pane>
+                            <el-tab-pane label="其他" name="5"></el-tab-pane>
+                            <el-empty v-if="myFile == undefined || myFile.length <= 0"
+                                      description="描述文字"></el-empty>
+                            <el-table v-else
+                                      :data="myFile"
+                                      border
+                                      style="width: 100%">
+                                <el-table-column
+                                        fixed
+                                        prop="name"
+                                        label="文件名"
+                                        width="120">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="fileTypeName"
+                                        label="文件类型"
+                                        width="120">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="createDt"
+                                        label="上传时间"
+                                        width="120">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="fileSize"
+                                        label="文件大小(KB)"
+                                        width="120">
+                                </el-table-column>
+                                <el-table-column
+                                        fixed="right"
+                                        label="操作"
+                                        key="slot"
+                                        width="100">
+                                    <template #default='scope'>
+                                        <el-button @click="downFile(scope.row)" type="text" size="small">下载</el-button>
+                                        <el-button type="text" style="color: red" size="small">删除</el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
                         </el-tabs>
                     </div>
                     <el-dialog :before-close="close_login" title="登陆" v-model="login_user" width="30%">
@@ -182,7 +181,7 @@
                 percentage:"",
                 show:"",
                 uploadUrl: "",
-                default_fileList: "first",
+                default_fileList: "0",
                 form: {
                     userName: "",
                     passWord: ""
@@ -197,20 +196,35 @@
                     index: 1,
                     size: 10
                 },
+                articleList:[],
                 fileList: [],
-                articleList: [],
-                allFileList: [],
-                imgList: [],
-                musicList: [],
+                myFile:[],
                 fileCount: 0,
                 fileTotalSize: 0,
                 upLoadValiValue: -1,
+                orderType:2,
             }
         },
         mounted: function () {
             this.getList();
         },
         methods: {
+            tableClick(tab, event){
+                var fileType=tab.props.name;
+                axios({
+                    url:"/leyuna/disk/getDiskFileList",
+                    method:"GET",
+                    params:{
+                        fileType:fileType,
+                        type:this.orderType
+                    }
+                }).then((res) => {
+                    var data=res.data;
+                    if(data.status){
+                        this.myFile=data.data.records;
+                    }
+                })
+            },
             getSTime(val) {
                 this.val = this.val.format("YYYY-MM-DD");
                 alert(val)
@@ -255,7 +269,6 @@
                 await this.before_upload(file);
                 //上传文件
                 var upLoadValiValue = this.upLoadValiValue;
-                console.log(this.upLoadParam.saveTime)
                 if (upLoadValiValue == 1) {
                     let formData = new FormData();
                     formData.append('file', file);
@@ -290,7 +303,6 @@
                     ElMessage.error("UpLoadFile Error");
                 }
 
-                console.log(option.file);
             },
             submitUpload() {
                 this.$nextTick(() => {
@@ -331,14 +343,17 @@
                 })
             },
             openDisk() {
+                this.default_fileList="0",
                 axios({
                     url: "/leyuna/disk/getDiskInfo",
-                    method: "GET"
+                    method: "GET",
+                    params:{
+                        fileType:this.default_fileList
+                    }
                 }).then((res) => {
                     var data = res.data;
-                    console.log(data);
                     if (data.status) {
-                        this.allFileList = data.data.fileList;
+                        this.myFile = data.data.fileList;
                         this.fileCount = data.data.fileCount;
                         this.fileTotalSize = data.data.fileTotalSize;
                         this.user_disk = true;
@@ -369,6 +384,12 @@
                         this.form.passWord = "";
                     }
                 }))
+            },
+            downFile(row){
+                console.log(row)
+                axios({
+                    url:"/leyuna/"
+                })
             },
             close_login() {
                 this.diskDrawer = false;

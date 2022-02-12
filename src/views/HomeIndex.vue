@@ -388,7 +388,23 @@
             downFile(row){
                 console.log(row)
                 axios({
-                    url:"/leyuna/"
+                    url:"/leyuna/disk/downFile",
+                    method:"GET",
+                    params:{
+                        fileId:row.id
+                    },
+                    responseType: 'blob'
+                }).then((res)=>{
+                    const filename = res.headers["content-disposition"];
+                    const blob = new Blob([res.data]);
+                    var downloadElement = document.createElement("a");
+                    var href = window.URL.createObjectURL(blob);
+                    downloadElement.href = href;
+                    downloadElement.download = decodeURIComponent(filename.split("filename=")[1]);
+                    document.body.appendChild(downloadElement);
+                    downloadElement.click();
+                    document.body.removeChild(downloadElement);
+                    window.URL.revokeObjectURL(href);
                 })
             },
             close_login() {

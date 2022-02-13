@@ -61,7 +61,7 @@
                     <div id="user_disk" v-if="user_disk">
                         <el-progress type="circle" :percentage="fileTotalSize"></el-progress>
                         <el-upload
-                                class="upload-demo"
+                                class="upload-frame"
                                 ref="upload"
                                 :on-preview="handlePreview"
                                 :http-request="upLoadFile"
@@ -69,11 +69,10 @@
                                 :file-list="fileList"
                                 multiple="true"
                                 :auto-upload="false">
-                            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                            <el-button style="margin: 20px" slot="trigger" size="small" type="primary">选取文件</el-button>
+                            <el-button style="margin: 15px;" size="small" type="success" @click="submitUpload">上传</el-button>
                         </el-upload>
-                        <el-progress v-if="show" :percentage="percentage"></el-progress>
-                        <el-button style="margin: 15px;" size="small" type="success" @click="submitUpload">上传
-                        </el-button>
+                        <el-progress style="width: 400px" :stroke-width="24" v-if="show" :percentage="percentage"></el-progress>
                         <div>
                             <el-date-picker :disabled-date="publishDateAfter"
                                             type="date" placeholder="保存时间" v-model="upLoadParam.saveTime"
@@ -126,7 +125,7 @@
                                         width="100">
                                     <template #default='scope'>
                                         <el-button @click="downFile(scope.row)" type="text" size="small">下载</el-button>
-                                        <el-button type="text" style="color: red" size="small">删除</el-button>
+                                        <el-button @click="deleteFile(scope.$index,scope.row)" type="text" style="color: red" size="small">删除</el-button>
                                     </template>
                                 </el-table-column>
                             </el-table>
@@ -385,8 +384,39 @@
                     }
                 }))
             },
+            deleteFile(index,row){
+                this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    axios({
+                        url:"/leyuna/disk/deleteFile",
+                        method:"GET",
+                        params:{
+                            fileId:row.id
+                        }
+                    }).then(res=>{
+                        var data=res.data;
+                        if(data.status){
+                            this.myFile.splice(index, 1);
+                            this.fileTotalSize=data.data;
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                        }else{
+                            ElMessage.error(data.message);
+                        }
+                    })
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
+            },
             downFile(row){
-                console.log(row)
                 axios({
                     url:"/leyuna/disk/downFile",
                     method:"GET",

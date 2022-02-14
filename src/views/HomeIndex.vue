@@ -57,6 +57,7 @@
                 <el-drawer
                         title="LEYUNA-DISK"
                         v-model="diskDrawer"
+                        size="35%"
                         :with-header="false">
                     <div id="user_disk" v-if="user_disk">
                         <el-progress type="circle" :percentage="fileTotalSize"></el-progress>
@@ -71,19 +72,21 @@
                                 :auto-upload="false">
                             <el-button style="margin: 20px" slot="trigger" size="small" type="primary">选取文件</el-button>
                             <el-button style="margin: 15px;" size="small" type="success" @click="submitUpload">上传</el-button>
+                            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                         </el-upload>
+
                         <el-progress style="width: 400px" :stroke-width="24" v-if="show" :percentage="percentage"></el-progress>
                         <div>
                             <el-date-picker :disabled-date="publishDateAfter"
                                             type="date" placeholder="保存时间" v-model="upLoadParam.saveTime"
                                             value-format="YYYY-MM-DD"
                                             style="width: 24%;"></el-date-picker>
-                        </div>
-                        <el-tooltip class="item" effect="dark" content="选择保存时间：
+                            <el-tooltip class="item" effect="dark" content="选择保存时间：
                                 到某年某日自动过期;未选择默认：永久保存" placement="bottom">
-                            <i style="font-size:24px" class="el-icon-bell">
-                            </i>
-                        </el-tooltip>
+                                <i style="font-size:24px" class="el-icon-bell">
+                                </i>
+                            </el-tooltip>
+                        </div>
                         <el-tabs v-model="default_fileList" @tab-click="tableClick">
                             <el-tab-pane label="全部文件" name="0"></el-tab-pane>
                             <el-tab-pane label="图片" name="1"></el-tab-pane>
@@ -92,31 +95,33 @@
                             <el-tab-pane label="文档" name="4"></el-tab-pane>
                             <el-tab-pane label="其他" name="5"></el-tab-pane>
                             <el-empty v-if="myFile == undefined || myFile.length <= 0"
-                                      description="描述文字"></el-empty>
+                                      description="文件列表为空，请上传文件"></el-empty>
                             <el-table v-else
                                       :data="myFile"
                                       border
-                                      style="width: 100%">
+                                      fit="false"
+                                      max-height="540px"
+                                      style="margin-left: 10px;width: 650px">
                                 <el-table-column
                                         fixed
                                         prop="name"
                                         label="文件名"
-                                        width="120">
+                                        width="180px">
                                 </el-table-column>
                                 <el-table-column
                                         prop="fileTypeName"
                                         label="文件类型"
-                                        width="120">
+                                        width="100">
                                 </el-table-column>
                                 <el-table-column
                                         prop="createDt"
                                         label="上传时间"
-                                        width="120">
+                                        width="100">
                                 </el-table-column>
                                 <el-table-column
                                         prop="fileSize"
                                         label="文件大小(KB)"
-                                        width="120">
+                                        width="140">
                                 </el-table-column>
                                 <el-table-column
                                         fixed="right"
@@ -130,6 +135,11 @@
                                 </el-table-column>
                             </el-table>
                         </el-tabs>
+                        <div class="page-card">
+                            <el-pagination background layout="prev, pager, next" :current-page="query.pageIndex"
+                                           :page-size="query.pageSize" :total="query.pageTotal"
+                                           @current-change="handlePageChange"></el-pagination>
+                        </div>
                     </div>
                     <el-dialog :before-close="close_login" title="登陆" v-model="login_user" width="30%">
                         <el-form label-width="70px">
@@ -198,10 +208,14 @@
                 articleList:[],
                 fileList: [],
                 myFile:[],
-                fileCount: 0,
                 fileTotalSize: 0,
                 upLoadValiValue: -1,
-                orderType:2,
+                orderType:3,
+                query: {
+                    pageSize: 10,
+                    pageTotal: 0,
+                    pageIndex: 1,
+                },
             }
         },
         mounted: function () {
@@ -210,6 +224,7 @@
         methods: {
             tableClick(tab, event){
                 var fileType=tab.props.name;
+                this.default_fileList=fileType;
                 axios({
                     url:"/leyuna/disk/getDiskFileList",
                     method:"GET",
@@ -221,6 +236,7 @@
                     var data=res.data;
                     if(data.status){
                         this.myFile=data.data.records;
+                        this.query.pageTotal=data.data.total;
                     }
                 })
             },
@@ -353,7 +369,7 @@
                     var data = res.data;
                     if (data.status) {
                         this.myFile = data.data.fileList;
-                        this.fileCount = data.data.fileCount;
+                        this.query.pageTotal = data.data.fileCount;
                         this.fileTotalSize = data.data.fileTotalSize;
                         this.user_disk = true;
                         this.login_user = false;
@@ -440,7 +456,30 @@
             close_login() {
                 this.diskDrawer = false;
                 this.login_user = false;
-            }
+            },
+            handlePageChange(val) {
+                this.query.pageIndex = val;
+                this.fileTable();
+            },
+            fileTable() {
+                const blogId = this.$route.query.blogId;
+                axios({
+                    url: "/leyuna/disk/getDiskFileList",
+                    methods: "GET",
+                    params: {
+                        index: this.query.pageIndex,
+                        size: this.query.pageSize,
+                        fileType: this.default_fileList,
+                        type:this.orderType
+                    },
+                }).then((res) => {
+                    var data=res.data;
+                    if(data.status){
+                        this.myFile=data.data.records;
+                        this.fileCount=data.data.total;
+                    }
+                })
+            },
         },
         name: "home",
     };

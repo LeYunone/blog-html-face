@@ -60,7 +60,7 @@
                         size="35%"
                         :with-header="false">
                     <div id="user_disk" v-if="user_disk">
-                        <el-progress type="circle" :percentage="fileTotalSize"></el-progress>
+                        <el-progress style="margin-left:250px" type="circle" :percentage="fileTotalSize">内存:{{this.fileTotalSize}}%</el-progress>
                         <el-upload
                                 class="upload-frame"
                                 ref="upload"
@@ -70,23 +70,20 @@
                                 :file-list="fileList"
                                 multiple="true"
                                 :auto-upload="false">
-                            <el-button style="margin: 20px" slot="trigger" size="small" type="primary">选取文件</el-button>
-                            <el-button style="margin: 15px;" size="small" type="success" @click="submitUpload">上传</el-button>
-                            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
                         </el-upload>
-
                         <el-progress style="width: 400px" :stroke-width="24" v-if="show" :percentage="percentage"></el-progress>
-                        <div>
-                            <el-date-picker :disabled-date="publishDateAfter"
-                                            type="date" placeholder="保存时间" v-model="upLoadParam.saveTime"
-                                            value-format="YYYY-MM-DD"
-                                            style="width: 24%;"></el-date-picker>
-                            <el-tooltip class="item" effect="dark" content="选择保存时间：
-                                到某年某日自动过期;未选择默认：永久保存" placement="bottom">
-                                <i style="font-size:24px" class="el-icon-bell">
-                                </i>
-                            </el-tooltip>
-                        </div>
+
+                        <el-button size="small" style="margin: 10px;" type="success" @click="submitUpload">&nbsp上传&nbsp </el-button>
+                        <el-date-picker :disabled-date="publishDateAfter"
+                                        type="date" placeholder="保存时间" v-model="upLoadParam.saveTime"
+                                        value-format="YYYY-MM-DD"
+                                        style="margin-left:10px; width: 24%;"></el-date-picker>
+                        <el-tooltip class="item" effect="dark" content="选择保存时间：
+                            到某年某日自动过期;未选择默认：永久保存" placement="bottom">
+                            <i style="font-size:24px" class="el-icon-bell">
+                            </i>
+                        </el-tooltip>
                         <el-tabs v-model="default_fileList" @tab-click="tableClick">
                             <el-tab-pane label="全部文件" name="0"></el-tab-pane>
                             <el-tab-pane label="图片" name="1"></el-tab-pane>
@@ -116,6 +113,11 @@
                                 <el-table-column
                                         prop="createDt"
                                         label="上传时间"
+                                        width="100">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="saveDt"
+                                        label="保存时间"
                                         width="100">
                                 </el-table-column>
                                 <el-table-column
@@ -305,8 +307,11 @@
                     }).then(res => {
                         var data = res.data;
                         if (data.status) {
+                            console.log(data);
                             this.percentage=0;
                             ElMessage.success("上传成功");
+                            this.myFile = data.data.fileList;
+                            this.query.pageTotal = data.data.fileCount;
                             this.fileTotalSize = data.data.fileTotalSize;
                         } else {
                             ElMessage.error(data.message);

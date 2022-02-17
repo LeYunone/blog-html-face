@@ -52,15 +52,16 @@
             </div>
             <div class="right-bott">
                 <el-button @click="openDisk" type="primary" style="margin-left: 16px;">
-                    待开发
+                    LEYUNA-DISK
                 </el-button>
+                【云盘】
                 <el-drawer
                         title="LEYUNA-DISK"
                         v-model="diskDrawer"
                         size="35%"
                         :with-header="false">
                     <div id="user_disk" v-if="user_disk">
-                        <el-progress style="margin-left:250px" type="circle" :percentage="fileTotalSize">内存:{{this.fileTotalSize}}%</el-progress>
+                        <el-progress style="margin-left:250px;margin-top:14px" type="circle" :percentage="fileTotalSize">内存:{{this.fileTotalSize}}%</el-progress>
                         <el-upload
                                 class="upload-frame"
                                 ref="upload"

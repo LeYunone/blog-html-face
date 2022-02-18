@@ -356,8 +356,8 @@
                     url: "/leyuna/blog/blogs",
                     method: "get",
                     params: {
-                        index: this.index,
-                        size: this.size
+                        index: this.pageData.index,
+                        size: this.pageData.size
                     }
                 }).then((res) => {
                     this.articleList = res.data.data.records;

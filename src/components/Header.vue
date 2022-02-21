@@ -40,6 +40,7 @@
 <script>
 import { computed, onMounted } from "vue";
 import { useStore } from "vuex";
+import {ElMessage, ElMessageBox} from "element-plus";
 import axios from "axios";
 import { ref, reactive } from "vue";
 export default {
@@ -76,11 +77,12 @@ export default {
                         size:this.query.pageSize
                     },
                 }).then((res) => {
-                    if(res.data.data.code=='200'){
-                        this.dataList=res.data.data.objData.listData;
-                        this.pageTotal=res.data.data.objData.totole;
+                    var data=res.data;
+                    if(data.status){
+                        this.dataList=data.data.listData;
+                        this.pageTotal=data.data.totole;
                     }else{
-                        ElMessage.error(res.data.data.message);
+                        ElMessage.error(data.message);
                     }
                 })
             }

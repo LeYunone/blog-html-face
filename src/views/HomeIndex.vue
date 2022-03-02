@@ -360,7 +360,15 @@
                         size: this.pageData.size
                     }
                 }).then((res) => {
-                    this.articleList = res.data.data.records;
+                   var data=res.data;
+                   if(data.status){
+                       this.articleList = data.data.records;
+                   }else{
+                       this.$message({
+                           type: 'error',
+                           message: data.message
+                       });
+                   }
                 })
             },
             openDisk() {

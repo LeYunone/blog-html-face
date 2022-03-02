@@ -7,6 +7,7 @@
         </div>
         <div class="header-right">
             <a @click="search=true" class="el-icon-search"></a>
+            <a class="el-icon-circle-close"  @click="clearCache"></a>
         </div>
     </div>
     <el-drawer
@@ -60,6 +61,38 @@ export default {
     },
     methods: {
         handleClose(done) {
+        },
+        clearCache(){
+            this.$prompt('给个暗号，我清个缓存', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+            }).then(({ value }) => {
+                axios({
+                    url:"/leyuna/server/clearCache",
+                    method:"GET",
+                    params:{
+                        name:value
+                    }
+                }).then((res)=>{
+                    var data=res.data;
+                    if(data.status){
+                        this.$message({
+                            type: 'success',
+                            message: '网站没存储咯<(￣︶￣)>'
+                        });
+                    }else{
+                        this.$message({
+                            type: 'error',
+                            message: data.message
+                        });
+                    }
+                })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '取消输入'
+                });
+            });
         },
         searchKey(title){
             this.query.pageIndex=1;

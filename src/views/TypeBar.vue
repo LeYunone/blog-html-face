@@ -18,7 +18,7 @@
            </el-input>
 
            <el-tree class="type-tree"
-                   :data="data"
+                   :data="types"
                    :props="defaultProps"
                    :filter-node-method="filterNode"
                    @node-click="handleNodeClick"
@@ -41,26 +41,23 @@ export default {
             this.$refs.tree.filter(val);
         }
     },
-    setup(){
-        const typeCount=ref();
-        const data=ref([]);
-        const getType = () =>{
+    mounted: function () {
+        this.getType();//需要触发的函数
+    },
+    methods: {
+        getType(){
             axios({
                 url:"/leyuna/tagType/treeType",
                 method : 'GET'
             }).then((res) => {
-                data.value=res.data.data;
-                typeCount.value=data.size;
+                var data = res.data;
+                if(data.status){
+                    this.types=data.data;
+                    this.typeCount=this.types.length;
+                }
+
             })
-        }
-        getType();
-        return {
-            getType,
-            data,
-            typeCount,
-        };
-    },
-    methods: {
+        },
         filterNode(value, data) {
             if (!value) return true;
             return data.label.indexOf(value) !== -1;
@@ -78,7 +75,9 @@ export default {
             defaultProps: {
                 children: 'children',
                 label: 'label'
-            }
+            },
+            types:[],
+            typeCount:0,
         };
     }
 };

@@ -53,20 +53,23 @@ export default {
         },
         thisHistory(){
             axios({
-                url:"/leyuna/blog/history",
+                url:"/leyuna/blog/blogs",
                 method:"GET",
                 params:{
-                    "index":this.index,
-                    "size":this.size,
+                    index:this.index,
+                    size:this.size,
+                    blogType:2
                 }
             }).then((res) =>{
-                this.articleList=res.data.data.records;
+                var data = res.data;
+                if(data.status){
+                    this.articleList=data.data.records;
+                }else{
+                    ElMessage.error(data.message)
+                }
             })
         },
     }
-    ,
-    setup(){
-    },
 };
 </script>
 

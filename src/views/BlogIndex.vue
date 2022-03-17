@@ -59,17 +59,23 @@ export default {
             this.tagName=tagName;
             this.typeName=typeName;
             axios({
-                url:"/leyuna/blog/blogIndex",
+                url:"/leyuna/blog/blogs",
                 method:"GET",
                 params:{
-                    "index":this.index,
-                    "size":this.size,
-                    "typeId":typeId,
-                    "tagName":tagName,
+                    index:this.index,
+                    size:this.size,
+                    type:typeId,
+                    tag:tagName,
+                    blogType:1
                 }
             }).then((res) =>{
-                this.articleList=res.data.data.records;
-                this.blogCount=res.data.data.total;
+                var data = res.data;
+                if(data.status){
+                    this.articleList=data.data.records;
+                    this.blogCount=data.data.total;  
+                }else{
+                    ElMessage.error(data.message);
+                }
             })
         },
         toBlog(id){
@@ -77,9 +83,6 @@ export default {
             window.open(href, '_blank');
         }
     }
-    ,
-    setup(){
-    },
 };
 </script>
 

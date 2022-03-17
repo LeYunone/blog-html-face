@@ -3,7 +3,7 @@
         <div class="crumbs">
             <el-page-header v-if="tagName!=undefined" @back="prev" :content="tagName">
             </el-page-header>
-            <el-page-header v-else @back="prev" :content="typeName">
+            <el-page-header v-else @back="prev" >
             </el-page-header>
         </div>
         <div class="container2">
@@ -14,7 +14,7 @@
                 <el-timeline-item color="hsv" size="large" type="primary" :timestamp="item.createTime" :key="index" placement="top">
                     <el-card>
                         <a @click="toBlog(item.id)"><h1 class="blog_title">{{item.title}}</h1></a>
-                        <p class="blog_tips">乐云一 修改于 {{item.updateTime}}</p>
+                        <p class="blog_tips">乐云一 修改于 {{item.updateDt}}</p>
                     </el-card>
                 </el-timeline-item>
             </el-timeline>
@@ -29,7 +29,6 @@ import axios from "axios";
 export default {
     data() {
         return {
-            temp:"2018-1-1",
             articleList:[],
             index:1,
             size:20,
@@ -53,15 +52,21 @@ export default {
         thisTypeBlog(){
             const typeId = this.$route.query.typeId;
             axios({
-                url:"/leyuna/blog/blogIndex",
+                url:"/leyuna/blog/blogs",
                 method:"GET",
                 params:{
-                    "index":this.index,
-                    "size":this.size,
+                    index:this.index,
+                    size:this.size,
+                    blogType:1
                 }
             }).then((res) =>{
-                this.articleList=res.data.data.records;
-                this.blogCount=res.data.data.total;
+                var data = res.data;
+                if(data.status){
+                    this.articleList=data.data.records;
+                    this.blogCount=data.data.total;
+                }else{
+                    ElMessage.error(data.message);
+                }
             })
         },
         toBlog(id){

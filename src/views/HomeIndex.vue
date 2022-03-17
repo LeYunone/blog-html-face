@@ -225,6 +225,7 @@
             this.getList();
         },
         methods: {
+            //云盘相关
             tableClick(tab, event){
                 var fileType=tab.props.name;
                 this.default_fileList=fileType;
@@ -330,89 +331,29 @@
                     this.$refs.upload.submit()
                 })
             },
-            toBlogindex(tagName) {
-                this.$router.push({path: '', query: {tagName: tagName}});
-            },
-            open(id) {
-                let doc = document.getElementById(id);
-                if (doc.getAttribute("style").match("none")) {
-                    doc.setAttribute("style", "display:block")
-                } else {
-                    doc.setAttribute("style", "display:none")
-                }
-            },
-            toBlog(id) {
-                const {href} = this.$router.resolve({path: '/blog', query: {blogId: id}});
-                window.open(href, '_blank');
-            },
-            load() {
-                if (this.pageData.size != 10) {
-                    this.getList();
-                }
-                this.pageData.size += 3;
-            },
-            getList() {
-                axios({
-                    url: "/leyuna/blog/blogs",
-                    method: "get",
-                    params: {
-                        index: this.pageData.index,
-                        size: this.pageData.size
-                    }
-                }).then((res) => {
-                   var data=res.data;
-                   if(data.status){
-                       this.articleList = data.data.records;
-                   }else{
-                       this.$message({
-                           type: 'error',
-                           message: data.message
-                       });
-                   }
-                })
-            },
             openDisk() {
                 this.default_fileList="0",
-                axios({
-                    url: "/leyuna/disk/getDiskInfo",
-                    method: "GET",
-                    params:{
-                        fileType:this.default_fileList
-                    }
-                }).then((res) => {
-                    var data = res.data;
-                    if (data.status) {
-                        this.myFile = data.data.fileList;
-                        this.query.pageTotal = data.data.fileCount;
-                        this.fileTotalSize = data.data.fileTotalSize;
-                        this.user_disk = true;
-                        this.login_user = false;
-                    } else {
-                        //用户未登陆，弹出登陆框
-                        ElMessage.error(data.message);
-                        this.login_user = true;
-                    }
-                })
+                    axios({
+                        url: "/leyuna/disk/getDiskInfo",
+                        method: "GET",
+                        params:{
+                            fileType:this.default_fileList
+                        }
+                    }).then((res) => {
+                        var data = res.data;
+                        if (data.status) {
+                            this.myFile = data.data.fileList;
+                            this.query.pageTotal = data.data.fileCount;
+                            this.fileTotalSize = data.data.fileTotalSize;
+                            this.user_disk = true;
+                            this.login_user = false;
+                        } else {
+                            //用户未登陆，弹出登陆框
+                            ElMessage.error(data.message);
+                            this.login_user = true;
+                        }
+                    })
                 this.diskDrawer = true;
-            },
-            login() {
-                axios({
-                    url: "/leyuna/user/login",
-                    method: "POST",
-                    data: {
-                        "userName": this.form.userName,
-                        "passWord": this.form.passWord
-                    }
-                }).then((res => {
-                    var data = res.data;
-                    if (data.status) {
-                        this.openDisk();
-                    } else {
-                        ElMessage.error(data.message);
-                        this.form.userName = "";
-                        this.form.passWord = "";
-                    }
-                }))
             },
             deleteFile(index,row){
                 this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
@@ -467,14 +408,6 @@
                     window.URL.revokeObjectURL(href);
                 })
             },
-            close_login() {
-                this.diskDrawer = false;
-                this.login_user = false;
-            },
-            handlePageChange(val) {
-                this.query.pageIndex = val;
-                this.fileTable();
-            },
             fileTable() {
                 const blogId = this.$route.query.blogId;
                 axios({
@@ -493,6 +426,73 @@
                         this.fileCount=data.data.total;
                     }
                 })
+            },
+         
+            //博客相关   
+            toBlogindex(tagName) {
+                this.$router.push({path: '', query: {tagName: tagName}});
+            },
+            open(id) {
+                let doc = document.getElementById(id);
+                if (doc.getAttribute("style").match("none")) {
+                    doc.setAttribute("style", "display:block")
+                } else {
+                    doc.setAttribute("style", "display:none")
+                }
+            },
+            toBlog(id) {
+                const {href} = this.$router.resolve({path: '/blog', query: {blogId: id}});
+                window.open(href, '_blank');
+            },
+            load() {
+                if (this.pageData.size != 10) {
+                    this.getList();
+                }
+                this.pageData.size += 3;
+            },
+            getList() {
+                axios({
+                    url: "/leyuna/blog/blogs",
+                    method: "GET",
+                    params: {
+                        index: this.pageData.index,
+                        size: this.pageData.size
+                    }
+                }).then((res) => {
+                   var data=res.data;
+                   if(data.status){
+                       this.articleList = data.data.records;
+                   }else{
+                       ElMessage.error(data.message);
+                   }
+                })
+            },
+            login() {
+                axios({
+                    url: "/leyuna/user/login",
+                    method: "POST",
+                    data: {
+                        "userName": this.form.userName,
+                        "passWord": this.form.passWord
+                    }
+                }).then((res => {
+                    var data = res.data;
+                    if (data.status) {
+                        this.openDisk();
+                    } else {
+                        ElMessage.error(data.message);
+                        this.form.userName = "";
+                        this.form.passWord = "";
+                    }
+                }))
+            },
+            close_login() {
+                this.diskDrawer = false;
+                this.login_user = false;
+            },
+            handlePageChange(val) {
+                this.query.pageIndex = val;
+                this.fileTable();
             },
         },
         name: "home",

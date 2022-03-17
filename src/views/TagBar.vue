@@ -17,11 +17,14 @@
             </div>
             <div class="source">
                 <span v-for="(item,index) in tags">
-                    <el-tag class="mytag" type="danger"  v-if="item.useCount>50" @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
-                    <el-tag class="mytag" type="warning" v-else-if="item.useCount>30" @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
-                    <el-tag class="mytag" type="success" v-else-if="item.useCount>20" @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
+                    <el-tag class="mytag" type="danger" v-if="item.useCount>50" @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
+                    <el-tag class="mytag" type="warning" v-else-if="item.useCount>30"
+                            @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
+                    <el-tag class="mytag" type="success" v-else-if="item.useCount>20"
+                            @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
                     <el-tag class="mytag" v-else-if="item.useCount>10" @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
-                    <el-tag class="mytag" type="info" v-else @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
+                    <el-tag class="mytag" type="info" v-else
+                            @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
                 </span>
             </div>
             <div class="plugins-tips">
@@ -32,35 +35,41 @@
 </template>
 
 <script>
-    import { ref, reactive } from "vue";
-    import { ElMessage, ElMessageBox } from "element-plus";
+    import {ref, reactive} from "vue";
+    import {ElMessage, ElMessageBox} from "element-plus";
     import axios from "axios";
+
     export default {
-        setup(){
-            return {
-            };
+        setup() {
+            return {};
         },
-        mounted:function(){
+        mounted: function () {
             this.getTas();//需要触发的函数
         },
         methods: {
-            toBlogindex(tagName){
-                this.$router.push({path:'/blogindex',query:{tagName:tagName}});
+            toBlogindex(tagName) {
+                this.$router.push({path: '/blogindex', query: {tagName: tagName}});
             },
-            getTas(){
+            getTas() {
                 axios({
-                    url:"/leyuna/tagType/tags",
-                    method:"GET",
+                    url: "/leyuna/tagType/tags",
+                    method: "GET",
                 }).then((res) => {
-                    this.tags=res.data.data.records;
-                    this.tagCount=res.data.data.total;
+                    var data = res.data;
+                    if (data.status) {
+                        this.tags = data.data.records;
+                        this.tagCount = data.data.total;
+                    } else {
+                        ElMessage.error(data.message);
+                    }
+
                 })
             }
         },
         data() {
             return {
-                tags:[],
-                tagCount:"",
+                tags: [],
+                tagCount: "",
             };
         }
     };

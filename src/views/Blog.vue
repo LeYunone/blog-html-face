@@ -300,11 +300,12 @@
                       commentId:comment.id
                   }
               }).then((res) => {
-                  if(!res.data.status){
-                      this.$message.error(res.data.message);
-                  }else{
+                  var data = res.data;
+                  if(data.status){
                       this.$message.success("点赞成功");
                       comment.goods+=1;
+                  }else{
+                      this.$message.error(data.message);
                   }
               })
             },
@@ -325,15 +326,16 @@
                         respondent: reName,
                     }
                 }).then((res) => {
-                    if (res.data.status) {
-                        this.$message.error(res.data.message);
-                    } else {
+                    var data = res.data;
+                    if (data.status) {
                         this.$message.success("发布成功");
                         this.replyCommentText = "";
                         this.subForm.name = "";
                         this.subForm.information = "";
                         this.isReply = "";
                         this.comment();
+                    } else {
+                        this.$message.error(data.message);
                     }
                 })
             },
@@ -409,9 +411,8 @@
                         dataType: 'json',
                         data: formData
                     }).then((res) => {
-                        if (!res.data.status) {
-                            this.$message.error(res.data.message);
-                        } else {
+                        var data = res.data;
+                        if (data.status) {
                             const blogId = this.$route.query.blogId;
                             //添加本次评论
                             axios({
@@ -420,24 +421,27 @@
                                 data: {
                                     content: this.commentText,
                                     name: this.form.name,
-                                    commentHead: res.data.data,
+                                    commentHead: data.data,
                                     information: this.form.information,
                                     blogId: blogId,
-                                    ip: res.data.message
+                                    ip: data.message
                                 }
                             }).then((res) => {
-                                if (!res.data.status) {
-                                    this.$message.error(res.data.message);
-                                } else {
+                                var data = res.data;
+                                if (data.status) {
                                     this.valiValue=true;
                                     this.$message.success("发布成功");
                                     this.commentText = "";
                                     this.form.name = "";
                                     this.form.information = "";
                                     this.query.pageTotal += 1;
-                                    this.commentList.splice(0, 0, res.data.data);
+                                    this.commentList.splice(0, 0, data.data);
+                                } else {
+                                    this.$message.error(data.message);
                                 }
                             })
+                        } else {
+                            this.$message.error(data.message);
                         }
                     })
                 }
@@ -480,8 +484,13 @@
                         type: this.commentType
                     },
                 }).then((res) => {
-                    this.commentList = res.data.data.records;
-                    this.query.pageTotal = res.data.data.total;
+                    var data = rse.data;
+                    if(data.status){
+                        this.commentList = data.data.records;
+                        this.query.pageTotal = data.data.total;
+                    }else {
+                        ElMessage.error(data.message);
+                    }
                 })
             },
             tabClick(tab, event) {
@@ -521,13 +530,18 @@
                     url: "/leyuna/blog/blog/" + blogId,
                     method: "GET",
                 }).then((res) => {
-                    let blog = res.data.data;
-                    this.blogTitle = blog.title;
-                    this.blogContent = blog.blogContent;
-                    this.html = xss.process(VueMarkdownEditor.vMdParser.themeConfig.markdownParser.render(this.blogContent));
-                    this.remarks = blog.remarks;
-                    this.createTime = blog.createTime;
-                    this.updateTime = blog.updateTime;
+                    var data = res.data;
+                    if(data.status){
+                        let blog = data.data;
+                        this.blogTitle = blog.title;
+                        this.blogContent = blog.blogContent;
+                        this.html = xss.process(VueMarkdownEditor.vMdParser.themeConfig.markdownParser.render(this.blogContent));
+                        this.remarks = blog.remarks;
+                        this.createTime = blog.createTime;
+                        this.updateTime = blog.updateTime;
+                    }else{
+                        ElMessage.error(data.message);
+                    }
                 })
             },
         },

@@ -262,7 +262,7 @@
                 let formData = new FormData();
                 formData.append('file', file);
                 const res = await axios({
-                    url: "/leyuna/file/requestSaveFile",
+                    url: "/leyuna/disk/requestSaveFile",
                     method: "POST",
                     async: false,
                     processData: false, // 使数据不做处理

@@ -84,7 +84,8 @@
                 <div class="do-information">
                     <el-form inline="true" label-width="70px">
                         <el-form-item>
-                            <p style="color:#DB2828;font-family:'PingFang SC','Microsoft YaHei',Roboto,Arial,sans-serif">[头像:一天一次]</p>
+                            <p style="color:#DB2828;font-family:'PingFang SC','Microsoft YaHei',Roboto,Arial,sans-serif">
+                                [头像:一天一次]</p>
                             <el-upload
                                     class="avatar-uploader"
                                     action="/leyuna/tourist/requestUpImg"
@@ -122,7 +123,7 @@
                         <div class="comment-head">
                             <span>{{item.name}}</span>
                             <span class="webKing" v-if="item.admin==='admin'">站主</span>
-                            <span class="comment-time">{{item.createTime}}</span>
+                            <span class="comment-time">{{item.createDt}}</span>
                         </div>
                         <div class="comment-info">{{item.information}}</div>
                         <div class="comment-content">
@@ -173,9 +174,10 @@
                                     <div v-html="subItem.content"></div>
                                 </div>
                                 <span @click="closeReply(subItem.id)" class="cancel-reply" v-if="isReply===subItem.id"
-                                     style="color: crimson">取消回复
+                                      style="color: crimson">取消回复
                                 </span>
-                                <span @click="openReply(subItem.id)" v-else class="reply"><i class="el-icon-message"></i>回复
+                                <span @click="openReply(subItem.id)" v-else class="reply"><i
+                                        class="el-icon-message"></i>回复
                                 </span>
                                 <span>
                                      <svg @click="goods(subItem)" class="this-icon" aria-hidden="true">
@@ -282,7 +284,7 @@
                 tag: "",
                 ifNav: true,
                 commentList: [],
-                commentType: 1,
+                commentType: 2,
                 file: File,
                 valiValue: true
             };
@@ -292,22 +294,22 @@
             this.comment(); //拿评论
         },
         methods: {
-            goods(comment){
-              axios({
-                  url:"/leyuna/tourist/goods",
-                  method:"GET",
-                  params:{
-                      commentId:comment.id
-                  }
-              }).then((res) => {
-                  var data = res.data;
-                  if(data.status){
-                      this.$message.success("点赞成功");
-                      comment.goods+=1;
-                  }else{
-                      this.$message.error(data.message);
-                  }
-              })
+            goods(comment) {
+                axios({
+                    url: "/leyuna/tourist/goods",
+                    method: "GET",
+                    params: {
+                        commentId: comment.id
+                    }
+                }).then((res) => {
+                    var data = res.data;
+                    if (data.status) {
+                        this.$message.success("点赞成功");
+                        comment.goods += 1;
+                    } else {
+                        this.$message.error(data.message);
+                    }
+                })
             },
             closeReply(id) {
                 this.isReply = "";
@@ -396,63 +398,63 @@
                 //校验
                 this.validator();
                 if (!this.valiValue) {
+                    this.valiValue = true;
                     return false;
                 }
-                if (this.file != "") {
-                    console.log(this.file)
-                    //如果游客上传了图片，则去文件服务器处理
-                    let formData = new FormData();
-                    formData.append('file', this.file);
-                    axios({
-                        url: "/leyuna/server/tourist/upImg",
-                        method: "POST",
-                        processData: false, // 使数据不做处理
-                        contentType: false,
-                        dataType: 'json',
-                        data: formData
-                    }).then((res) => {
-                        var data = res.data;
-                        if (data.status) {
-                            const blogId = this.$route.query.blogId;
-                            //添加本次评论
-                            axios({
-                                url: "/leyuna/tourist/commpent",
-                                method: "POST",
-                                data: {
-                                    content: this.commentText,
-                                    name: this.form.name,
-                                    commentHead: data.data,
-                                    information: this.form.information,
-                                    blogId: blogId,
-                                    ip: data.message
-                                }
-                            }).then((res) => {
-                                var data = res.data;
-                                if (data.status) {
-                                    this.valiValue=true;
-                                    this.$message.success("发布成功");
-                                    this.commentText = "";
-                                    this.form.name = "";
-                                    this.form.information = "";
-                                    this.query.pageTotal += 1;
-                                    this.commentList.splice(0, 0, data.data);
-                                } else {
-                                    this.$message.error(data.message);
-                                }
-                            })
-                        } else {
-                            this.$message.error(data.message);
-                        }
-                    })
-                }
+                console.log(this.file)
+                //如果游客上传了图片，则去文件服务器处理
+                let formData = new FormData();
+                formData.append('file', this.file);
+                axios({
+                    url: "/leyuna/server/tourist/upImg",
+                    method: "POST",
+                    processData: false, // 使数据不做处理
+                    contentType: false,
+                    dataType: 'json',
+                    data: formData
+                }).then((res) => {
+                    var data = res.data;
+                    if (data.status) {
+                        const blogId = this.$route.query.blogId;
+                        //添加本次评论
+                        axios({
+                            url: "/leyuna/tourist/commpent",
+                            method: "POST",
+                            data: {
+                                content: this.commentText,
+                                name: this.form.name,
+                                commentHead: data.data,
+                                information: this.form.information,
+                                blogId: blogId,
+                                ip: data.message
+                            }
+                        }).then((res) => {
+                            var data = res.data;
+                            if (data.status) {
+                                this.valiValue = true;
+                                this.$message.success("发布成功");
+                                this.commentText = "";
+                                this.form.name = "";
+                                this.form.information = "";
+                                this.query.pageTotal += 1;
+                                this.commentList.splice(0, 0, data.data);
+                            } else {
+                                this.$message.error(data.message);
+                            }
+                        })
+                    } else {
+                        this.$message.error(data.message);
+                    }
+                })
             },
             handleAvatarSuccess(res, file) {
-                if (!res.status) {
-                    this.$message.error("别太频繁，明天再来换头像吧");
-                    this.imageUrl = res.message;
-                } else {
+                var data = res.data;
+                if (data.status) {
                     this.imageUrl = URL.createObjectURL(file.raw);
                     this.file = file.raw;
+                } else {
+                    this.$message.error("别太频繁，明天再来换头像吧");
+                    this.imageUrl = res.message;
                 }
             },
             beforeAvatarUpload(file) {
@@ -481,14 +483,14 @@
                         index: this.query.pageIndex,
                         size: this.query.pageSize,
                         blogId: blogId,
-                        type: this.commentType
+                        sortType: this.commentType
                     },
                 }).then((res) => {
-                    var data = rse.data;
-                    if(data.status){
+                    var data = res.data;
+                    if (data.status) {
                         this.commentList = data.data.records;
                         this.query.pageTotal = data.data.total;
-                    }else {
+                    } else {
                         ElMessage.error(data.message);
                     }
                 })
@@ -531,7 +533,7 @@
                     method: "GET",
                 }).then((res) => {
                     var data = res.data;
-                    if(data.status){
+                    if (data.status) {
                         let blog = data.data;
                         this.blogTitle = blog.title;
                         this.blogContent = blog.blogContent;
@@ -539,7 +541,7 @@
                         this.remarks = blog.remarks;
                         this.createTime = blog.createTime;
                         this.updateTime = blog.updateTime;
-                    }else{
+                    } else {
                         ElMessage.error(data.message);
                     }
                 })

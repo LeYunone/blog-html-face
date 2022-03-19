@@ -43,7 +43,7 @@ export default {
 
     methods: {
         load(){
-            if(this.size!=23){
+            if(this.size!=20){
                 this.thisHistory();
             }
             this.size+=3;

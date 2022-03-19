@@ -564,6 +564,7 @@
                         if (document.querySelector('.main').scrollTop <= top - 60)
                             clearInterval(timer)
                     }
+                    
                     console.log(document.querySelector('.main').scrollTop + "===" + top)
                 }, 20)
             };

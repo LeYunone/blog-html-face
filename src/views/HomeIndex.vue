@@ -246,8 +246,10 @@
                 }).then((res) => {
                     var data = res.data;
                     if (data.status) {
-                        this.myFile = data.data.records;
-                        this.query.pageTotal = data.data.total;
+                        this.myFile = data.data.fileinfos.records;
+                        this.query.pageTotal = data.data.fileinfos.total;
+                    } else {
+                        ElMessage.error(data.message);
                     }
                 })
             },
@@ -275,7 +277,7 @@
                     processData: false, // 使数据不做处理
                     contentType: false,
                     dataType: 'json',
-                    data: {fileBean: formData}
+                    data: formData
                 })
                 // .then(res => {
                 var d = res.data;
@@ -319,9 +321,9 @@
                             console.log(data);
                             this.percentage = 0;
                             ElMessage.success("上传成功");
-                            this.myFile = data.data.fileList;
-                            this.query.pageTotal = data.data.fileCount;
-                            this.fileTotalSize = data.data.fileTotalSize;
+                            this.myFile = data.data.fileinfos.records;
+                            this.query.pageTotal = data.data.fileinfos.total;
+                            this.fileTotalSize = data.data.fileTotalStr;
                         } else {
                             ElMessage.error(data.message);
                         }
@@ -344,14 +346,15 @@
                         url: "/leyuna/disk/getDiskInfo",
                         method: "GET",
                         params: {
-                            fileType: this.default_fileList
+                            fileType: this.default_fileList,
+                            type: this.orderType
                         }
                     }).then((res) => {
                         var data = res.data;
                         if (data.status) {
-                            this.myFile = data.data.fileList;
-                            this.query.pageTotal = data.data.fileCount;
-                            this.fileTotalSize = data.data.fileTotalSize;
+                            this.myFile = data.data.fileinfos.records;
+                            this.query.pageTotal = data.data.fileinfos.total;
+                            this.fileTotalSize = data.data.fileTotalStr;
                             this.user_disk = true;
                             this.login_user = false;
                         } else {

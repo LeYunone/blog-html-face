@@ -61,7 +61,9 @@
                         size="35%"
                         :with-header="false">
                     <div id="user_disk" v-if="user_disk">
-                        <el-progress style="margin-left:250px;margin-top:14px" type="circle" :percentage="fileTotalSize">内存:{{this.fileTotalSize}}%</el-progress>
+                        <el-progress style="margin-left:250px;margin-top:14px" type="circle"
+                                     :percentage="fileTotalSize">内存:{{this.fileTotalSize}}%
+                        </el-progress>
                         <el-upload
                                 class="upload-frame"
                                 ref="upload"
@@ -73,9 +75,12 @@
                                 :auto-upload="false">
                             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
                         </el-upload>
-                        <el-progress style="width: 400px" :stroke-width="24" v-if="show" :percentage="percentage"></el-progress>
+                        <el-progress style="width: 400px" :stroke-width="24" v-if="show"
+                                     :percentage="percentage"></el-progress>
 
-                        <el-button size="small" style="margin: 10px;" type="success" @click="submitUpload">&nbsp上传&nbsp </el-button>
+                        <el-button size="small" style="margin: 10px;" type="success" @click="submitUpload">
+                            &nbsp上传&nbsp
+                        </el-button>
                         <el-date-picker :disabled-date="publishDateAfter"
                                         type="date" placeholder="保存时间" v-model="upLoadParam.saveTime"
                                         value-format="YYYY-MM-DD"
@@ -133,7 +138,9 @@
                                         width="100">
                                     <template #default='scope'>
                                         <el-button @click="downFile(scope.row)" type="text" size="small">下载</el-button>
-                                        <el-button @click="deleteFile(scope.$index,scope.row)" type="text" style="color: red" size="small">删除</el-button>
+                                        <el-button @click="deleteFile(scope.$index,scope.row)" type="text"
+                                                   style="color: red" size="small">删除
+                                        </el-button>
                                     </template>
                                 </el-table-column>
                             </el-table>
@@ -190,8 +197,8 @@
     export default {
         data() {
             return {
-                percentage:"",
-                show:"",
+                percentage: "",
+                show: "",
                 uploadUrl: "",
                 default_fileList: "0",
                 form: {
@@ -208,12 +215,12 @@
                     index: 1,
                     size: 10
                 },
-                articleList:[],
+                articleList: [],
                 fileList: [],
-                myFile:[],
+                myFile: [],
                 fileTotalSize: 0,
                 upLoadValiValue: -1,
-                orderType:3,
+                orderType: 3,
                 query: {
                     pageSize: 10,
                     pageTotal: 0,
@@ -226,28 +233,28 @@
         },
         methods: {
             //云盘相关
-            tableClick(tab, event){
-                var fileType=tab.props.name;
-                this.default_fileList=fileType;
+            tableClick(tab, event) {
+                var fileType = tab.props.name;
+                this.default_fileList = fileType;
                 axios({
-                    url:"/leyuna/disk/getDiskFileList",
-                    method:"GET",
-                    params:{
-                        fileType:fileType,
-                        type:this.orderType
+                    url: "/leyuna/disk/getDiskInfo",
+                    method: "GET",
+                    params: {
+                        fileType: fileType,
+                        type: this.orderType
                     }
                 }).then((res) => {
-                    var data=res.data;
-                    if(data.status){
-                        this.myFile=data.data.records;
-                        this.query.pageTotal=data.data.total;
+                    var data = res.data;
+                    if (data.status) {
+                        this.myFile = data.data.records;
+                        this.query.pageTotal = data.data.total;
                     }
                 })
             },
             getSTime(val) {
                 this.val = this.val.format("YYYY-MM-DD");
                 alert(val)
-                this.upLoadParam.saveTime=val;
+                this.upLoadParam.saveTime = val;
             },
             publishDateAfter(time) {
                 return time.getTime() <= Date.now();
@@ -268,7 +275,7 @@
                     processData: false, // 使数据不做处理
                     contentType: false,
                     dataType: 'json',
-                    data: formData
+                    data: {fileBean: formData}
                 })
                 // .then(res => {
                 var d = res.data;
@@ -291,8 +298,8 @@
                 if (upLoadValiValue == 1) {
                     let formData = new FormData();
                     formData.append('file', file);
-                    formData.append('saveTime',this.upLoadParam.saveTime)
-                    this.show=true;
+                    formData.append('saveTime', this.upLoadParam.saveTime)
+                    this.show = true;
                     axios({
                         url: "/leyuna/disk/uploadFile",
                         method: "POST",
@@ -310,7 +317,7 @@
                         var data = res.data;
                         if (data.status) {
                             console.log(data);
-                            this.percentage=0;
+                            this.percentage = 0;
                             ElMessage.success("上传成功");
                             this.myFile = data.data.fileList;
                             this.query.pageTotal = data.data.fileCount;
@@ -332,12 +339,12 @@
                 })
             },
             openDisk() {
-                this.default_fileList="0",
+                this.default_fileList = "0",
                     axios({
                         url: "/leyuna/disk/getDiskInfo",
                         method: "GET",
-                        params:{
-                            fileType:this.default_fileList
+                        params: {
+                            fileType: this.default_fileList
                         }
                     }).then((res) => {
                         var data = res.data;
@@ -355,28 +362,28 @@
                     })
                 this.diskDrawer = true;
             },
-            deleteFile(index,row){
+            deleteFile(index, row) {
                 this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
                     axios({
-                        url:"/leyuna/disk/deleteFile",
-                        method:"GET",
-                        params:{
-                            fileId:row.id
+                        url: "/leyuna/disk/deleteFile",
+                        method: "GET",
+                        params: {
+                            fileId: row.id
                         }
-                    }).then(res=>{
-                        var data=res.data;
-                        if(data.status){
+                    }).then(res => {
+                        var data = res.data;
+                        if (data.status) {
                             this.myFile.splice(index, 1);
-                            this.fileTotalSize=data.data;
+                            this.fileTotalSize = data.data;
                             this.$message({
                                 type: 'success',
                                 message: '删除成功!'
                             });
-                        }else{
+                        } else {
                             ElMessage.error(data.message);
                         }
                     })
@@ -387,15 +394,15 @@
                     });
                 });
             },
-            downFile(row){
+            downFile(row) {
                 axios({
-                    url:"/leyuna/disk/downFile",
-                    method:"GET",
-                    params:{
-                        fileId:row.id
+                    url: "/leyuna/disk/downFile",
+                    method: "GET",
+                    params: {
+                        fileId: row.id
                     },
                     responseType: 'blob'
-                }).then((res)=>{
+                }).then((res) => {
                     const filename = res.headers["content-disposition"];
                     const blob = new Blob([res.data]);
                     var downloadElement = document.createElement("a");
@@ -417,17 +424,17 @@
                         index: this.query.pageIndex,
                         size: this.query.pageSize,
                         fileType: this.default_fileList,
-                        type:this.orderType
+                        type: this.orderType
                     },
                 }).then((res) => {
-                    var data=res.data;
-                    if(data.status){
-                        this.myFile=data.data.records;
-                        this.fileCount=data.data.total;
+                    var data = res.data;
+                    if (data.status) {
+                        this.myFile = data.data.records;
+                        this.fileCount = data.data.total;
                     }
                 })
             },
-         
+
             //博客相关   
             toBlogindex(tagName) {
                 this.$router.push({path: '', query: {tagName: tagName}});
@@ -459,12 +466,12 @@
                         size: this.pageData.size
                     }
                 }).then((res) => {
-                   var data=res.data;
-                   if(data.status){
-                       this.articleList = data.data.records;
-                   }else{
-                       ElMessage.error(data.message);
-                   }
+                    var data = res.data;
+                    if (data.status) {
+                        this.articleList = data.data.records;
+                    } else {
+                        ElMessage.error(data.message);
+                    }
                 })
             },
             login() {

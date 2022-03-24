@@ -108,8 +108,9 @@
                         <el-form-item>
                             <el-button type="success" @click="sumbitComment">提交</el-button>
                         </el-form-item>
-                        <v-md-editor left-toolbar="undo|redo|clear|bold|italic|strikethrough|ul|ol|link|code"
-                                     right-toolbar="" mode="edit" v-model="commentText" :include-level="[1,2,3,4]"
+                        <v-md-editor left-toolbar="undo|redo|clear|bold italic strikethrough|ul ol|link code |emoji emoToolbar"
+                                     :toolbar="toolbar"
+                                     right-toolbar="sync-scroll preview" mode="edit" v-model="commentText"
                                      height="300px" disabled-menus="[]"></v-md-editor>
                         <div class="length-count">{{commentText.length}}/500[30s/]</div>
                     </el-form>
@@ -151,9 +152,9 @@
                                     <el-button type="success" @click="sumbitReplyComment(item.id,item.name)">提交
                                     </el-button>
                                 </el-form-item>
-                                <v-md-editor left-toolbar="undo|redo|clear|bold|italic|strikethrough|ul|ol|link|code"
-                                             right-toolbar="" mode="edit" v-model="replyCommentText"
-                                             :include-level="[1,2,3,4]"
+                                <v-md-editor left-toolbar="undo|redo|clear|bold italic strikethrough|ul ol|link code |emoji replayEmoToolbar"
+                                             right-toolbar="sync-scroll preview" mode="edit" v-model="replyCommentText"
+                                             :toolbar="toolbar"
                                              height="180px" disabled-menus="[]"></v-md-editor>
                                 <div class="length-count">{{replyCommentText.length}}/500</div>
                             </el-form>
@@ -200,11 +201,10 @@
                                                 提交
                                             </el-button>
                                         </el-form-item>
-                                        <v-md-editor
-                                                left-toolbar="undo|redo|clear|bold|italic|strikethrough|ul|ol|link|code"
-                                                right-toolbar="" mode="edit" v-model="replyCommentText"
-                                                :include-level="[1,2,3,4]"
-                                                height="180px" disabled-menus="[]"></v-md-editor>
+                                        <v-md-editor left-toolbar="undo|redo|clear|bold italic strikethrough|ul ol|link code |emoji replayEmoToolbar"
+                                                     right-toolbar="sync-scroll preview" mode="edit" v-model="replyCommentText"
+                                                     :toolbar="toolbar"
+                                                     height="180px" disabled-menus="[]"></v-md-editor>
                                         <div class="length-count">{{replyCommentText.length}}/500</div>
                                     </el-form>
                                 </div>
@@ -236,6 +236,29 @@
                     fit="cover"></el-image>
         </div>
     </el-dialog>
+    <el-dialog
+            title="emo"
+            v-model="emoDia"
+            width="36%"
+            center>
+        <el-image v-for="item in emoImg"
+                  style="width: 60px; height: 60px;margin: 9px"
+                  :src="item"
+                  @click="markEmoImg(item)"
+                  fit="contain"></el-image>
+    </el-dialog>
+
+    <el-dialog
+            title="emo"
+            v-model="emoReDia"
+            width="36%"
+            center>
+        <el-image v-for="item in emoReImg"
+                  style="width: 60px; height: 60px;margin: 9px"
+                  :src="item"
+                  @click="markReEmoImg(item)"
+                  fit="contain"></el-image>
+    </el-dialog>
 
 </template>
 <script>
@@ -249,7 +272,29 @@
 
     export default {
         data() {
+            let self = this
             return {
+                emoDia: false,
+                emoImg: [],
+
+                emoReDia: false,
+                emoReImg: [],
+                toolbar: {
+                    emoToolbar: {
+                        icon: 'el-icon-chat-line-round',
+                        title: '表情包',
+                        action() {
+                            self.getEmoList();
+                        },
+                    },
+                    replayEmoToolbar: {
+                        icon: 'el-icon-chat-line-round',
+                        title: '表情包',
+                        action() {
+                            self.getReEmoList();
+                        },
+                    },
+                },
                 isReply: "",
                 imageUrl: "",
                 subForm: {
@@ -294,6 +339,49 @@
             this.comment(); //拿评论
         },
         methods: {
+            //添加表情包到mark中
+            markEmoImg(emo){
+                this.commentText=this.commentText+"![emo]("+emo+"){{{width=\"auto\" height=\"auto\"}}}";
+                this.emoDia = false;
+            },
+            //获得服务器表情包
+            getEmoList(){
+                axios({
+                    url: "/leyuna/blog/getEmoticon",
+                    method: "GET"
+                }).then((res) => {
+                    var data = res.data;
+                    if (data.status) {
+                        this.emoImg = data.data;
+                    } else {
+                        ElMessage.error(data.message);
+                    }
+                    console.log(this.emoImg)
+                })
+                this.emoDia = true;
+            },
+
+            //回复层面
+            markReEmoImg(emo){
+                this.replyCommentText=this.replyCommentText+"![emo]("+emo+"){{{width=\"auto\" height=\"auto\"}}}";
+                this.emoReDia = false;
+            },
+            getReEmoList(){
+                axios({
+                    url: "/leyuna/blog/getEmoticon",
+                    method: "GET"
+                }).then((res) => {
+                    var data = res.data;
+                    if (data.status) {
+                        this.emoReImg = data.data;
+                    } else {
+                        ElMessage.error(data.message);
+                    }
+                    console.log(this.emoImg)
+                })
+                this.emoReDia = true;
+            },
+
             goods(comment) {
                 axios({
                     url: "/leyuna/tourist/goods",

@@ -108,10 +108,11 @@
                         <el-form-item>
                             <el-button type="success" @click="sumbitComment">提交</el-button>
                         </el-form-item>
-                        <v-md-editor left-toolbar="undo|redo|clear|bold italic strikethrough|ul ol|link code |emoji emoToolbar"
-                                     :toolbar="toolbar"
-                                     right-toolbar="sync-scroll preview" mode="edit" v-model="commentText"
-                                     height="300px" disabled-menus="[]"></v-md-editor>
+                        <v-md-editor
+                                left-toolbar="undo|redo|clear|bold italic strikethrough|ul ol|link code |emoji emoToolbar"
+                                :toolbar="toolbar"
+                                right-toolbar="sync-scroll preview"  v-model="commentText"
+                                height="300px" disabled-menus="[]"></v-md-editor>
                         <div class="length-count">{{commentText.length}}/500[30s/]</div>
                     </el-form>
                 </div>
@@ -152,10 +153,11 @@
                                     <el-button type="success" @click="sumbitReplyComment(item.id,item.name)">提交
                                     </el-button>
                                 </el-form-item>
-                                <v-md-editor left-toolbar="undo|redo|clear|bold italic strikethrough|ul ol|link code |emoji replayEmoToolbar"
-                                             right-toolbar="sync-scroll preview" mode="edit" v-model="replyCommentText"
-                                             :toolbar="toolbar"
-                                             height="180px" disabled-menus="[]"></v-md-editor>
+                                <v-md-editor
+                                        left-toolbar="undo|redo|clear|bold italic strikethrough|ul ol|link code |emoji replayEmoToolbar"
+                                        right-toolbar="sync-scroll preview"  v-model="replyCommentText"
+                                        :toolbar="toolbar"
+                                        height="240px" disabled-menus="[]"></v-md-editor>
                                 <div class="length-count">{{replyCommentText.length}}/500</div>
                             </el-form>
                         </div>
@@ -201,10 +203,12 @@
                                                 提交
                                             </el-button>
                                         </el-form-item>
-                                        <v-md-editor left-toolbar="undo|redo|clear|bold italic strikethrough|ul ol|link code |emoji replayEmoToolbar"
-                                                     right-toolbar="sync-scroll preview" mode="edit" v-model="replyCommentText"
-                                                     :toolbar="toolbar"
-                                                     height="180px" disabled-menus="[]"></v-md-editor>
+                                        <v-md-editor
+                                                left-toolbar="undo|redo|clear|bold italic strikethrough|ul ol|link code |emoji replayEmoToolbar"
+                                                right-toolbar="sync-scroll preview"
+                                                v-model="replyCommentText"
+                                                :toolbar="toolbar"
+                                                height="240px" disabled-menus="[]"></v-md-editor>
                                         <div class="length-count">{{replyCommentText.length}}/500</div>
                                     </el-form>
                                 </div>
@@ -340,12 +344,12 @@
         },
         methods: {
             //添加表情包到mark中
-            markEmoImg(emo){
-                this.commentText=this.commentText+"![emo]("+emo+"){{{width=\"auto\" height=\"auto\"}}}";
+            markEmoImg(emo) {
+                this.commentText = this.commentText + "![emo](" + emo + "){{{width=\"auto\" height=\"auto\"}}}";
                 this.emoDia = false;
             },
             //获得服务器表情包
-            getEmoList(){
+            getEmoList() {
                 axios({
                     url: "/leyuna/blog/getEmoticon",
                     method: "GET"
@@ -362,11 +366,11 @@
             },
 
             //回复层面
-            markReEmoImg(emo){
-                this.replyCommentText=this.replyCommentText+"![emo]("+emo+"){{{width=\"auto\" height=\"auto\"}}}";
+            markReEmoImg(emo) {
+                this.replyCommentText = this.replyCommentText + "![emo](" + emo + "){{{width=\"auto\" height=\"auto\"}}}";
                 this.emoReDia = false;
             },
-            getReEmoList(){
+            getReEmoList() {
                 axios({
                     url: "/leyuna/blog/getEmoticon",
                     method: "GET"
@@ -654,7 +658,7 @@
                         if (document.querySelector('.main').scrollTop <= top - 60)
                             clearInterval(timer)
                     }
-                    
+
                     console.log(document.querySelector('.main').scrollTop + "===" + top)
                 }, 20)
             };

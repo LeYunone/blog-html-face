@@ -77,7 +77,7 @@
                 <v-md-preview-html :html="html" preview-class="vuepress-markdown-body"></v-md-preview-html>
             </div>
             <div class="bottom-tip">
-                <p>版权声明：本站原创文章，于{{createTime}}，乐云一发表</p>
+                <p>版权声明：本站原创文章，于{{createDt}}，乐云一发表</p>
                 <p style="margin-top: 4px;">转载请注明:leyuna.xyz</p>
             </div>
             <div class="do-comment">
@@ -170,7 +170,7 @@
                                     <span class="webKing" v-if="subItem.admin==='admin'">站主</span>
                                     <span style="color: #8590a6;padding: 10px">回复</span>
                                     <span>{{subItem.respondent}}</span>
-                                    <span class="comment-time">{{subItem.createTime}}</span>
+                                    <span class="comment-time">{{subItem.createDt}}</span>
                                 </div>
                                 <div class="comment-info">{{subItem.information}}</div>
                                 <div class="comment-content">
@@ -631,8 +631,8 @@
                         this.blogContent = blog.blogContent;
                         this.html = xss.process(VueMarkdownEditor.vMdParser.themeConfig.markdownParser.render(this.blogContent));
                         this.remarks = blog.remarks;
-                        this.createTime = blog.createTime;
-                        this.updateTime = blog.updateTime;
+                        this.createTime = blog.createDt;
+                        this.updateTime = blog.updateDt;
                     } else {
                         ElMessage.error(data.message);
                     }

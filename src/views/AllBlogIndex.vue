@@ -11,7 +11,7 @@
                 共 {{blogCount}} 篇
             </div>
             <el-timeline v-for="(item,index) in articleList">
-                <el-timeline-item color="hsv" size="large" type="primary" :timestamp="item.createTime" :key="index" placement="top">
+                <el-timeline-item color="hsv" size="large" type="primary" :timestamp="item.createDt" :key="index" placement="top">
                     <el-card>
                         <a @click="toBlog(item.id)"><h1 class="blog_title">{{item.title}}</h1></a>
                         <p class="blog_tips">乐云一 修改于 {{item.updateDt}}</p>

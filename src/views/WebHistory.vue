@@ -6,11 +6,11 @@
         </div>
         <div class="container2">
             <el-timeline v-for="(item,index) in articleList">
-                <el-timeline-item color="hsv" size="large" type="primary" :timestamp="item.createTime" :key="index" placement="top">
+                <el-timeline-item color="hsv" size="large" type="primary" :timestamp="item.createDt" :key="index" placement="top">
                     <el-collapse >
                         <el-collapse-item :title="item.title">
                             <div>
-                                <v-md-editor v-model="item.content" mode="preview"></v-md-editor>
+                                <v-md-editor v-model="item.blogContent" mode="preview"></v-md-editor>
                             </div>
                         </el-collapse-item>
                     </el-collapse>

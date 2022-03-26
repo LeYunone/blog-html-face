@@ -10,7 +10,7 @@
                         <div class="clearfix">
                             <span></span>
                         </div>
-                        <el-divider content-position="center"><i class="el-icon-date"></i>{{item.createTime}}
+                        <el-divider content-position="center"><i class="el-icon-date"></i>{{item.createDt}}
                         </el-divider>
                         <div class="blog-content">
                             <div class="blog-content-into" v-html="item.remarks"></div>

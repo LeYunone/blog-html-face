@@ -226,7 +226,7 @@
         methods: {
             //添加表情包到mark中
             markEmoImg(emo) {
-                this.commentText = this.commentText + "![emo](" + emo + "){{{width=\"auto\" height=\"auto\"}}}";
+                this.commentText = this.commentText + "![emo](" + emo + "){{{width=\"100\" height=\"100\"}}}";
                 this.emoDia = false;
             },
             //获得服务器表情包
@@ -248,7 +248,7 @@
 
             //回复层面
             markReEmoImg(emo) {
-                this.replyCommentText = this.replyCommentText + "![emo](" + emo + "){{{width=\"auto\" height=\"auto\"}}}";
+                this.replyCommentText = this.replyCommentText + "![emo](" + emo + "){{{width=\"100\" height=\"100\"}}}";
                 this.emoReDia = false;
             },
             getReEmoList() {

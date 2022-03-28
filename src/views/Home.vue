@@ -35,9 +35,6 @@
     import vHeader from "../components/Header.vue";
     import vSidebar from "../components/Sidebar.vue";
     import vTags from "../components/Tags.vue";
-    import qqUrl from "../assets/img/qq.png";
-    import wxUrl from "../assets/img/wx.png";
-    import headUrl from "../assets/img/head.jpg";
 
     export default {
         data(){

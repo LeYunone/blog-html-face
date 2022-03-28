@@ -76,7 +76,7 @@
                 <v-md-editor :model-value="blogContent" mode="preview"></v-md-editor>
             </div>
             <div class="bottom-tip">
-                <p>版权声明：本站原创文章，于{{createDt}}，乐云一发表</p>
+                <p>版权声明：本站原创文章，于{{createTime}}，乐云一发表</p>
                 <p style="margin-top: 4px;">转载请注明:leyuna.xyz</p>
             </div>
         </div>

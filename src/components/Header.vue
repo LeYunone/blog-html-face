@@ -105,7 +105,7 @@ export default {
                 axios({
                     url:"/leyuna/blog/search",
                     params:{
-                        key:title,
+                        title:title,
                         index:this.query.pageIndex,
                         size:this.query.pageSize
                     },

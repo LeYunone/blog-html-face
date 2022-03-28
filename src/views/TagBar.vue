@@ -12,17 +12,16 @@
             <div class="plugins-tips">
                 <P class="tip_title">
                     <i class="el-icon-collection-tag">标签</i>
-                    <span class="rt"> 红的用的多 ； 黄的也用的多 ； 绿的一般般 ； 蓝的有些少 ； 灰色几乎没用</span>
                 </P>
             </div>
             <div class="source">
                 <span v-for="(item,index) in tags">
-                    <el-tag class="mytag" type="danger" v-if="item.useCount>50" @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
-                    <el-tag class="mytag" type="warning" v-else-if="item.useCount>30"
+                    <el-tag class="mytag" type="danger" v-if="item.useCount>30" @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
+                    <el-tag class="mytag" type="warning" v-else-if="item.useCount>20"
                             @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
-                    <el-tag class="mytag" type="success" v-else-if="item.useCount>20"
+                    <el-tag class="mytag" type="success" v-else-if="item.useCount>5"
                             @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
-                    <el-tag class="mytag" v-else-if="item.useCount>10" @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
+                    <el-tag class="mytag" v-else-if="item.useCount>3" @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
                     <el-tag class="mytag" type="info" v-else
                             @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
                 </span>
@@ -54,6 +53,9 @@
                 axios({
                     url: "/leyuna/tagType/tags",
                     method: "GET",
+                    params:{
+                        size:50
+                    }
                 }).then((res) => {
                     var data = res.data;
                     if (data.status) {

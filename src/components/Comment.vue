@@ -289,7 +289,7 @@
             sumbitReplyComment(id, reName) {
                 const blogId = this.$route.query.blogId;
                 axios({
-                    url: "/leyuna/tourist/commpent",
+                    url: "/leyuna/tourist/comment",
                     method: "POST",
                     data: {
                         content: this.replyCommentText,
@@ -390,7 +390,7 @@
                         const blogId = this.$route.query.blogId;
                         //添加本次评论
                         axios({
-                            url: "/leyuna/tourist/commpent",
+                            url: "/leyuna/tourist/comment",
                             method: "POST",
                             data: {
                                 content: this.commentText,

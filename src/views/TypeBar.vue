@@ -48,7 +48,10 @@ export default {
         getType(){
             axios({
                 url:"/leyuna/tagType/treeType",
-                method : 'GET'
+                method : 'GET',
+                params:{
+                    size:50
+                }
             }).then((res) => {
                 var data = res.data;
                 if(data.status){

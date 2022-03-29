@@ -242,7 +242,9 @@
                     method: "GET",
                     params: {
                         fileType: fileType,
-                        type: this.orderType
+                        type: this.orderType,
+                        index:this.query.pageIndex,
+                        size:this.query.pageSize
                     }
                 }).then((res) => {
                     var data = res.data;
@@ -417,25 +419,6 @@
                     downloadElement.click();
                     document.body.removeChild(downloadElement);
                     window.URL.revokeObjectURL(href);
-                })
-            },
-            fileTable() {
-                const blogId = this.$route.query.blogId;
-                axios({
-                    url: "/leyuna/disk/getDiskFileList",
-                    methods: "GET",
-                    params: {
-                        index: this.query.pageIndex,
-                        size: this.query.pageSize,
-                        fileType: this.default_fileList,
-                        type: this.orderType
-                    },
-                }).then((res) => {
-                    var data = res.data;
-                    if (data.status) {
-                        this.myFile = data.data.records;
-                        this.fileCount = data.data.total;
-                    }
                 })
             },
 

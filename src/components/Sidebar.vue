@@ -31,8 +31,8 @@
                             <use xlink:href="#el-icon-29"></use>
                         </svg>
                     </a>
-                    <a class="aLink">
-                        <svg class="icon" target="_blank" aria-hidden="true" href="https://space.bilibili.com/7749032">
+                    <a class="aLink" target="_blank" href="https://space.bilibili.com/7749032">
+                        <svg class="icon" target="_blank" aria-hidden="true">
                             <use xlink:href="#el-icon-bilibili-line"></use>
                         </svg>
                     </a>

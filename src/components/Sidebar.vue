@@ -32,7 +32,7 @@
                         </svg>
                     </a>
                     <a class="aLink">
-                        <svg class="icon" target="_blank" aria-hidden="true" href="https://b23.tv/tlovsv">
+                        <svg class="icon" target="_blank" aria-hidden="true" href="https://space.bilibili.com/7749032">
                             <use xlink:href="#el-icon-bilibili-line"></use>
                         </svg>
                     </a>

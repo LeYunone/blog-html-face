@@ -7,11 +7,15 @@
     border-radius: 4px;
 }
 .right-top{
+    margin-top: 5px;
     padding: .6rem 1rem;
     border-left: 4px solid #4eaaff;;
-    background-color:rgba(0,120,231,.05);
-    height: 300px;
+    background-color:rgba(10,120,231,.05);
+    height: 310px;
     font-family: 'PingFang SC','Microsoft YaHei',Roboto,Arial,sans-serif;
+}
+.a-font{
+    color: #476582;
 }
 .box-right-card{
     position: absolute;

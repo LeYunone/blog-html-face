@@ -39,13 +39,13 @@
             </el-row>
         </el-col>
         <el-card class="box-right-card">
+            <p style="color: #4eaaff">刷题日记：</p>
             <div class="right-top">
-                <br/>
-                <br/>
-                如果你迷恋岁月舍不得向前<br/>
-                我就默默记录这诗篇<br/>
-                如果你厌倦引力想要去飞行<br/>
-                我就让 全世界的风吹向你<br/>
+                <div >
+                    <el-link class="a-font" v-for="item in leetCodeLog" :href="'https://leyuna.xyz/#/blog?blogId='+item.id"
+                             target="_blank">{{item.title}}
+                    </el-link>
+                </div>
             </div>
             <div>
                 <el-divider></el-divider>
@@ -198,6 +198,7 @@
     export default {
         data() {
             return {
+                leetCodeLog: [],
                 percentage: "",
                 show: "",
                 uploadUrl: "",
@@ -231,6 +232,7 @@
         },
         mounted: function () {
             this.getList();
+            this.randowmLeetCodeLog();
         },
         methods: {
             //云盘相关
@@ -243,8 +245,8 @@
                     params: {
                         fileType: fileType,
                         type: this.orderType,
-                        index:this.query.pageIndex,
-                        size:this.query.pageSize
+                        index: this.query.pageIndex,
+                        size: this.query.pageSize
                     }
                 }).then((res) => {
                     var data = res.data;
@@ -422,7 +424,20 @@
                 })
             },
 
-            //博客相关   
+            //博客相关
+            randowmLeetCodeLog() {
+                axios({
+                    url: "/leyuna/blog/getLeetCode",
+                    method: "GET"
+                }).then((res) => {
+                    var data = res.data;
+                    if (data.status) {
+                        this.leetCodeLog = data.data;
+                    } else {
+                        ElMessage.error(data.message);
+                    }
+                })
+            },
             toBlogindex(tagName) {
                 this.$router.push({path: '', query: {tagName: tagName}});
             },

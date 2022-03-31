@@ -61,10 +61,6 @@ body {
     left: 0;
     width: 20rem;
     background-color: #fff;
-    background-image: url("../../assets/img/blog-bar.jpg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: bottom 1rem center;
     text-align: center;
     z-index: 10;
     transition-property: all;
@@ -72,7 +68,20 @@ body {
     transition-delay: 0s;
     box-shadow: 0 0 2px;
 }
-
+.nav-card{
+    background-color: #fff;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.role-card{
+    text-align: center;
+    border-radius: 4px 4px 0 0 ;
+    text-align: center;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    background-color: #fff;
+    position: relative;
+}
 .blog-content {
     display: flex;
     flex-direction: column;

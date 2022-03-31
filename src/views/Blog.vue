@@ -4,15 +4,15 @@
             <use xlink:href="#el-icon-menu"></use>
         </svg>
         <el-tabs v-model="activeName" @tab-click=tabClick tab-position="right" style="height: 190px;">
-            <el-tab-pane name="roleName" label="角色卡"></el-tab-pane>
             <el-tab-pane name="navName" label="目录导航"></el-tab-pane>
+            <el-tab-pane name="roleName" label="角色卡"></el-tab-pane>
             <el-tab-pane label="..."></el-tab-pane>
             <el-tab-pane label="待开发"></el-tab-pane>
         </el-tabs>
     </div>
     <div class="blog-nav">
         <div>
-            <div id="role-card" class="bar-head" style="display: block">
+            <div id="role-card" class="role-card" style="display: none">
                 <el-avatar :size="160" :src="circleUrl"></el-avatar>
                 <div class="bar-top">
                     <el-link class="myName">乐云一</el-link>
@@ -52,10 +52,10 @@
                     </div>
                 </div>
             </div>
-            <div id="nav-card" style="display: none">
-                <p style="text-align: center;padding: 20px;color: #00a7e0">导航</p>
+            <div id="nav-card" class="nav-card" style="display: block">
+                <p style="text-align: center;padding: 6px;color: #00a7e0">导航</p>
                 <div v-for="anchor in titles"
-                     :style="{ padding: `10px 0 10px ${anchor.indent * 20}px` }"
+                     :style="{ padding: `5px 0 10px ${anchor.indent * 20}px` }"
                      @click="handleAnchorClick(anchor)">
                     <a style="cursor: pointer">{{ anchor.title }}</a>
                 </div>
@@ -116,7 +116,7 @@
         data() {
             let self = this
             return {
-                activeName: "roleName",
+                activeName: "navName",
                 circleUrl: headUrl,
                 qqUrl: qqUrl,
                 wxUrl: wxUrl,
@@ -130,7 +130,7 @@
                 updateTime: "",
                 type: "",
                 tag: "",
-                ifNav: true,
+                ifNav: false,
             };
         },
         mounted: function () {
@@ -138,39 +138,35 @@
         },
         methods: {
             tabClick(tab, event) {
-                this.nav();
-            },
-            nav() {
-                if (this.ifNav) {
-                    const anchors = document.querySelectorAll('h1,h2,h3,h4,h5,h6');
-                    const titles = Array.from(anchors).filter((title) => !!title.innerText.trim());
-
-                    if (!titles.length) {
-                        this.titles = [];
-                        return;
-                    }
-
-                    const hTags = Array.from(new Set(titles.map((title) => title.tagName))).sort();
-
-                    this.titles = titles.map((el) => ({
-                        title: el.innerText,
-                        lineIndex: el.getAttribute('data-v-md-line'),
-                        indent: hTags.indexOf(el.tagName),
-                    }));
-                    this.ifNav = false;
-                }
-                let navDisplay = document.getElementById("nav-card").getAttribute("style");
-                if (navDisplay.match('none')) {
+                var cardName = tab.props.name;
+                if (cardName == 'navName') {
                     document.getElementById("nav-card").setAttribute("style", "display:block");
                     document.getElementById("role-card").setAttribute("style", "display:none");
-                } else {
+                }
+                if (cardName == 'roleName') {
                     document.getElementById("nav-card").setAttribute("style", "display:none");
                     document.getElementById("role-card").setAttribute("style", "display:block");
                 }
             },
-            thisBlog() {
+            loadBlogNav() {
+                const anchors = document.querySelectorAll('h1,h2,h3,h4,h5,h6');
+                const titles = Array.from(anchors).filter((title) => !!title.innerText.trim());
+                if (!titles.length) {
+                    this.titles = [];
+                    return;
+                }
+
+                const hTags = Array.from(new Set(titles.map((title) => title.tagName))).sort();
+
+                this.titles = titles.map((el) => ({
+                    title: el.innerText,
+                    lineIndex: el.getAttribute('data-v-md-line'),
+                    indent: hTags.indexOf(el.tagName),
+                }));
+            },
+            async thisBlog() {
                 const blogId = this.$route.query.blogId;
-                axios({
+                await axios({
                     url: "/leyuna/blog/blog/" + blogId,
                     method: "GET",
                 }).then((res) => {
@@ -186,34 +182,38 @@
                         ElMessage.error(data.message);
                     }
                 })
+                this.loadBlogNav();
             },
-        },
-        setup() {
-            const handleAnchorClick = (anchor) => {
-                const navItem = document.querySelector('.v-md-editor-preview');
-                const {lineIndex} = anchor;
-                const heading = document.querySelector(
-                    `[data-v-md-line="${lineIndex}"]`);
+            handleAnchorClick(anchor){
+                if (this.ifNav == false) {
+                    this.ifNav = true;
+                    const navItem = document.querySelector('.v-md-editor-preview');
+                    const {lineIndex} = anchor;
+                    const heading = document.querySelector(
+                        `[data-v-md-line="${lineIndex}"]`);
+
+                    const top = heading.offsetTop;
+                    let timer = setInterval(() => {
+                        if (document.querySelector('.main').scrollTop < top) {
+                            document.querySelector('.main').scrollTop += 140;
+                            if (document.querySelector('.main').scrollTop >= top - 90){
+                                clearInterval(timer)
+                                this.ifNav = false
+                            }
+                        } else {
+                            document.querySelector('.main').scrollTop -= 140
+                            if (document.querySelector('.main').scrollTop <= top - 90){
+                                clearInterval(timer)
+                                this.ifNav = false
+                            }
+                        }
+
+                        console.log(document.querySelector('.main').scrollTop + "===" + top)
+                    }, 20,)
 
 
-                const top = heading.offsetTop;
-                let timer = setInterval(() => {
-                    if (document.querySelector('.main').scrollTop < top) {
-                        document.querySelector('.main').scrollTop += 60;
-                        if (document.querySelector('.main').scrollTop >= top - 60)
-                            clearInterval(timer)
-                    } else {
-                        document.querySelector('.main').scrollTop -= 60
-                        if (document.querySelector('.main').scrollTop <= top - 60)
-                            clearInterval(timer)
-                    }
-
-                    console.log(document.querySelector('.main').scrollTop + "===" + top)
-                }, 20)
-            };
-            return {
-                handleAnchorClick,
-            }
+                }
+            },
         },
     };
 </script>

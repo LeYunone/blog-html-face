@@ -39,7 +39,7 @@
             </el-row>
         </el-col>
         <el-card class="box-right-card">
-            <p style="color: #4eaaff">刷题日记：</p>
+            <p style="color: #4eaaff">"不一定非要走到最后，某一段路上，对方给你带来了笑声，就已足够" ----</p>
             <div class="right-top">
                 <div >
                     <el-link class="a-font" v-for="item in leetCodeLog" :href="'https://leyuna.xyz/#/blog?blogId='+item.id"

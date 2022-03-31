@@ -66,7 +66,12 @@ body {
     transition-property: all;
     transition-duration: .3s;
     transition-delay: 0s;
+    opacity:0.87;
     box-shadow: 0 0 2px;
+    background-image: url("../../assets/img/AZ.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom 1rem center;
 }
 .nav-card{
     background-color: #fff;
@@ -75,12 +80,17 @@ body {
 }
 .role-card{
     text-align: center;
+    height: 897px;
     border-radius: 4px 4px 0 0 ;
     text-align: center;
     padding-bottom: 20px;
     padding-top: 20px;
     background-color: #fff;
     position: relative;
+    background-image: url("../../assets/img/AZ.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom 1rem center;
 }
 .blog-content {
     display: flex;

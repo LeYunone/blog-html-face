@@ -128,6 +128,11 @@ export default {
                 icon: "el-icon-ship",
                 index: "/allblogindex",
                 title: "选个锤子老子全要"
+            },
+            {
+                icon :"el-icon-sugar",
+                index: "/animeBar",
+                title: "ANIME"
             }
             ,{
                 icon: "el-icon-trophy",

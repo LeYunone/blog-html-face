@@ -56,6 +56,13 @@ const routes = [
                     title:'所有博客'
                 },
                 component: () => import("../views/AllBlogIndex.vue")
+            },{
+                path: "/animeBar",
+                name: "animeBar",
+                meta: {
+                    title: 'ANIME'
+                },
+                component:() => import("../views/AnimeBar.vue")
             }
         ]
     } ,{

@@ -226,7 +226,7 @@
         methods: {
             //添加表情包到mark中
             markEmoImg(emo) {
-                this.commentText = this.commentText + "![emo](" + emo + "){{{width=\"100\" height=\"100\"}}}";
+                document.execCommand('insertText', false, "![emo](" + emo + "){{{width=\"auto\" height=\"auto\"}}}")
                 this.emoDia = false;
             },
             //获得服务器表情包

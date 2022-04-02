@@ -1,6 +1,6 @@
 <template>
     <div class="sidebar">
-        <div class="bar-head" style="display: block" id="headImg">
+        <div class="bar-head" v-show="!collapse" style="display: block" id="headImg">
             <el-avatar :size="160" src="https://www.leyuna.xyz/image/avatar/admin.jpg"></el-avatar>
             <div class="bar-top">
                 <el-link class="myName">乐云一</el-link>

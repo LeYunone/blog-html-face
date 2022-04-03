@@ -8,10 +8,16 @@
 }
 .anime-card{
     width: 170px;
-    height: 200px;
+    height: 230px;
     float:left;
     padding: 0px;
     margin-right: 24px;
     margin-top: 20px;
     transition: all .5s;
+}
+.anime_title{
+    display: block;
+    color: #8492a6;
+    font-size: 14px;
+    text-align: center;
 }

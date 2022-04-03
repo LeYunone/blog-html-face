@@ -92,7 +92,6 @@
     export default {
         data() {
             return {
-                qqUrl: qqUrl,
                 wxUrl: wxUrl,
                 circleUrl: headUrl,
                 openQQ: false,

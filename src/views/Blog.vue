@@ -120,7 +120,6 @@
             return {
                 activeName: "navName",
                 circleUrl: headUrl,
-                qqUrl: qqUrl,
                 wxUrl: wxUrl,
                 openQQ: false,
                 openWX: false,

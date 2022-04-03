@@ -6,27 +6,11 @@
                 <el-link class="myName">乐云一</el-link>
                 <el-divider>一个有趣的人</el-divider>
                 <div class="myLink">
-                    <el-popover
-                            placement="right"
-                            trigger="hover"
-                            :width="300">
-                        <template #reference>
-                            <a class="aLink">
-                                <svg class="icon" aria-hidden="true">
-                                    <use xlink:href="#el-icon-QQ"></use>
-                                </svg>
-                            </a>
-                        </template>
-                        <template #default>
-
-                            <el-image style="width: 300px; height: 590px" :src="qqUrl" :fit="contain" />
-<!--                            <el-image-->
-<!--                                    style="width: 338px; height: 593px;text-align: center"-->
-<!--                                    :src="qqUrl"-->
-<!--                                    fit="cover"></el-image>-->
-                        </template>
-                    </el-popover>
-
+                    <a target="_blank"  class="aLink" href="http://wpa.qq.com/msgrd?v=3&uin=365627310&site=qq&menu=yes">
+                        <svg class="icon" aria-hidden="true">
+                            <use xlink:href="#el-icon-QQ"></use>
+                        </svg>
+                    </a>
                     <el-popover
                             placement="right"
                             trigger="hover"
@@ -40,11 +24,6 @@
                         </template>
                         <template #default>
                             <el-image style="width: 294px; height: 288px" :src="wxUrl" :fit="contain" />
-
-<!--                            <el-image-->
-<!--                                    style="width: 338px; height: 593px;text-align: center"-->
-<!--                                    :src="wxUrl"-->
-<!--                                    fit="cover"></el-image>-->
                         </template>
                     </el-popover>
 
@@ -53,9 +32,9 @@
                             <use xlink:href="#el-icon-github"></use>
                         </svg>
                     </a>
-                    <a class="aLink">
+                    <a class="aLink" href="mailto:365627310@qq.com">
                         <svg class="icon" aria-hidden="true">
-                            <use xlink:href="#el-icon-shejiaotubiao-06"></use>
+                            <use xlink:href="#el-icon-mail"></use>
                         </svg>
                     </a>
                     <a class="aLink" target="_blank" href="https://www.zhihu.com/people/leyuna">
@@ -108,7 +87,6 @@
     import {useStore} from "vuex";
     import {useRoute} from "vue-router";
     import headUrl from '../assets/img/head.jpg';
-    import qqUrl from '../assets/img/qq.png';
     import wxUrl from '../assets/img/wx.png';
 
     export default {

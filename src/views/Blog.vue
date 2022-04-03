@@ -18,24 +18,35 @@
                     <el-link class="myName">乐云一</el-link>
                     <el-divider>一个有趣的人</el-divider>
                     <div class="myLink">
-                        <a @click="openQQ=true" class="aLink">
+                        <a target="_blank"  class="aLink" href="http://wpa.qq.com/msgrd?v=3&uin=365627310&site=qq&menu=yes">
                             <svg class="icon" aria-hidden="true">
                                 <use xlink:href="#el-icon-QQ"></use>
                             </svg>
                         </a>
-                        <a @click="openWX=true" class="aLink">
-                            <svg class="icon" aria-hidden="true">
-                                <use xlink:href="#el-icon-weixin"></use>
-                            </svg>
-                        </a>
-                        <a class="aLink">
-                            <svg class="icon" aria-hidden="true">
-                                <use xlink:href="#el-icon-github"></use>
-                            </svg>
-                        </a>
+                        <el-popover
+                                placement="right"
+                                trigger="hover"
+                                :width="300">
+                            <template #reference>
+                                <a class="aLink">
+                                    <svg class="icon" aria-hidden="true">
+                                        <use xlink:href="#el-icon-weixin"></use>
+                                    </svg>
+                                </a>
+                            </template>
+                            <template #default>
+                                <el-image style="width: 294px; height: 288px" :src="wxUrl" :fit="contain" />
+                            </template>
+                        </el-popover>
+
                         <a class="aLink" target="_blank" href="http://github.com/LeYunone">
                             <svg class="icon" aria-hidden="true">
                                 <use xlink:href="#el-icon-github"></use>
+                            </svg>
+                        </a>
+                        <a class="aLink" href="mailto:365627310@qq.com">
+                            <svg class="icon" aria-hidden="true">
+                                <use xlink:href="#el-icon-mail"></use>
                             </svg>
                         </a>
                         <a class="aLink" target="_blank" href="https://www.zhihu.com/people/leyuna">
@@ -82,14 +93,6 @@
         </div>
         <v-comment/>
     </div>
-    <el-dialog title="QQ" v-model="openQQ">
-        <div style="text-align: center">
-            <el-image
-                    style="width: 338px; height: 593px;text-align: center"
-                    :src="qqUrl"
-                    fit="cover"></el-image>
-        </div>
-    </el-dialog>
     <el-dialog title="微信" v-model="openWX">
         <div style="text-align: center">
             <el-image
@@ -105,7 +108,6 @@
     import VueMarkdownEditor, {xss} from '@kangc/v-md-editor';
     import axios from "axios";
     import headUrl from '../assets/img/head.jpg';
-    import qqUrl from '../assets/img/qq.png';
     import wxUrl from '../assets/img/wx.png';
     import vComment from "../components/Comment.vue";
 

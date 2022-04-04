@@ -14,7 +14,7 @@
                 <template #reference>
                     
                     <el-card shadow="always" class="anime-card">
-                        <span class="anime_title">{{index}}</span>
+                        <span class="anime_title">{{item.title}}</span>
                         <el-image
                                 style="width: 130px; height: 150px"
                                 :src="item.blogCover"
@@ -32,11 +32,12 @@
 
 <script>
     import {ElMessage, ElMessageBox} from "element-plus";
+    import axios from "axios";
 
     export default {
         data() {
             return {
-                animeList: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                animeList: [],
                 animeCount: 0,
                 form: {
                     index: 1,
@@ -50,7 +51,7 @@
         methods: {
             getAnime() {
                 axios({
-                    url: "/leyuna/blogs",
+                    url: "/leyuna/blog/blogs",
                     method: "GET",
                     params: {
                         index: this.form.index,
@@ -61,6 +62,7 @@
                     var data = res.data;
                     if (data.status) {
                         this.animeList = data.data.records;
+                        console.log(this.animeList)
                         this.animeCount = data.data.total;
                     } else {
                         ElMessage.error(data.message);

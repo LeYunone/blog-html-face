@@ -13,7 +13,7 @@
     <div class="blog-nav">
         <div>
             <div id="role-card" class="role-card" style="display: none">
-                <el-avatar :size="160" :src="circleUrl"></el-avatar>
+                <el-avatar :size="160" src="https://www.leyuna.xyz/image/avatar/admin.gif"></el-avatar>
                 <div class="bar-top">
                     <el-link class="myName">乐云一</el-link>
                     <el-divider>一个有趣的人</el-divider>
@@ -107,7 +107,6 @@
     import {ElMessage, ElMessageBox} from "element-plus";
     import VueMarkdownEditor, {xss} from '@kangc/v-md-editor';
     import axios from "axios";
-    import headUrl from '../assets/img/head.jpg';
     import wxUrl from '../assets/img/wx.png';
     import vComment from "../components/Comment.vue";
 
@@ -119,7 +118,6 @@
             let self = this
             return {
                 activeName: "navName",
-                circleUrl: headUrl,
                 wxUrl: wxUrl,
                 openQQ: false,
                 openWX: false,

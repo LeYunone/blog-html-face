@@ -37,7 +37,7 @@
     export default {
         data() {
             return {
-                animeList: [],
+                animeList: [1,2,3,4,5,6,7,8,9,10,11,12,13],
                 animeCount: 0,
                 form: {
                     index: 1,
@@ -46,7 +46,7 @@
             };
         },
         mounted: function () {
-            this.getAnime();
+            // this.getAnime();
         },
         methods: {
             getAnime() {

@@ -16,14 +16,12 @@
             </div>
             <div class="source">
                 <span v-for="(item,index) in tags">
-                    <el-tag class="mytag" type="danger" v-if="item.useCount>30" @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
-                    <el-tag class="mytag" type="warning" v-else-if="item.useCount>20"
-                            @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
-                    <el-tag class="mytag" type="success" v-else-if="item.useCount>5"
-                            @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
-                    <el-tag class="mytag" v-else-if="item.useCount>3" @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
-                    <el-tag class="mytag" type="info" v-else
-                            @click="toBlogindex(item.tagName)">{{item.tagName}}</el-tag>
+                    <a  class="mytag" v-if="item.useCount>20" :href="'#/blogindex?tagName='+item.tagName" style="font-size: 31.55px;color: #dd6161">{{item.tagName}}</a>
+                    <a  class="mytag" v-else-if="item.useCount>15" :href="'#/blogindex?tagName='+item.tagName" style="font-size: 27.55px;color: #f3dddd">{{item.tagName}}</a>
+                    <a  class="mytag" v-else-if="item.useCount>10" :href="'#/blogindex?tagName='+item.tagName" style="font-size: 23.55px;color: #66c3ef">{{item.tagName}}</a>
+                    <a  class="mytag" v-else-if="item.useCount>5" :href="'#/blogindex?tagName='+item.tagName" style="font-size: 20.55px;color: #f57f00">{{item.tagName}}</a>
+                    <a  class="mytag" v-else-if="item.useCount>3" :href="'#/blogindex?tagName='+item.tagName" style="font-size: 18.27px;color: #6196cc">{{item.tagName}}</a>
+                    <a  class="mytag" :href="'#/blogindex?tagName='+item.tagName" v-else  style="font-size: 15px;color: #999">{{item.tagName}}</a>
                 </span>
             </div>
             <div class="plugins-tips">

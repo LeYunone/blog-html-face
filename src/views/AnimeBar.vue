@@ -6,25 +6,30 @@
             </el-breadcrumb>
         </div>
         <div class="anime_container">
-            <el-popover
-                    placement="left-start"
-                    trigger="hover"
-                    v-for="(item,index) in animeList"
-                    :width="300">
-                <template #reference>
-                    
-                    <el-card shadow="always" class="anime-card">
-                        <span class="anime_title">{{item.title}}</span>
-                        <el-image
-                                style="width: 130px; height: 150px"
-                                :src="item.blogCover"
-                                fit="fill"></el-image>
-                    </el-card>
-                </template>
-                <template #default>
-                    
-                </template>
-            </el-popover>
+            <ul>
+                <i v-for="(item,index) in animeList">
+                    <el-popover
+                            placement="right-start"
+                            trigger="hover"
+                            :width="300">
+                        <template #reference>
+                            <el-card shadow="always" class="anime-card">
+                                <a target="_blank" :href="'#/blog?blogId='+item.id">
+                                    <el-image
+                                            style="width: 130px; height: 150px"
+                                            :src="item.blogCover"
+                                            fit="fill"></el-image>
+                                </a>
+                                <span class="anime_title">{{item.title}}</span>
+                                <a class="anime_link" target="_blank" :href="item.blogLink"  type="danger">魔法网站</a>
+                            </el-card>
+                        </template>
+                        <template #default>
+                            <v-md-editor :model-value="item.remarks" mode="preview"></v-md-editor>
+                        </template>
+                    </el-popover>
+                </i>
+            </ul>
 
         </div>
     </div>
@@ -37,7 +42,7 @@
     export default {
         data() {
             return {
-                animeList: [1,2,3,4,5,6,7,8,9,10,11,12,13],
+                animeList: [],
                 animeCount: 0,
                 form: {
                     index: 1,
@@ -46,7 +51,7 @@
             };
         },
         mounted: function () {
-            // this.getAnime();
+            this.getAnime();
         },
         methods: {
             getAnime() {

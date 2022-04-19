@@ -21,3 +21,14 @@
     font-size: 14px;
     text-align: center;
 }
+.anime_link{
+    
+    display: block;
+    color: #dcdfe6;
+    font-size: 11px;
+    text-align: center;
+}
+
+.anime_link:hover{
+    font-size:17px;
+}

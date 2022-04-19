@@ -4,7 +4,7 @@
             <el-row :gutter="20">
                 <el-col :span="16">
                     <el-card shadow="hover" class="indexContent" style="height:403px;">
-                        <a @click="toBlog(item.id)" class="a_title">
+                        <a target="_blank" :href="'#/blog?blogId='+item.id" class="a_title">
                             <div class="article_title">{{item.title}}</div>
                         </a>
                         <div class="clearfix">
@@ -448,10 +448,6 @@
                 } else {
                     doc.setAttribute("style", "display:none")
                 }
-            },
-            toBlog(id) {
-                const {href} = this.$router.resolve({path: '/blog', query: {blogId: id}});
-                window.open(href, '_blank');
             },
             load() {
                 if (this.pageData.size != 10) {

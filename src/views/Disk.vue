@@ -101,6 +101,22 @@
             </div>
         </div>
     </el-drawer>
+    <el-dialog :before-close="close_login" title="登陆" v-model="login_user" width="30%">
+        <el-form label-width="70px">
+            <el-form-item label="用户名">
+                <el-input v-model="form.userName"></el-input>
+            </el-form-item>
+            <el-form-item label="密码">
+                <el-input type="password" v-model="form.passWord"></el-input>
+            </el-form-item>
+        </el-form>
+        <template #footer>
+                        <span class="dialog-footer">
+                            <el-button @click="diskDrawer = false">取 消</el-button>
+                            <el-button type="primary" @click="login">确 定</el-button>
+                        </span>
+        </template>
+    </el-dialog>
 </template>
 <script>
     import axios from "axios";
@@ -328,7 +344,34 @@
                     document.body.removeChild(downloadElement);
                     window.URL.revokeObjectURL(href);
                 })
-            }
+            },
+            login() {
+                axios({
+                    url: "/leyuna/user/login",
+                    method: "POST",
+                    data: {
+                        "userName": this.form.userName,
+                        "passWord": this.form.passWord
+                    }
+                }).then((res => {
+                    var data = res.data;
+                    if (data.status) {
+                        this.openDisk();
+                    } else {
+                        ElMessage.error(data.message);
+                        this.form.userName = "";
+                        this.form.passWord = "";
+                    }
+                }))
+            },
+            close_login() {
+                this.diskDrawer = false;
+                this.login_user = false;
+            },
+            handlePageChange(val) {
+                this.query.pageIndex = val;
+                this.fileTable();
+            },
         }
     }
 </script>

@@ -20,6 +20,7 @@ import '@kangc/v-md-editor/lib/plugins/todo-list/todo-list.css';
 import createAlignPlugin from '@kangc/v-md-editor/lib/plugins/align';
 import createEmojiPlugin from '@kangc/v-md-editor/lib/plugins/emoji/index';
 import '@kangc/v-md-editor/lib/plugins/emoji/emoji.css';
+import uploader from 'vue-simple-uploader'
 
 VueMarkdownEditor.use(vuepressTheme, {
     Prism,
@@ -32,6 +33,7 @@ const app = createApp(App)
 installElementPlus(app)
 app
     .use(store)
+    .use(uploader)
     .use(router)
     .use(VMdPreviewHtml)
     .use(VueMarkdownEditor)

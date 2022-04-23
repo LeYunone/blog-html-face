@@ -148,6 +148,7 @@
                 myFile: [],
                 fileTotalSize: 0,
                 upLoadValiValue: -1,
+                fileKey:"",
                 orderType: 3,
                 query: {
                     pageSize: 10,
@@ -206,11 +207,12 @@
                     dataType: 'json',
                     data: formData
                 })
-                // .then(res => {
-                var d = res.data;
-                if (d.status) {
-                    if (d.data == 1) {
+                var data = res.data;
+                if (data.status) {
+                    var responseType = data.data.responseType;
+                    if (responseType === 1) {
                         this.upLoadValiValue = 1;
+                        this.fileKey = data.data.fileKey;
                     } else {
                         this.upLoadValiValue = 0;
                     }
@@ -227,7 +229,8 @@
                 if (upLoadValiValue == 1) {
                     let formData = new FormData();
                     formData.append('file', file);
-                    formData.append('saveTime', this.upLoadParam.saveTime)
+                    formData.append('saveTime', this.upLoadParam.saveTime);
+                    formData.append('token',document.cookie.match('token'));
                     this.show = true;
                     axios({
                         url: "/leyuna/disk/uploadFile",
@@ -357,6 +360,8 @@
                     var data = res.data;
                     if (data.status) {
                         this.openDisk();
+                        //保存登录token
+                        document.cookie('token',data.data);
                     } else {
                         ElMessage.error(data.message);
                         this.form.userName = "";

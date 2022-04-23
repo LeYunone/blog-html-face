@@ -230,10 +230,10 @@
                     let formData = new FormData();
                     formData.append('file', file);
                     formData.append('saveTime', this.upLoadParam.saveTime);
-                    formData.append('token',document.cookie.match('token'));
+                    formData.append('token',Cookies.get('name').loginId);
                     this.show = true;
                     axios({
-                        url: "/leyuna/disk/uploadFile",
+                        url: "/disk/file/saveFile",
                         method: "POST",
                         processData: false, // 使数据不做处理
                         contentType: false,
@@ -361,7 +361,7 @@
                     if (data.status) {
                         this.openDisk();
                         //保存登录token
-                        document.cookie('token',data.data);
+                        Cookies.set('token', data.data);
                     } else {
                         ElMessage.error(data.message);
                         this.form.userName = "";

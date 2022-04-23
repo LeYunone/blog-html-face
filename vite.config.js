@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import {defineConfig} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
 
@@ -16,7 +16,7 @@ export default defineConfig({
     assetsDir: 'static',
     parallel: false,
     plugins: [vue()],
-    publicDir:'public',
+    publicDir: 'public',
     server: {
         host: 'localhost',
         port: 8000,
@@ -24,18 +24,24 @@ export default defineConfig({
         strictPort: false,
         https: false,
         proxy: {
-          '/leyuna': {
+            '/leyuna': {
                 target: 'http://127.0.0.1:9000',
                 changeOrigin: true,
                 secure: false
-          },
+            },
+            '/disk':{
+                target: 'http://127.0.0.1:9001',
+                changeOrigin: true,
+                secure: false
+            }
+
         }
     },
     optimizeDeps: {
         include: ['schart.js']
     },
     //生产模式打包配置
-    build:{
+    build: {
         outDir: 'dist',//Specify the output directory (relative to project root).
     }
 })

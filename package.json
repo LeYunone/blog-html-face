@@ -20,7 +20,7 @@
     "vue-i18n": "^9.0.0",
     "vue-router": "^4.0.10",
     "vue-schart": "^2.0.0",
-    "vue-simple-uploader": "^0.7.6",
+    "vue-simple-uploader": "^1.0.0-beta.5",
     "vuex": "^4.0.2",
     "wangeditor": "^4.7.4"
   },

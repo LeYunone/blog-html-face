@@ -21,6 +21,7 @@ import createAlignPlugin from '@kangc/v-md-editor/lib/plugins/align';
 import createEmojiPlugin from '@kangc/v-md-editor/lib/plugins/emoji/index';
 import '@kangc/v-md-editor/lib/plugins/emoji/emoji.css';
 import uploader from 'vue-simple-uploader'
+import 'vue-simple-uploader/dist/style.css'
 import Cookies from 'js-cookie'
 
 VueMarkdownEditor.use(vuepressTheme, {

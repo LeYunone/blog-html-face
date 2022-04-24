@@ -13,19 +13,27 @@
             <el-progress style="margin-left:250px;margin-top:14px" type="circle"
                          :percentage="fileTotalSize">内存:{{this.fileTotalSize}}%
             </el-progress>
-            <el-upload
-                    class="upload-frame"
-                    ref="upload"
-                    :on-preview="handlePreview"
-                    :http-request="upLoadFile"
-                    :on-remove="handleRemove"
-                    :file-list="fileList"
-                    multiple="true"
-                    :auto-upload="false">
-                <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-            </el-upload>
-            <el-progress style="width: 400px" :stroke-width="24" v-if="show"
-                         :percentage="percentage"></el-progress>
+            <uploader :options="options" class="uploader-example">
+                <uploader-unsupport></uploader-unsupport>
+                <uploader-drop>
+                    <uploader-btn>上传文件</uploader-btn>
+                    <uploader-btn :directory="true">上传文件夹</uploader-btn>
+                </uploader-drop>
+                <uploader-list></uploader-list>
+            </uploader>
+            <!--            <el-upload-->
+            <!--                    class="upload-frame"-->
+            <!--                    ref="upload"-->
+            <!--                    :on-preview="handlePreview"-->
+            <!--                    :http-request="upLoadFile"-->
+            <!--                    :on-remove="handleRemove"-->
+            <!--                    :file-list="fileList"-->
+            <!--                    multiple="true"-->
+            <!--                    :auto-upload="false">-->
+            <!--                <el-button slot="trigger" size="small" type="primary">选取文件</el-button>-->
+            <!--            </el-upload>-->
+            <!--            <el-progress style="width: 400px" :stroke-width="24" v-if="show"-->
+            <!--                         :percentage="percentage"></el-progress>-->
 
             <el-button size="small" style="margin: 10px;" type="success" @click="submitUpload">
                 &nbsp上传&nbsp
@@ -121,10 +129,23 @@
 <script>
     import axios from "axios";
     import {ElMessage} from "element-plus";
+    import Cookies from 'js-cookie'
 
     export default {
         data() {
             return {
+                options: {
+                    target: 'http://localhost:9000/upload',
+                    testChunks: false,
+                    chunkSize: 1024 * 1024 * 2,  //1MB
+                    simultaneousUploads: 3, //并发上传数
+                    headers: {
+                        'access-token': 'abcd1234'
+                    },
+                    query: {
+                        code: 123
+                    }
+                },
                 percentage: "",
                 show: "",
                 uploadUrl: "",
@@ -148,7 +169,7 @@
                 myFile: [],
                 fileTotalSize: 0,
                 upLoadValiValue: -1,
-                fileKey:"",
+                fileKey: "",
                 orderType: 3,
                 query: {
                     pageSize: 10,
@@ -159,6 +180,7 @@
         },
         methods: {
             //云盘相关
+
             tableClick(tab, event) {
                 var fileType = tab.props.name;
                 this.default_fileList = fileType;
@@ -227,17 +249,18 @@
                 //上传文件
                 var upLoadValiValue = this.upLoadValiValue;
                 if (upLoadValiValue == 1) {
+
                     let formData = new FormData();
                     formData.append('file', file);
                     formData.append('saveTime', this.upLoadParam.saveTime);
-                    formData.append('token',Cookies.get('name').loginId);
+                    formData.append('userId', Cookies.get('userId'));
+                    formData.append('resoleType', '1');
+                    formData.append('fileKey', this.fileKey);
                     this.show = true;
                     axios({
                         url: "/disk/file/saveFile",
                         method: "POST",
-                        processData: false, // 使数据不做处理
-                        contentType: false,
-                        dataType: 'json',
+                        headers: {'Content-Type': 'multipart/form-data'},
                         data: formData,
                         onUploadProgress: (progressEvent) => {
                             // onUploadProgress 文件上传时的函数   上传进度
@@ -360,8 +383,9 @@
                     var data = res.data;
                     if (data.status) {
                         this.openDisk();
-                        //保存登录token
-                        Cookies.set('token', data.data);
+                        Cookies.set('userId', data.data.loginId);
+                        // //保存登录token
+                        // Cookies.set('token', data.data.tokenValue);
                     } else {
                         ElMessage.error(data.message);
                         this.form.userName = "";
@@ -380,3 +404,21 @@
         }
     }
 </script>
+<style>
+    .uploader-example {
+        width: 880px;
+        padding: 15px;
+        margin: 40px auto 0;
+        font-size: 12px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, .4);
+    }
+    .uploader-example .uploader-btn {
+        margin-right: 4px;
+    }
+    .uploader-example .uploader-list {
+        max-height: 440px;
+        overflow: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+</style>

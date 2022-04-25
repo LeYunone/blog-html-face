@@ -15,6 +15,8 @@
             </el-progress>
             <uploader :options="options"
                       :file-status-text="statusText"
+                      @file-added="filesAdded"
+                      @file-success="onFileSuccess"
                       class="uploader-example">
                 <uploader-unsupport></uploader-unsupport>
                 <uploader-drop>
@@ -137,20 +139,22 @@
         data() {
             return {
                 options: {
-                    target: '/disk/file/saveFile',
-                    chunkSize: 1024 * 1024 * 5,  //1MB
+                    target: '/disk/file/uploadFile',
+                    chunkSize: 1024 * 1024 * 5,  //5MB
                     fileParameterName: 'file', //上传文件时文件的参数名，默认file
                     singleFile: true, // 启用单个文件上传。上传一个文件后，第二个文件将超过现有文件，第一个文件将被取消。
                     maxChunkRetries: 3,  //最大自动失败重试上传次数
                     testChunks: true,     //是否开启服务器分片校验
-
-                    simultaneousUploads: 3, //并发上传数
-                    headers: {
+                    checkChunkUploadedByResponse: function (chunk, message) {
+                        let res = JSON.parse(message);
+                        if(!res.status){
+                            return false;
+                        }
                     },
-                    query: {
-                    }
+                    simultaneousUploads: 3, //并发上传数
+                    headers: {},
+                    query: {}
                 },
-
                 statusText: {
                     success: "上传成功！",
                     error: "出错了！",
@@ -192,7 +196,43 @@
         },
         methods: {
             //云盘相关
-
+            onFileSuccess: function (rootFile, file, response, chunk) {
+                ElMessage.success("上传成功");
+                console.log(response);
+            },
+            //上传文件前
+            filesAdded(file, event) {
+                //上传前校验该文件是否上传
+                let formData = new FormData();
+                formData.append('file', file.file);
+                axios({
+                    url: "/leyuna/disk/requestSaveFile",
+                    method: "POST",
+                    async: false,
+                    processData: false, // 使数据不做处理
+                    contentType: false,
+                    dataType: 'json',
+                    data: formData
+                }).then((res) => {
+                    var data = res.data;
+                    if (data.status) {
+                        var responseType = data.data.responseType;
+                        if (responseType === 1) {
+                            this.upLoadValiValue = 1;
+                            file.uniqueIdentifier = data.data.identifier;
+                            console.log(data.data.identifier);
+                        } else {
+                            this.upLoadValiValue = 0;
+                        }
+                        //继续上传
+                    } else {
+                        //上传失败
+                        ElMessage.error("UpLoadFile Error");
+                        return false;
+                    }
+                })
+                file.resume();
+            },
             tableClick(tab, event) {
                 var fileType = tab.props.name;
                 this.default_fileList = fileType;
@@ -241,12 +281,11 @@
                     dataType: 'json',
                     data: formData
                 })
-                var data = res.data;
-                if (data.status) {
-                    var responseType = data.data.responseType;
-                    if (responseType === 1) {
+                // .then(res => {
+                var d = res.data;
+                if (d.status) {
+                    if (d.data == 1) {
                         this.upLoadValiValue = 1;
-                        this.fileKey = data.data.fileKey;
                     } else {
                         this.upLoadValiValue = 0;
                     }
@@ -299,11 +338,6 @@
                     ElMessage.error("UpLoadFile Error");
                 }
 
-            },
-            submitUpload() {
-                this.$nextTick(() => {
-                    this.$refs.upload.submit()
-                })
             },
             openDisk() {
                 this.default_fileList = "0",
@@ -424,9 +458,11 @@
         font-size: 12px;
         box-shadow: 0 0 10px rgba(0, 0, 0, .4);
     }
+
     .uploader-example .uploader-btn {
         margin-right: 4px;
     }
+
     .uploader-example .uploader-list {
         max-height: 440px;
         overflow: auto;

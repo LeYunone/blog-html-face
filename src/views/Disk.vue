@@ -13,7 +13,9 @@
             <el-progress style="margin-left:250px;margin-top:14px" type="circle"
                          :percentage="fileTotalSize">内存:{{this.fileTotalSize}}%
             </el-progress>
-            <uploader :options="options" class="uploader-example">
+            <uploader :options="options"
+                      :file-status-text="statusText"
+                      class="uploader-example">
                 <uploader-unsupport></uploader-unsupport>
                 <uploader-drop>
                     <uploader-btn>上传文件</uploader-btn>
@@ -135,16 +137,26 @@
         data() {
             return {
                 options: {
-                    target: 'http://localhost:9000/upload',
-                    testChunks: false,
-                    chunkSize: 1024 * 1024 * 2,  //1MB
+                    target: '/disk/file/saveFile',
+                    chunkSize: 1024 * 1024 * 5,  //1MB
+                    fileParameterName: 'file', //上传文件时文件的参数名，默认file
+                    singleFile: true, // 启用单个文件上传。上传一个文件后，第二个文件将超过现有文件，第一个文件将被取消。
+                    maxChunkRetries: 3,  //最大自动失败重试上传次数
+                    testChunks: true,     //是否开启服务器分片校验
+
                     simultaneousUploads: 3, //并发上传数
                     headers: {
-                        'access-token': 'abcd1234'
                     },
                     query: {
-                        code: 123
                     }
+                },
+
+                statusText: {
+                    success: "上传成功！",
+                    error: "出错了！",
+                    uploading: "上传中...",
+                    paused: "等待中...",
+                    waiting: "等待中..."
                 },
                 percentage: "",
                 show: "",

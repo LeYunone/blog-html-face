@@ -140,20 +140,25 @@
             return {
                 options: {
                     target: '/disk/file/uploadFile',
-                    chunkSize: 1024 * 1024 * 5,  //5MB
+                    chunkSize: 1024 * 1024 * 5,  //3MB
                     fileParameterName: 'file', //上传文件时文件的参数名，默认file
                     singleFile: true, // 启用单个文件上传。上传一个文件后，第二个文件将超过现有文件，第一个文件将被取消。
+                    query: function(file, res, status) {
+                        console.log(file)
+                        return {
+                            "userId": Cookies.get('userId'),
+                            "fileType": file.getType(),
+                        }
+                    },
                     maxChunkRetries: 3,  //最大自动失败重试上传次数
                     testChunks: true,     //是否开启服务器分片校验
                     checkChunkUploadedByResponse: function (chunk, message) {
                         let res = JSON.parse(message);
-                        if(!res.status){
+                        if (!res.status) {
                             return false;
                         }
                     },
                     simultaneousUploads: 3, //并发上传数
-                    headers: {},
-                    query: {}
                 },
                 statusText: {
                     success: "上传成功！",

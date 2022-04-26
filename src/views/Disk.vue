@@ -73,7 +73,7 @@
                             width="180px">
                     </el-table-column>
                     <el-table-column
-                            prop="fileTypeName"
+                            prop="fileTypeText"
                             label="文件类型"
                             width="100">
                     </el-table-column>
@@ -88,8 +88,8 @@
                             width="100">
                     </el-table-column>
                     <el-table-column
-                            prop="fileSize"
-                            label="文件大小(KB)"
+                            prop="fileSizeText"
+                            label="文件大小"
                             width="140">
                     </el-table-column>
                     <el-table-column
@@ -202,7 +202,26 @@
         methods: {
             //云盘相关
             onFileSuccess: function (rootFile, file, response, chunk) {
-                ElMessage.success("上传成功");
+                let res = JSON.parse(response);
+                if(res.status){
+                    //上传成功 帮助服务端删除临时目录
+                    console.log(res);
+                    console.log(res.data);
+                    axios({
+                        url:"/disk/file/deleteTempFile",
+                        method:"POST",
+                        params:{tempPath:res.data}
+                    }).then((res) =>{
+                        var data = res.data;
+                        if(data.status){
+                            ElMessage.success("上传成功");
+                        }else{
+                            ElMessage.success("上传成功，但服务端有文件残留");
+                        }
+                    })
+                }else{
+                    ElMessage.error(res.message);
+                }
                 console.log(response);
             },
             //上传文件前
